@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include <QTextStream>
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 {
@@ -87,6 +88,17 @@ void MainWindow::SLnewFile()
 void MainWindow::SLopenFile()
 {
 
+    QString filename = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
+
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        qWarning("Cannot open file for reading");
+        return;
+    }
+
+    QString line = file.readAll();;
+    line.indexOf(QRegExp("\b(module)\b"));
 }
 
 //Empty
