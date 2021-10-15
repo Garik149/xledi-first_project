@@ -24,15 +24,15 @@ private:
     void createToolBar();
     void createStatusBar();
 
-    QAction *AnewFile;
-    QAction *AopenFile;
-    QAction *AsaveFile;
-    QAction *Aquit;
+    QAction* AnewFile;
+    QAction* AopenFile;
+    QAction* AsaveFile;
+    QAction* Aquit;
 
     QMenu* fileMenu;
     QToolBar* toolBar;
     QStatusBar* statusBar;
-    QTextEdit *textEditor;
+    QTextEdit* textEditor;
     QGraphicsScene* scene;
     QGraphicsView* view;
 

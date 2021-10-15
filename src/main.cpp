@@ -25,7 +25,7 @@ QPalette darkStyle()
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    //app.setWindowIcon(QIcon{":/images/X-LEdiIcon.png"});
+    app.setWindowIcon(QIcon{":/images/X-LEdiIcon.png"});
     //app.setPalette(darkStyle());
 
     MainWindow window{};

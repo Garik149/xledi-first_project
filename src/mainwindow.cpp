@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 {
@@ -87,7 +86,7 @@ void MainWindow::SLnewFile()
 //Empty
 void MainWindow::SLopenFile()
 {
-    QMessageBox::information(this, "Информация", "Эта функция не разблокирована");
+
 }
 
 //Empty

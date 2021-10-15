@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/New.png</file>
+        <file>images/Delete.png</file>
+        <file>images/Mouse.png</file>
+        <file>images/Open.png</file>
+        <file>images/Quit.png</file>
+        <file>images/Save.png</file>
+        <file>images/Wire.png</file>
+        <file>images/X-LEdiIcon.png</file>
+    </qresource>
+</RCC>
