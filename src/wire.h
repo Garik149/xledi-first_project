@@ -10,7 +10,6 @@ class wire
 public:
 	wire();
 	~wire();
-	void initFromFile();
 private:
 	QString name;
 	QList<QPair<logicElement,QString>> drivers;

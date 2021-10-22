@@ -1,7 +1,7 @@
 #ifndef LOGICELEMENT_H
 #define LOGICELEMENT_H
 
-#include "wire.h"
+#include "basetype.h"
 #include <QString>
 #include <QList>
 
@@ -12,11 +12,8 @@ public:
 	~logicElement();
 	void initFromFile();
 private:
-	QString function;
+	baseType* type;
 	QString name;
-	QList<logicElement> logicElements;
-	QList<QString> ports;
-	QList<wire> wires;
 };
 
 #endif // LOGICELEMENT_H
