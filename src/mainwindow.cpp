@@ -1,10 +1,13 @@
 #include "mainwindow.h"
 #include <QTextStream>
+#include "datastructure.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 {
     qApp->setAttribute(Qt::AA_DontShowIconsInMenus, true);
     initActions();
+
+    QList<LogicElementType> ;
 
     resize(1200,700);
     createScene();
@@ -97,8 +100,8 @@ void MainWindow::SLopenFile()
         return;
     }
 
-    QString line = file.readAll();;
-    line.indexOf(QRegExp("\b(module)\b"));
+    QString line = file.readAll();
+    line.indexOf(QRegularExpression("\b(module)\b"))+6;
 }
 
 //Empty
@@ -110,7 +113,7 @@ void MainWindow::SLsaveFile()
 //
 void MainWindow::SLquit()
 {
-    QMessageBox::information(this, "Запрос на выход", "Ну идите...");
+    QMessageBox::information(this, "Уходите?", "Ну идите...");
     close();
 }
 

@@ -4,11 +4,22 @@
 #include <QString>
 #include <QList>
 
+class Wire;
+class LogicElement;
+
+class LogicElementType
+{
+private:
+    QString typeName;
+    QList<QString> ports;
+    QList<QPair<Wire,QString>> wires;
+};
+
 class LogicElement
 {
 private:
     QString name;
-    QList<QString> ports;
+    QString typeName;
 };
 
 class Wire
