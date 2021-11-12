@@ -1,31 +1,22 @@
 #include "mainwindow.h"
 #include <QTextStream>
-#include "datastructure.h"
+#include "module.h"
+
+QList<module> Modules;
 
 //
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 {
-<<<<<<< HEAD
     qApp->setAttribute(Qt::AA_DontShowIconsInMenus, true);
     initActions();
 
-    QList<LogicElementType> ;
+
 
     resize(1200,700);
     createScene();
     createMenu();
     createToolBar();
     createStatusBar();
-=======
-	qApp->setAttribute(Qt::AA_DontShowIconsInMenus, true);
-	initActions();
-
-	resize(1200,700);
-	createScene();
-	createMenu();
-	createToolBar();
-	createStatusBar();
->>>>>>> 35655068c6cc950d4e66fe5eeef4e3bc26b193d4
 }
 
 //
@@ -104,14 +95,6 @@ void MainWindow::SLopenFile()
 {
 	QString filename = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
 
-	QFile file(filename);
-	if (!file.open(QIODevice::ReadOnly))
-	{
-		qWarning("Cannot open file for reading");
-		return;
-	}
-
-<<<<<<< HEAD
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly))
     {
@@ -119,12 +102,9 @@ void MainWindow::SLopenFile()
         return;
     }
 
-    QString line = file.readAll();
-    line.indexOf(QRegularExpression("\b(module)\b"))+6;
-=======
-	QString line = file.readAll();
-	line[line.indexOf(QRegExp("\b(module)\b"))];
->>>>>>> 35655068c6cc950d4e66fe5eeef4e3bc26b193d4
+    module _module;
+    _module.initFromFile(file);
+    Modules.append(_module);
 }
 
 //Empty
@@ -136,13 +116,8 @@ void MainWindow::SLsaveFile()
 //
 void MainWindow::SLquit()
 {
-<<<<<<< HEAD
-    QMessageBox::information(this, "Уходите?", "Ну идите...");
-    close();
-=======
 	QMessageBox::information(this, "Запрос на выход", "Ну идите...");
-	close();
->>>>>>> 35655068c6cc950d4e66fe5eeef4e3bc26b193d4
+    close();
 }
 
 //

@@ -1,7 +1,7 @@
 #ifndef LOGICELEMENT_H
 #define LOGICELEMENT_H
 
-#include "basetype.h"
+#include "module.h"
 #include <QString>
 #include <QList>
 
@@ -12,7 +12,7 @@ public:
 	~logicElement();
 	void initFromFile();
 private:
-	baseType* type;
+    module* type;
 	QString name;
 };
 

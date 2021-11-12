@@ -10,7 +10,7 @@ class module
 public:
 	module();
 	~module();
-	void initFromFile();
+    void initFromFile(QFile file);
 private:
 	QString name;
 	QList<QString> ports;
