@@ -5,36 +5,36 @@
 
 class MainWindow : public QMainWindow
 {
-    Q_OBJECT
+	Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+	MainWindow(QWidget *parent = nullptr);
+	~MainWindow();
 
 private slots:
-    void SLnewFile();
-    void SLopenFile();
-    void SLsaveFile();
-    void SLquit();
+	void SLnewFile();
+	void SLopenFile();
+	void SLsaveFile();
+	void SLquit();
 
 private:
-    void initActions();
-    void createScene();
-    void createMenu();
-    void createToolBar();
-    void createStatusBar();
+	void initActions();
+	void createScene();
+	void createMenu();
+	void createToolBar();
+	void createStatusBar();
 
-    QAction* AnewFile;
-    QAction* AopenFile;
-    QAction* AsaveFile;
-    QAction* Aquit;
+	QAction* AnewFile;
+	QAction* AopenFile;
+	QAction* AsaveFile;
+	QAction* Aquit;
 
-    QMenu* fileMenu;
-    QToolBar* toolBar;
-    QStatusBar* statusBar;
-    QTextEdit* textEditor;
-    QGraphicsScene* scene;
-    QGraphicsView* view;
+	QMenu* fileMenu;
+	QToolBar* toolBar;
+	QStatusBar* statusBar;
+	QTextEdit* textEditor;
+	QGraphicsScene* scene;
+	QGraphicsView* view;
 
 };
 #endif // MAINWINDOW_H
