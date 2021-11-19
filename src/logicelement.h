@@ -4,17 +4,23 @@
 #include <QString>
 #include <QList>
 
-class Module;
+class Wire;
 
 class LogicElement
 {
+    QString name;
+    QList<QPair<QString, bool>> ports;
+    QList<Wire> wires;
+    QList<LogicElement> logicElements;
+    bool basic;
+
 public:
     LogicElement();
-    LogicElement(QString _name, const Module* _type);
+    LogicElement(QString _name);
     ~LogicElement();
-private:
-    QString name;
-    const Module* type;
+
+    void initBasicLE(QString type);
+    void initMainFromFile(QString line);
 };
 
 #endif // LOGICELEMENT_H

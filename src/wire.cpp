@@ -1,14 +1,24 @@
 #include "wire.h"
 
-Wire::Wire(QString _name)
+Wire::Wire() {}
+Wire::Wire(QString _name) {name = _name;}
+Wire::~Wire() {}
+
+void Wire::addDriver(LogicElement* pt_LE, QString port)
 {
-    name = _name;
-    //, QList<QPair<LogicElement*,QString>> _drivers, QList<QPair<LogicElement*,QString>> _loads
-    //drivers = _drivers;
-    //loads = _loads;
+    QPair<LogicElement*,QString> driver(pt_LE, port);
+    drivers.append(driver);
 }
 
-Wire::~Wire()
+void Wire::addLoad(LogicElement* pt_LE, QString port)
 {
+    QPair<LogicElement*,QString> load(pt_LE, port);
+    loads.append(load);
+}
 
+bool Wire::nameIs(QString _name)
+{
+    if (name == _name)
+        return true;
+    else return false;
 }

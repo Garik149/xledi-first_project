@@ -9,6 +9,7 @@ class Locale
 
 public:
     Locale();
+    ~Locale();
 
     //void setLocale(QString);
 

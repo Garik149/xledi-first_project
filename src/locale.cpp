@@ -1,9 +1,7 @@
 #include "locale.h"
 
-Locale::Locale()
-{
-    locale = 0;
-}
+Locale::Locale() {locale = 0;}
+Locale::~Locale() {}
 
 QString Locale::get0()
 {

@@ -3,11 +3,10 @@
 #include "locale.h"
 
 #include "wire.h"
-#include "module.h"
 #include "logicelement.h"
 
 Locale msg;
-QList<Module> moduleList;
+LogicElement mainLE;
 
 //
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
@@ -16,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     initActions();
 
     //msg.setLocale("Eng");
+
 
     resize(1200,700);
     createScene();
@@ -107,9 +107,7 @@ void MainWindow::SLopenFile()
         return;
     }
 
-    Module _module;
-    _module.initFromFile(file.readAll(), &moduleList);
-    moduleList.append(_module);
+    mainLE.initMainFromFile(file.readAll());
 }
 
 //Empty
