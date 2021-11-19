@@ -1,19 +1,21 @@
 #ifndef WIRE_H
 #define WIRE_H
 
-#include "logicelement.h"
 #include <QString>
 #include <QList>
 
-class wire
+class LogicElement;
+
+class Wire
 {
 public:
-	wire();
-	~wire();
+    Wire();
+    Wire(QString _name);
+    ~Wire();
 private:
-	QString name;
-	QList<QPair<logicElement,QString>> drivers;
-	QList<QPair<logicElement,QString>> loads;
+    QString name;
+    QList<QPair<LogicElement*,QString>> drivers;
+    QList<QPair<LogicElement*,QString>> loads;
 };
 
 #endif // WIRE_H

@@ -1,21 +1,25 @@
 #ifndef MODULE_H
 #define MODULE_H
 
-#include "wire.h"
-#include "logicelement.h"
+#include <QString>
 #include <QList>
 
-class module
+class LogicElement;
+class Wire;
+
+class Module
 {
 public:
-	module();
-	~module();
-    void initFromFile(QFile file);
+    Module();
+    ~Module();
+    void initFromFile(QString line, QList<Module>* moduleList);
+    void addToList();
+
 private:
 	QString name;
-	QList<QString> ports;
-	QList<wire> wires;
-	QList<logicElement> logicElements;
+    QList<QPair<QString, bool>> ports;
+    QList<Wire*> wires;
+    QList<LogicElement*> logicElements;
 };
 
 #endif // MODULE_H

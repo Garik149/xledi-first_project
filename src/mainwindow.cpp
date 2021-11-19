@@ -1,8 +1,13 @@
 #include "mainwindow.h"
 #include <QTextStream>
-#include "module.h"
+#include "locale.h"
 
-QList<module> Modules;
+#include "wire.h"
+#include "module.h"
+#include "logicelement.h"
+
+Locale msg;
+QList<Module> moduleList;
 
 //
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
@@ -10,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     qApp->setAttribute(Qt::AA_DontShowIconsInMenus, true);
     initActions();
 
-
+    //msg.setLocale("Eng");
 
     resize(1200,700);
     createScene();
@@ -22,17 +27,17 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 //
 void MainWindow::initActions()
 {
-	AnewFile = new QAction(QIcon{":/images/New.png"}, "&New file", this);
+    AnewFile = new QAction(QIcon{":/images/New.png"}, msg.get1(), this);
 	connect(AnewFile, &QAction::triggered, this, &MainWindow::SLnewFile);
 
-	AopenFile = new QAction(QIcon{":/images/Open.png"}, "&Open file", this);
+    AopenFile = new QAction(QIcon{":/images/Open.png"}, msg.get2(), this);
 	connect(AopenFile, &QAction::triggered, this, &MainWindow::SLopenFile);
 
-	AsaveFile = new QAction(QIcon{":/images/Save.png"}, "&Save file", this);
+    AsaveFile = new QAction(QIcon{":/images/Save.png"}, msg.get3(), this);
 	AsaveFile->setShortcut(tr("CTRL+S"));
 	connect(AsaveFile, &QAction::triggered, this, &MainWindow::SLsaveFile);
 
-	Aquit = new QAction(QIcon{":/images/Quit.png"}, "&Quit", this);
+    Aquit = new QAction(QIcon{":/images/Quit.png"}, msg.get4(), this);
 	Aquit->setShortcut(tr("CTRL+Q"));
 	connect(Aquit, &QAction::triggered, this, &MainWindow::SLquit);
 }
@@ -52,7 +57,7 @@ void MainWindow::createScene()
 //
 void MainWindow::createMenu()
 {
-	fileMenu = new QMenu("&File");
+    fileMenu = new QMenu(msg.get0());
 	menuBar()->addMenu(fileMenu);
 
 	fileMenu->addAction(AnewFile);
@@ -90,7 +95,7 @@ void MainWindow::SLnewFile()
 	QMessageBox::information(this, "Информация", "Эта функция не разблокирована");
 }
 
-//In process now
+//
 void MainWindow::SLopenFile()
 {
 	QString filename = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
@@ -102,9 +107,9 @@ void MainWindow::SLopenFile()
         return;
     }
 
-    module _module;
-    _module.initFromFile(file);
-    Modules.append(_module);
+    Module _module;
+    _module.initFromFile(file.readAll(), &moduleList);
+    moduleList.append(_module);
 }
 
 //Empty

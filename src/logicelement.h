@@ -1,19 +1,20 @@
 #ifndef LOGICELEMENT_H
 #define LOGICELEMENT_H
 
-#include "module.h"
 #include <QString>
 #include <QList>
 
-class logicElement
+class Module;
+
+class LogicElement
 {
 public:
-	logicElement();
-	~logicElement();
-	void initFromFile();
+    LogicElement();
+    LogicElement(QString _name, const Module* _type);
+    ~LogicElement();
 private:
-    module* type;
-	QString name;
+    QString name;
+    const Module* type;
 };
 
 #endif // LOGICELEMENT_H
