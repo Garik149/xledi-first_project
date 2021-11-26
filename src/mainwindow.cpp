@@ -98,16 +98,9 @@ void MainWindow::SLnewFile()
 //
 void MainWindow::SLopenFile()
 {
-	QString filename = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
+    QString path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
 
-    QFile file(filename);
-    if (!file.open(QIODevice::ReadOnly))
-    {
-        qWarning("Cannot open file for reading");
-        return;
-    }
-
-    mainLE.initMainFromFile(file.readAll());
+    if (!mainLE.initMainLEFromFile(path)) qWarning("Module read failure");
 }
 
 //Empty

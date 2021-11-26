@@ -8,18 +8,29 @@ class LogicElement;
 
 class Wire
 {
+    struct WirePort
+    {
+        QString name;
+        LogicElement* pt_le;
+
+        WirePort(LogicElement* _pt_le, QString _name);
+        ~WirePort();
+    };
+
     QString name;
-    QList<QPair<LogicElement*,QString>> drivers;
-    QList<QPair<LogicElement*,QString>> loads;
+    QList<WirePort> drivers;
+    QList<WirePort> loads;
+    QList<Wire*> assigns;
 
 public:
     Wire();
     Wire(QString _name);
     ~Wire();
 
+    void assign(Wire _wire);
     bool nameIs(QString _name);
-    void addDriver(LogicElement* pt_LE, QString port);
-    void addLoad(LogicElement* pt_LE, QString port);
+    void addDriver(LogicElement* _pt_le, QString _name);
+    void addLoad(LogicElement* _pt_le, QString _name);
 };
 
 #endif // WIRE_H

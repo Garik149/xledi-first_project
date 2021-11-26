@@ -8,8 +8,17 @@ class Wire;
 
 class LogicElement
 {
+    struct LEPort
+    {
+        QString name;
+        bool outPort;
+
+        LEPort(QString _name, bool _outPort);
+        ~LEPort();
+    };
+
     QString name;
-    QList<QPair<QString, bool>> ports;
+    QList<LEPort> ports;
     QList<Wire> wires;
     QList<LogicElement> logicElements;
     bool basic;
@@ -19,8 +28,14 @@ public:
     LogicElement(QString _name);
     ~LogicElement();
 
-    void initBasicLE(QString type);
-    void initMainFromFile(QString line);
+    Wire& LEwire(QString _name);
+    QString& LEinPort(QString _name);
+
+    void addBasicElements(QList<LogicElement> &library);
+    bool havePort(QString _name, bool _outPort);
+    bool nameIs(QString _name);
+    bool initMainLEFromFile(QString& path);
+    bool initLEFromFile(QString& path);
 };
 
 #endif // LOGICELEMENT_H
