@@ -3,22 +3,14 @@
 
 #include <QString>
 #include <QList>
+#include "port.h"
 
 class Wire;
 
 class LogicElement
 {
-    struct LEPort
-    {
-        QString name;
-        bool outPort;
-
-        LEPort(QString _name, bool _outPort);
-        ~LEPort();
-    };
-
     QString name;
-    QList<LEPort> ports;
+    QList<Port> ports;
     QList<Wire> wires;
     QList<LogicElement> logicElements;
     bool basic;
@@ -28,14 +20,15 @@ public:
     LogicElement(QString _name);
     ~LogicElement();
 
-    Wire& LEwire(QString _name);
-    QString& LEinPort(QString _name);
+    Wire& leWire(QString _name);
+    Port& lePort(QString _name);
 
+    void clear();
     void addBasicElements(QList<LogicElement> &library);
-    bool havePort(QString _name, bool _outPort);
+    bool havePort(QString _name);
     bool nameIs(QString _name);
-    bool initMainLEFromFile(QString& path);
-    bool initLEFromFile(QString& path);
+    bool initMainLEFromFile(QString &path);
+    bool initLEFromFile(QString &path);
 };
 
 #endif // LOGICELEMENT_H

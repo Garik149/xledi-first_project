@@ -1,20 +1,17 @@
 #include "wire.h"
 
-Wire::WirePort::WirePort(LogicElement* _pt_le, QString _name) {pt_le = _pt_le; name = _name;}
-Wire::WirePort::~WirePort() {}
-
 Wire::Wire() {}
 Wire::Wire(QString _name) {name = _name;}
-Wire::~Wire() {}
+Wire::~Wire() {name.clear(); drivers.clear(); loads.clear(); assigns.clear();}
 
-void Wire::addDriver(LogicElement* _pt_le, QString _name)
+void Wire::addDriver(Port* _pt_port)
 {
-    drivers.append(WirePort(_pt_le, _name));
+    drivers.append(_pt_port);
 }
 
-void Wire::addLoad(LogicElement* _pt_le, QString _name)
+void Wire::addLoad(Port* _pt_port)
 {
-    loads.append(WirePort(_pt_le, _name));
+    loads.append(_pt_port);
 }
 
 bool Wire::nameIs(QString _name)

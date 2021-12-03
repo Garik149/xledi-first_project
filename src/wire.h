@@ -3,23 +3,13 @@
 
 #include <QString>
 #include <QList>
-
-class LogicElement;
+#include "port.h"
 
 class Wire
 {
-    struct WirePort
-    {
-        QString name;
-        LogicElement* pt_le;
-
-        WirePort(LogicElement* _pt_le, QString _name);
-        ~WirePort();
-    };
-
     QString name;
-    QList<WirePort> drivers;
-    QList<WirePort> loads;
+    QList<Port*> drivers;
+    QList<Port*> loads;
     QList<Wire*> assigns;
 
 public:
@@ -29,8 +19,8 @@ public:
 
     void assign(Wire _wire);
     bool nameIs(QString _name);
-    void addDriver(LogicElement* _pt_le, QString _name);
-    void addLoad(LogicElement* _pt_le, QString _name);
+    void addDriver(Port* _pt_port);
+    void addLoad(Port* _pt_port);
 };
 
 #endif // WIRE_H

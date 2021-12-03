@@ -1,7 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "defines.h"
 #include <QtWidgets>
+#include <QGraphicsView>
+#include <QTabWidget>
+#include "sceneledi.h"
+//#include <QGraphicsView>
 
 class MainWindow : public QMainWindow
 {
@@ -12,10 +17,10 @@ public:
 	~MainWindow();
 
 private slots:
-	void SLnewFile();
-	void SLopenFile();
-	void SLsaveFile();
-	void SLquit();
+    void slotNewFile();
+    void slotOpenFile();
+    void slotSaveFile();
+    void slotQuit();
 
 private:
 	void initActions();
@@ -24,17 +29,39 @@ private:
 	void createToolBar();
 	void createStatusBar();
 
+    //void createToolBox();
+    //void newFileLE();
+    //void createStatusBar(QPointF mouseCoordinates);
+    //void buttonGroupClicked(QAbstractButton *button);
+    //void pointerGroupCliced();
+    //void insertItem();
+    //void currentChangedTab(int indexTab);
+    //void tabCloseRequested(int indexTab);
+    //void saveDataLE();
+    //void loadDataLE();
+
 	QAction* AnewFile;
 	QAction* AopenFile;
 	QAction* AsaveFile;
 	QAction* Aquit;
 
+    //QPixmap createImage(ItemLEdi::TypeItem type);
+    //QWidget *createCellWidget(const QString &text, ItemLEdi::TypeItem type);
+    //QToolBox *toolBox;
+    //QAction *deleteAction;
+    //QToolBar *pointerToolBar;
+    //QTabWidget *tabWidget;
+    //QButtonGroup *buttonGroup;
+    //QButtonGroup *pointerTypeGroup;
+
+    //ViewLEdi *view;
+    //QList <ViewLEdi*> tabList{};
+
 	QMenu* fileMenu;
 	QToolBar* toolBar;
 	QStatusBar* statusBar;
-	QTextEdit* textEditor;
-	QGraphicsScene* scene;
-	QGraphicsView* view;
-
+    QTextEdit* textEditor;
+    SceneLEdi *scene;
+    QGraphicsView* view;
 };
 #endif // MAINWINDOW_H
