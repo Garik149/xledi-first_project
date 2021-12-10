@@ -1,5 +1,5 @@
-#ifndef SCENELEDI_H
-#define SCENELEDI_H
+#ifndef LEDISCENE_H
+#define LEDISCENE_H
 
 #include <QGraphicsScene>
 //#include <QGraphicsSceneMouseEvent>
@@ -11,13 +11,13 @@
 #include "logicelement.h"
 #include "wire.h"
 
-class SceneLEdi : public QGraphicsScene
+class LEdiScene : public QGraphicsScene
 {
 
     Q_OBJECT
 public:
-    explicit SceneLEdi(const QRectF &sceneRect, QObject *parent = nullptr);
-    //~SceneLEdi();
+    explicit LEdiScene(const QRectF &sceneRect, QObject *parent = nullptr);
+    ~LEdiScene(){};
 
     //void createItem(ItemLEdi::TypeItem type  = ItemLEdi::Null);
     //void createWire(QPointF mousePos);

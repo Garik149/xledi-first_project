@@ -2,31 +2,31 @@
 
 #include "mainwindow.h"
 
-QPalette darkStyle()
+QPalette plainStyle()
 {
-	QPalette darkPalette;
-	darkPalette.setColor(QPalette::Window, QColor(46, 52, 57));
-	darkPalette.setColor(QPalette::WindowText, Qt::white);
-	darkPalette.setColor(QPalette::Base, QColor(30, 33, 36));
-	darkPalette.setColor(QPalette::AlternateBase, QColor(53, 53, 53));
-	darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
-	darkPalette.setColor(QPalette::ToolTipText, Qt::white);
-	darkPalette.setColor(QPalette::Text, Qt::white);
-	darkPalette.setColor(QPalette::Button, QColor(46, 52, 57));
-	darkPalette.setColor(QPalette::ButtonText, Qt::white);
-	darkPalette.setColor(QPalette::BrightText, Qt::red);
-	darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));
-	darkPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
-	darkPalette.setColor(QPalette::HighlightedText, Qt::black);
+    QPalette plainPalette;
+    plainPalette.setColor(QPalette::Window, Qt::white);
+    plainPalette.setColor(QPalette::WindowText, Qt::black);
+    plainPalette.setColor(QPalette::Base, Qt::white);
+    plainPalette.setColor(QPalette::AlternateBase, QColor(53, 53, 53));
+    plainPalette.setColor(QPalette::ToolTipBase, Qt::white);
+    plainPalette.setColor(QPalette::ToolTipText, Qt::white);
+    plainPalette.setColor(QPalette::Text, Qt::black);
+    plainPalette.setColor(QPalette::Button, QColor(46, 52, 57));
+    plainPalette.setColor(QPalette::ButtonText, Qt::white);
+    plainPalette.setColor(QPalette::BrightText, Qt::red);
+    plainPalette.setColor(QPalette::Link, QColor(42, 130, 218));
+    plainPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
+    plainPalette.setColor(QPalette::HighlightedText, Qt::black);
 
-	return darkPalette;
+    return plainPalette;
 }
 
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
 	app.setWindowIcon(QIcon{":/images/X-LEdiIcon.png"});
-	//app.setPalette(darkStyle());
+    //app.setPalette(plainStyle());
 
 	MainWindow window{};
 	window.show();

@@ -3,10 +3,15 @@
 
 #include "defines.h"
 #include <QtWidgets>
+//#include <QTabWidget>
 #include <QGraphicsView>
-#include <QTabWidget>
-#include "sceneledi.h"
-//#include <QGraphicsView>
+
+
+#include "locale.h"
+#include "wire.h"
+#include "logicelement.h"
+#include "lediscene.h"
+#include "lediview.h"
 
 class MainWindow : public QMainWindow
 {
@@ -54,14 +59,16 @@ private:
     //QButtonGroup *buttonGroup;
     //QButtonGroup *pointerTypeGroup;
 
-    //ViewLEdi *view;
     //QList <ViewLEdi*> tabList{};
 
 	QMenu* fileMenu;
 	QToolBar* toolBar;
 	QStatusBar* statusBar;
     QTextEdit* textEditor;
-    SceneLEdi *scene;
-    QGraphicsView* view;
+    LEdiScene* scene;
+    LEdiView* view;
+
+    Locale msg;
+    LogicElement mainLE;
 };
 #endif // MAINWINDOW_H

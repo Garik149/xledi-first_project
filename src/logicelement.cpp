@@ -2,6 +2,9 @@
 #include "wire.h"
 #include "logicelement.h"
 
+#include <QFileDialog>
+#include <QFile>
+
 QList<LogicElement> library;
 
 #define NofBLE 10
@@ -201,6 +204,9 @@ void LogicElement::clear()
     basic = false;
 }
 
+bool LogicElement::scheme()
+{
+}
 
 QString cutLine(int p, QString& line, QChar c)
 {

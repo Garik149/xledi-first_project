@@ -29,6 +29,7 @@ public:
     bool nameIs(QString _name);
     bool initMainLEFromFile(QString &path);
     bool initLEFromFile(QString &path);
+    bool scheme();
 };
 
 #endif // LOGICELEMENT_H

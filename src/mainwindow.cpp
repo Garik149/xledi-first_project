@@ -1,17 +1,7 @@
 
 #include <QTextStream>
 
-#include <QGraphicsView>
-
 #include "mainwindow.h"
-#include "locale.h"
-#include "wire.h"
-#include "logicelement.h"
-#include "sceneledi.h"
-
-Locale msg;
-LogicElement mainLE;
-
 //
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
 {
@@ -61,9 +51,9 @@ void MainWindow::initActions()
 //
 void MainWindow::createScene()
 {
-    scene = new SceneLEdi(QRectF(0,0,3000,2000));
+    scene = new LEdiScene(QRectF(0,0,2500,1500));
 
-	view = new QGraphicsView(scene);
+    view = new LEdiView(scene);
 	view->show();
 
 	setCentralWidget(view);
@@ -118,6 +108,7 @@ void MainWindow::slotOpenFile()
     //path = "C:/Users/goris/_Stuff/Study/Practical_work/examples/input_files/c17.syn_dc.v";
 
     if (mainLE.initMainLEFromFile(path) == RESULT_ERROR) qWarning("Module read failure");
+    //mainLE.scheme();
 }
 
 //Empty

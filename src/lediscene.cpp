@@ -1,0 +1,29 @@
+#include "lediscene.h"
+
+//#include <QKeyEvent>
+#include <QPainter>
+
+
+LEdiScene::LEdiScene(const QRectF &sceneRect, QObject *parent) : QGraphicsScene(sceneRect, parent)
+{
+    //lineWire1 = nullptr;
+    //lineWire2 = nullptr;
+    //firstPin = nullptr;
+    //endPin = nullptr;
+    //wire = nullptr;
+    //currentItem = nullptr;
+    //locationWire = true;
+}
+
+void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
+{
+    painter->setBrush(Qt::black);
+    painter->setPen({Qt::black, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin});
+    painter->drawRect(rect);
+
+    painter->setPen({Qt::gray, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin});
+    for(int i = gridSize; i < rect.right(); i += gridSize)
+        for(int j = gridSize; j < rect.bottom(); j += gridSize)
+            painter->drawPoint(i, j);
+
+}
