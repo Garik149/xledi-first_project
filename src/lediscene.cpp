@@ -15,6 +15,24 @@ LEdiScene::LEdiScene(const QRectF &sceneRect, QObject *parent) : QGraphicsScene(
     //locationWire = true;
 }
 
+void LEdiScene::createItem(LogicElement* le)
+{
+    //if(currentItem)
+    //{
+    //    if(currentItem->insertFlag)
+    //    {
+    //        type = currentItem->typeItem();
+    //        currentItem->insertFlag = false;
+    //        currentItem = nullptr;
+    //    }
+    //}
+    currentLESymbol = new LESymbol(le);
+    //appendLESymbol(currentLESymbol);
+    //currentItem -> insertFlag = true;
+
+    //emit tranferItem(currentItem, nullptr);
+}
+
 void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
     painter->setBrush(Qt::black);

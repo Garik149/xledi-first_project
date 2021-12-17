@@ -7,6 +7,7 @@
 #include <QString>
 //#include <QMap>
 
+#include "lesymbol.h"
 #include "port.h"
 #include "logicelement.h"
 #include "wire.h"
@@ -19,7 +20,7 @@ public:
     explicit LEdiScene(const QRectF &sceneRect, QObject *parent = nullptr);
     ~LEdiScene(){};
 
-    //void createItem(ItemLEdi::TypeItem type  = ItemLEdi::Null);
+    void createItem(LogicElement* le);
     //void createWire(QPointF mousePos);
     //void moveWire(QPointF mousePos);
     //void moveItem(QPointF mousePos);
@@ -27,7 +28,7 @@ public:
     //void setLocationWire(){locationWire = !locationWire;}
     //void deleteSelectItem();
     //inline const ItemLEdi* findItem(QString nameElement) const {return mapItems.value(nameElement);}
-    //void addItemToMap(QGraphicsItem* ptrItem);
+    //void appendLESymbol(LESymbol* pt_lESymbol);
 
 private:
     //QMap<QString, ItemLEdi*> mapItems{};
@@ -35,7 +36,7 @@ private:
     //QGraphicsRectItem *seletionRect;
     const int gridSize = 20;
     //QGraphicsLineItem *lineWire1, *lineWire2;
-    //ItemLEdi *currentItem;
+    LESymbol *currentLESymbol;
     //Wire *wire;
     //Pin *firstPin, *endPin;
     //bool locationWire;
