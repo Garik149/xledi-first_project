@@ -15,6 +15,13 @@ LEdiScene::LEdiScene(const QRectF &sceneRect, QObject *parent) : QGraphicsScene(
     //locationWire = true;
 }
 
+QPoint LEdiScene::bindedToGrid(QPointF point)
+{
+    int xV = qRound(point.x()/gridSize)*gridSize;
+    int yV = qRound(point.y()/gridSize)*gridSize;
+    return QPoint{xV, yV};
+}
+
 void LEdiScene::createItem(LogicElement* le)
 {
     //if(currentItem)

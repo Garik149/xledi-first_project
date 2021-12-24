@@ -39,11 +39,11 @@ public:
 //
 //private:
 //    QMap<QString, Pin*> mapPins{};
-//    QGraphicsTextItem *nameModule;
+    QGraphicsTextItem *nameModule;
 //    TextItemLEdi *nameElement;
 //    TypeItem myTypeItem;
 //    QPolygonF myPolygon;
-//    QRectF rectItem;
+    QRectF rectItem;
 //    uint myCountPinIn;
 //    uint myCountPinOut;
 //    QVector<Pin*> vectorInPins{};

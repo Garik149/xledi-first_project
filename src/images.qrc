@@ -7,6 +7,6 @@
         <file>images/Quit.png</file>
         <file>images/Save.png</file>
         <file>images/Wire.png</file>
-        <file>images/X-LEdiIcon.png</file>
+        <file>images/Icon.png</file>
     </qresource>
 </RCC>

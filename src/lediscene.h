@@ -32,8 +32,8 @@ public:
 
 private:
     //QMap<QString, ItemLEdi*> mapItems{};
-    //QPoint binding(QPointF point);
-    //QGraphicsRectItem *seletionRect;
+    QPoint bindedToGrid(QPointF point);
+    //QGraphicsRectItem *selectionRect;
     const int gridSize = 20;
     //QGraphicsLineItem *lineWire1, *lineWire2;
     LESymbol *currentLESymbol;
@@ -52,4 +52,4 @@ public:
 
 };
 
-#endif // SCENECAD_H
+#endif // LEDISCENE_H

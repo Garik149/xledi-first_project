@@ -204,9 +204,7 @@ void LogicElement::clear()
     basic = false;
 }
 
-bool LogicElement::scheme()
-{
-}
+//bool LogicElement::scheme()
 
 QString cutLine(int p, QString& line, QChar c)
 {

@@ -12,6 +12,9 @@ class Wire
     QList<Port*> loads;
     QList<Wire*> assigns;
 
+    //Графика
+    //QList<QLine*> arms;
+
 public:
     Wire();
     Wire(QString _name);
