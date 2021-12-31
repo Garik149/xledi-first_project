@@ -20,7 +20,7 @@ public:
     explicit LEdiScene(const QRectF &sceneRect, QObject *parent = nullptr);
     ~LEdiScene(){};
 
-    void createItem(LogicElement* le);
+    void addLE(G_LogicElement* le);
     //void createWire(QPointF mousePos);
     //void moveWire(QPointF mousePos);
     //void moveItem(QPointF mousePos);
@@ -32,11 +32,10 @@ public:
 
 private:
     //QMap<QString, ItemLEdi*> mapItems{};
-    QPoint bindedToGrid(QPointF point);
+    QPoint bindToGrid(QPointF point);
     //QGraphicsRectItem *selectionRect;
     const int gridSize = 20;
     //QGraphicsLineItem *lineWire1, *lineWire2;
-    LESymbol *currentLESymbol;
     //Wire *wire;
     //Pin *firstPin, *endPin;
     //bool locationWire;

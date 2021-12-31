@@ -7,12 +7,11 @@
 
 QList<LogicElement> library;
 
-#define NofBLE 10
+#define NofBLE 20
 
 LogicElement::LogicElement() {basic = false;}
 LogicElement::LogicElement(QString _name) { name = _name; basic = false;}
 LogicElement::~LogicElement() {name.clear(); ports.clear(); wires.clear(); logicElements.clear(); basic = false;}
-
 
 Wire& LogicElement::leWire(QString _name)
 {
@@ -204,8 +203,6 @@ void LogicElement::clear()
     basic = false;
 }
 
-//bool LogicElement::scheme()
-
 QString cutLine(int p, QString& line, QChar c)
 {
     int pi = line.indexOf(c,p);
@@ -260,7 +257,7 @@ bool LogicElement::initMainLEFromFile(QString& path)
     return 0;
 }
 
-// Дополнить по части универсальности, если нужно
+//Дополнить по части универсальности, если нужно
 bool LogicElement::initLEFromFile(QString& path)
 {
     clear();
@@ -446,4 +443,13 @@ bool LogicElement::initLEFromFile(QString& path)
     }
 
     return RESULT_SUCCESS;
+}
+
+
+G_LogicElement::G_LogicElement() {}
+G_LogicElement::~G_LogicElement() {}
+
+bool G_LogicElement::initG_MainLE(LogicElement* le)
+{
+
 }

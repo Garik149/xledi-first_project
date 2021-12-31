@@ -109,6 +109,7 @@ void MainWindow::slotOpenFile()
 
     if (mainLE.initMainLEFromFile(path) == RESULT_ERROR) qWarning("Module read failure");
     //mainLE.scheme();
+
 }
 
 //Empty

@@ -15,14 +15,14 @@ LEdiScene::LEdiScene(const QRectF &sceneRect, QObject *parent) : QGraphicsScene(
     //locationWire = true;
 }
 
-QPoint LEdiScene::bindedToGrid(QPointF point)
+QPoint LEdiScene::bindToGrid(QPointF point)
 {
     int xV = qRound(point.x()/gridSize)*gridSize;
     int yV = qRound(point.y()/gridSize)*gridSize;
     return QPoint{xV, yV};
 }
 
-void LEdiScene::createItem(LogicElement* le)
+void LEdiScene::addLE(G_LogicElement* le)
 {
     //if(currentItem)
     //{
@@ -33,7 +33,7 @@ void LEdiScene::createItem(LogicElement* le)
     //        currentItem = nullptr;
     //    }
     //}
-    currentLESymbol = new LESymbol(le);
+    //currentLESymbol = new LESymbol(le);
     //appendLESymbol(currentLESymbol);
     //currentItem -> insertFlag = true;
 

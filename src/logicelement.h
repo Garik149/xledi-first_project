@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QList>
+#include <QPoint>
 #include "port.h"
 
 class Wire;
@@ -29,7 +30,19 @@ public:
     bool nameIs(QString _name);
     bool initMainLEFromFile(QString &path);
     bool initLEFromFile(QString &path);
-    //bool scheme();
+};
+
+//Графическое представление
+class G_LogicElement
+{
+    LogicElement* le;
+    QPoint place;
+
+public:
+    G_LogicElement();
+    ~G_LogicElement();
+
+    bool initG_MainLE(LogicElement* le);
 };
 
 #endif // LOGICELEMENT_H

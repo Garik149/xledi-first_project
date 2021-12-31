@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QList>
+#include <QPoint>
 #include "port.h"
 
 class Wire
@@ -11,9 +12,6 @@ class Wire
     QList<Port*> drivers;
     QList<Port*> loads;
     QList<Wire*> assigns;
-
-    //Графика
-    //QList<QLine*> arms;
 
 public:
     Wire();
@@ -24,6 +22,17 @@ public:
     bool nameIs(QString _name);
     void addDriver(Port* _pt_port);
     void addLoad(Port* _pt_port);
+};
+
+//Графическое представление
+class G_Wire
+{
+    Wire* wire;
+    QList<QPoint> segments;
+
+public:
+    G_Wire();
+    ~G_Wire();
 };
 
 #endif // WIRE_H
