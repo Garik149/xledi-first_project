@@ -3,46 +3,33 @@
 
 #include <QString>
 #include <QList>
-#include <QPoint>
-#include "port.h"
+#include "defines.h"
 
-class Wire;
-
-class LogicElement
-{
+class LogicElement{
     QString name;
     QList<Port> ports;
+     QList<Port*> inPorts;
+     QList<Port*> outPorts;
     QList<Wire> wires;
     QList<LogicElement> logicElements;
-    bool basic;
-
-public:
-    LogicElement();
-    LogicElement(QString _name);
-    ~LogicElement();
+    bool basic:1;
+    static QList<LogicElement> library;
 
     Wire& leWire(QString _name);
     Port& lePort(QString _name);
-
-    void clear();
-    void addBasicElements(QList<LogicElement> &library);
+    void addPort(Port port);
     bool havePort(QString _name);
     bool nameIs(QString _name);
-    bool initMainLEFromFile(QString &path);
     bool initLEFromFile(QString &path);
-};
-
-//Графическое представление
-class G_LogicElement
-{
-    LogicElement* le;
-    QPoint place;
-
 public:
-    G_LogicElement();
-    ~G_LogicElement();
+     LogicElement();
+     LogicElement(QString _name);
+     ~LogicElement();
+    static void addBasicElements();
+    void clear();    
+    bool initMainLEFromFile(QString &path);
 
-    bool initG_MainLE(LogicElement* le);
+    friend class LEShape;
 };
 
 #endif // LOGICELEMENT_H

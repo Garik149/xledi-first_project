@@ -1,8 +1,5 @@
 #include "lediscene.h"
-
-//#include <QKeyEvent>
-#include <QPainter>
-
+#include "leshape.h"
 
 LEdiScene::LEdiScene(const QRectF &sceneRect, QObject *parent) : QGraphicsScene(sceneRect, parent)
 {
@@ -15,31 +12,6 @@ LEdiScene::LEdiScene(const QRectF &sceneRect, QObject *parent) : QGraphicsScene(
     //locationWire = true;
 }
 
-QPoint LEdiScene::bindToGrid(QPointF point)
-{
-    int xV = qRound(point.x()/gridSize)*gridSize;
-    int yV = qRound(point.y()/gridSize)*gridSize;
-    return QPoint{xV, yV};
-}
-
-void LEdiScene::addLE(G_LogicElement* le)
-{
-    //if(currentItem)
-    //{
-    //    if(currentItem->insertFlag)
-    //    {
-    //        type = currentItem->typeItem();
-    //        currentItem->insertFlag = false;
-    //        currentItem = nullptr;
-    //    }
-    //}
-    //currentLESymbol = new LESymbol(le);
-    //appendLESymbol(currentLESymbol);
-    //currentItem -> insertFlag = true;
-
-    //emit tranferItem(currentItem, nullptr);
-}
-
 void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
     painter->setBrush(Qt::black);
@@ -47,8 +19,13 @@ void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
     painter->drawRect(rect);
 
     painter->setPen({Qt::gray, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin});
-    for(int i = gridSize; i < rect.right(); i += gridSize)
-        for(int j = gridSize; j < rect.bottom(); j += gridSize)
+    for (int i = GRID_SZ; i < rect.right(); i += GRID_SZ)
+        for (int j = GRID_SZ; j < rect.bottom(); j += GRID_SZ)
             painter->drawPoint(i, j);
-
 }
+
+//void LEdiScene::addShape(LEShape* leShape){
+//    //addItem(&leShape->body);
+//    //for (int i = 0; i < leShape->ports.size(); i +=1)
+//    //    addItem(&leShape->ports[i]);
+//}

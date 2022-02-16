@@ -1,14 +1,18 @@
-
 #include <QTextStream>
-
 #include "mainwindow.h"
-//
-MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
-{
+#include "locale.h"
+#include "lediscene.h"
+#include "lediview.h"
+#include "logicelement.h"
+
+MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     qApp->setAttribute(Qt::AA_DontShowIconsInMenus, true);
     initActions();
 
-    //msg.setLocale("Eng");
+    LogicElement::addBasicElements();
+
+    msg = new Locale();
+    //msg->setLocale("Eng");
 
     resize(1200,700);
     createScene();
@@ -30,27 +34,25 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent)
     //slotOpenFile();
 }
 
-//
-void MainWindow::initActions()
-{
-    AnewFile = new QAction(QIcon{":/images/New.png"}, msg.get1(), this);
+MainWindow::~MainWindow(){}
+
+void MainWindow::initActions(){
+    AnewFile = new QAction(QIcon{":/images/New.png"}, msg->get1(), this);
     connect(AnewFile, &QAction::triggered, this, &MainWindow::slotNewFile);
 
-    AopenFile = new QAction(QIcon{":/images/Open.png"}, msg.get2(), this);
+    AopenFile = new QAction(QIcon{":/images/Open.png"}, msg->get2(), this);
     connect(AopenFile, &QAction::triggered, this, &MainWindow::slotOpenFile);
 
-    AsaveFile = new QAction(QIcon{":/images/Save.png"}, msg.get3(), this);
+    AsaveFile = new QAction(QIcon{":/images/Save.png"}, msg->get3(), this);
 	AsaveFile->setShortcut(tr("CTRL+S"));
     connect(AsaveFile, &QAction::triggered, this, &MainWindow::slotSaveFile);
 
-    Aquit = new QAction(QIcon{":/images/Quit.png"}, msg.get4(), this);
+    Aquit = new QAction(QIcon{":/images/Quit.png"}, msg->get4(), this);
 	Aquit->setShortcut(tr("CTRL+Q"));
     connect(Aquit, &QAction::triggered, this, &MainWindow::slotQuit);
 }
 
-//
-void MainWindow::createScene()
-{
+void MainWindow::createScene(){
     scene = new LEdiScene(QRectF(0,0,2500,1500));
 
     view = new LEdiView(scene);
@@ -59,10 +61,8 @@ void MainWindow::createScene()
 	setCentralWidget(view);
 }
 
-//
-void MainWindow::createMenu()
-{
-    fileMenu = new QMenu(msg.get0());
+void MainWindow::createMenu(){
+    fileMenu = new QMenu(msg->get0());
 	menuBar()->addMenu(fileMenu);
 
 	fileMenu->addAction(AnewFile);
@@ -72,9 +72,7 @@ void MainWindow::createMenu()
 	fileMenu->addAction(Aquit);
 }
 
-//
-void MainWindow::createToolBar()
-{
+void MainWindow::createToolBar(){
 	toolBar = new QToolBar(this);
 
 	toolBar->addAction(AnewFile);
@@ -85,9 +83,7 @@ void MainWindow::createToolBar()
 	addToolBar(Qt::TopToolBarArea, toolBar);
 }
 
-//
-void MainWindow::createStatusBar()
-{
+void MainWindow::createStatusBar(){
 	statusBar = new QStatusBar(this);
 	setStatusBar(statusBar);
 	statusBar->showMessage("Запуск");
@@ -95,36 +91,27 @@ void MainWindow::createStatusBar()
 }
 
 //Empty
-void MainWindow::slotNewFile()
-{
+void MainWindow::slotNewFile(){
 	QMessageBox::information(this, "Информация", "Эта функция не разблокирована");
 }
 
 //
-void MainWindow::slotOpenFile()
-{
+void MainWindow::slotOpenFile(){
     QString path;
     path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
     //path = "C:/Users/goris/_Stuff/Study/Practical_work/examples/input_files/c17.syn_dc.v";
 
-    if (mainLE.initMainLEFromFile(path) == RESULT_ERROR) qWarning("Module read failure");
-    //mainLE.scheme();
-
+    mainLE = new LogicElement();
+    if (mainLE->initMainLEFromFile(path) == RESULT_ERROR) qWarning("Module read failure");
 }
 
 //Empty
-void MainWindow::slotSaveFile()
-{
+void MainWindow::slotSaveFile(){
 	QMessageBox::information(this, "Информация", "Эта функция не разблокирована");
 }
 
 //
-void MainWindow::slotQuit()
-{
+void MainWindow::slotQuit(){
 	QMessageBox::information(this, "Запрос на выход", "Ну идите...");
     close();
 }
-
-//
-MainWindow::~MainWindow()
-{}

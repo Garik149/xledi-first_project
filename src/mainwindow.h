@@ -1,17 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "defines.h"
 #include <QtWidgets>
 //#include <QTabWidget>
 #include <QGraphicsView>
-
-
-#include "locale.h"
-#include "wire.h"
-#include "logicelement.h"
-#include "lediscene.h"
-#include "lediview.h"
+#include "defines.h"
 
 class MainWindow : public QMainWindow
 {
@@ -68,7 +61,7 @@ private:
     LEdiScene* scene;
     LEdiView* view;
 
-    Locale msg;
-    LogicElement mainLE;
+    Locale* msg;
+    LogicElement* mainLE;
 };
 #endif // MAINWINDOW_H

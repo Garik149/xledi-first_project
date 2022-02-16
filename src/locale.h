@@ -1,7 +1,7 @@
 #ifndef LOCALE_H
 #define LOCALE_H
 
-#include "QString"
+#include <QString>
 
 class Locale
 {
@@ -10,9 +10,7 @@ class Locale
 public:
     Locale();
     ~Locale();
-
     //void setLocale(QString);
-
     QString get0();
     QString get1();
     QString get2();
