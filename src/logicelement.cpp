@@ -7,8 +7,17 @@
 
 QList<LogicElement> LogicElement::library;
 
-LogicElement::LogicElement() {basic = false;}
-LogicElement::LogicElement(QString _name) { name = _name; basic = false;}
+LogicElement::LogicElement(){};
+//!!
+LogicElement::LogicElement(QString _type, QString _name){
+	for (int i=0; i<library.size(); i++)
+		if (_type == library[i].name){
+			*this=library[i];
+			break;
+		}
+	name = _name;
+}
+
 LogicElement::~LogicElement() {name.clear(); ports.clear(); wires.clear(); logicElements.clear(); basic = false;}
 
 void LogicElement::clear(){
@@ -119,7 +128,7 @@ void LogicElement::addBasicElements(){
             le.addPort(Port("c",0));
             le.addPort(Port("y",1));
             break;
-        case 10:
+		case 10:
             le.name = "al_nand2ft";
             le.addPort(Port("a",0));
             le.addPort(Port("b",0));

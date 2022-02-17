@@ -7,14 +7,14 @@
 
 class LEShape{
     LogicElement* le;
-    QPoint place;
-    QGraphicsRectItem body;
-    QList<QGraphicsLineItem> ports;
+	QPointF place;
+	QGraphicsRectItem* body;
+	QList<QGraphicsLineItem*> ports;
 
 public:
      LEShape(LogicElement* _le);
      ~LEShape();
-     void moveTo(QPoint _place);
+	 void moveTo(QPointF _place);
 
      friend class LEdiScene;
 };

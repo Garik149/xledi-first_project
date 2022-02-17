@@ -24,8 +24,8 @@ void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
             painter->drawPoint(i, j);
 }
 
-//void LEdiScene::addShape(LEShape* leShape){
-//    //addItem(&leShape->body);
-//    //for (int i = 0; i < leShape->ports.size(); i +=1)
-//    //    addItem(&leShape->ports[i]);
-//}
+void LEdiScene::addShape(LEShape* leShape){
+	addItem(leShape->body);
+	for (int i = 0; i < leShape->ports.size(); i +=1)
+		addItem(leShape->ports[i]);
+}

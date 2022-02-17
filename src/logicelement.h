@@ -22,12 +22,12 @@ class LogicElement{
     bool nameIs(QString _name);
     bool initLEFromFile(QString &path);
 public:
-     LogicElement();
-     LogicElement(QString _name);
+	LogicElement();
+	 LogicElement(QString _type, QString _name);
      ~LogicElement();
     static void addBasicElements();
-    void clear();    
-    bool initMainLEFromFile(QString &path);
+	void clear();
+	bool initMainLEFromFile(QString &path);
 
     friend class LEShape;
 };

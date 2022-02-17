@@ -12,7 +12,7 @@ class LEdiScene : public QGraphicsScene{
 public:
     explicit LEdiScene(const QRectF &sceneRect, QObject *parent = nullptr);
     ~LEdiScene(){};
-    //void addShape(LEShape* leShape);
+	void addShape(LEShape* leShape);
 
     Q_OBJECT
 private slots:

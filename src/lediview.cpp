@@ -88,7 +88,7 @@ void LEdiView::mouseMoveEvent(QMouseEvent *mouseEvent){
 
     case PlacingLE:
         hPos1 = btg(mapToScene(mouseEvent->pos()));
-        hRect->setRect(QRectF(hPos1.x()-20,hPos1.y()-30,40,60));
+		hShape->moveTo(hPos1);
         break;
     }
 }
@@ -98,27 +98,29 @@ void LEdiView::keyPressEvent(QKeyEvent *keyEvent){
     default:
         break;
 
-    //case Qt::Key_L:
-    //    switch (state){
-    //    default:
-    //        LogicElement;
-    //        hShape = new LEShape();
-    //        sceneLE->addShape(hShape);
-    //        state = PlacingLE;
-    //        break;
-    //
-    //    case DrawingWire:
-    //        delete(hLine);
-    //        hRect = new QGraphicsRectItem();
-    //        sceneLE->addItem(hRect);
-    //        state = PlacingLE;
-    //        break;
-    //
-    //    case PlacingLE:
-    //        delete(hRect);
-    //        state = Default;
-    //        break;
-    //    }
-    //    break;
+	case Qt::Key_L:
+		switch (state){
+		LogicElement* le;
+		default:
+			le = new LogicElement("al_ao21","U1");
+			hShape = new LEShape(le);
+			sceneLE->addShape(hShape);
+			state = PlacingLE;
+			break;
+
+		case DrawingWire:
+			delete(hLine);
+			le = new LogicElement("al_ao21","U2");
+			hShape = new LEShape(le);
+			sceneLE->addShape(hShape);
+			state = PlacingLE;
+			break;
+
+		case PlacingLE:
+			delete(hShape);
+			state = Default;
+			break;
+		}
+		break;
     }
 }
