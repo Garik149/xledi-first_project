@@ -6,17 +6,22 @@
 #include "defines.h"
 
 class LEShape{
+public:
+	enum State {Default, Bolded, Moved};
+private:
+	State state;
     LogicElement* le;
-	QPointF place;
+	QPoint place;
 	QGraphicsRectItem* body;
 	QList<QGraphicsLineItem*> ports;
 
 public:
      LEShape(LogicElement* _le);
      ~LEShape();
-	 void moveTo(QPointF _place);
+	void setState(State state);
+	void moveTo(QPoint _place);
 
-     friend class LEdiScene;
+	friend class LEdiScene;
 };
 
 #endif // LESHAPE_H

@@ -17,7 +17,7 @@ class LogicElement{
 
     Wire& leWire(QString _name);
     Port& lePort(QString _name);
-    void addPort(Port port);
+	void resetLists();
     bool havePort(QString _name);
     bool nameIs(QString _name);
     bool initLEFromFile(QString &path);

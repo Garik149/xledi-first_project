@@ -10,9 +10,10 @@ class LEdiView : public QGraphicsView
 {
     enum State {Default, DrawingWire, PlacingLE}; State state;
     QGraphicsLineItem* hLine;
-    QPointF hPos1, hPos2; // - holded position
+	QPoint hPos1, hPos2; // - holded position
     QGraphicsRectItem* hRect;
     LEShape* hShape;
+	LogicElement* hLE;
     LEdiScene *sceneLE;
     //CodeEditor *editor;
     //QGraphicsItem *selectEditorItem;

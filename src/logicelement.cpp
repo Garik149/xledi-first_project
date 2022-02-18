@@ -13,9 +13,10 @@ LogicElement::LogicElement(QString _type, QString _name){
 	for (int i=0; i<library.size(); i++)
 		if (_type == library[i].name){
 			*this=library[i];
-			break;
+			name = _name;
+			resetLists();
+			return;
 		}
-	name = _name;
 }
 
 LogicElement::~LogicElement() {name.clear(); ports.clear(); wires.clear(); logicElements.clear(); basic = false;}
@@ -44,10 +45,11 @@ Port& LogicElement::lePort(QString _name){
     return ports[0];
 }
 
-void LogicElement::addPort(Port port){
-    ports.append(port);
-    if (port.isOutput) outPorts.append(&port);
-        else inPorts.append(&port);
+void LogicElement::resetLists(){
+	inPorts.clear(); outPorts.clear();
+	for (int i=0; i<ports.size(); i++)
+		if (ports[i].isOutput) outPorts.append(&ports[i]);
+			else inPorts.append(&ports[i]);
 }
 
 bool LogicElement::havePort(QString _name){
@@ -71,137 +73,137 @@ void LogicElement::addBasicElements(){
         switch(i){
         case 1:
             le.name = "al_ao21";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 2:
             le.name = "al_aoi21ttf";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 3:
             le.name = "al_oa21";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 4:
             le.name = "al_nand2";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("y",1));
             break;
         case 5:
             le.name = "al_dffl";
-            le.addPort(Port("d",0));
-            le.addPort(Port("clk",0));
-            le.addPort(Port("q",1));
+			le.ports.append(Port("d",0));
+			le.ports.append(Port("clk",0));
+			le.ports.append(Port("q",1));
             break;
         case 6:
             le.name = "al_dffi";
-            le.addPort(Port("d",0));
-            le.addPort(Port("clk",0));
-            le.addPort(Port("q",1));
+			le.ports.append(Port("d",0));
+			le.ports.append(Port("clk",0));
+			le.ports.append(Port("q",1));
             break;
         case 7:
             le.name = "al_oa21ttf";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 8:
             le.name = "al_and2";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("y",1));
             break;
         case 9:
             le.name = "al_nand3fft";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
 		case 10:
             le.name = "al_nand2ft";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("y",1));
             break;
         case 11:
             le.name = "";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 12:
             le.name = "";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 13:
             le.name = "";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 14:
             le.name = "";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("y",1));
             break;
         case 15:
             le.name = "";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 16:
             le.name = "";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 17:
             le.name = "";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 18:
             le.name = "";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 19:
             le.name = "";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         case 20:
             le.name = "";
-            le.addPort(Port("a",0));
-            le.addPort(Port("b",0));
-            le.addPort(Port("c",0));
-            le.addPort(Port("y",1));
+			le.ports.append(Port("a",0));
+			le.ports.append(Port("b",0));
+			le.ports.append(Port("c",0));
+			le.ports.append(Port("y",1));
             break;
         }
         library.append(le);
@@ -285,7 +287,7 @@ bool LogicElement::initLEFromFile(QString& path){
 
             if (str2.contains("input ")){
                 str2.remove(0,6);
-                addPort(Port(str2,false));
+				ports.append(Port(str2,false));
 
                 Wire wire(str2);
                 wire.drivers.append(&lePort(str2));
@@ -293,14 +295,14 @@ bool LogicElement::initLEFromFile(QString& path){
             }
             else if (str2.contains("output ")){
                 str2.remove(0,7);
-                addPort(Port(str2,true));
+				ports.append(Port(str2,true));
 
                 Wire wire(str2);
                 wire.loads.append(&lePort(str2));
                 wires.append(wire);
             }
             else
-                addPort(Port(str2));
+				ports.append(Port(str2));
         }
     }
     else return RESULT_ERROR;
@@ -336,6 +338,8 @@ bool LogicElement::initLEFromFile(QString& path){
             wires.append(wire);
         }
     }
+
+	resetLists();
 
     while (line.contains(QRegExp("\\b(wire)\\b"))){
         p = line.indexOf(QRegExp("\\b(wire)\\b"));

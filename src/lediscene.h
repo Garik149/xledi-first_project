@@ -10,7 +10,7 @@
 class LEdiScene : public QGraphicsScene{
     virtual void drawBackground(QPainter *painter, const QRectF &rect);
 public:
-    explicit LEdiScene(const QRectF &sceneRect, QObject *parent = nullptr);
+	explicit LEdiScene(const QRect &sceneRect, QObject *parent = nullptr);
     ~LEdiScene(){};
 	void addShape(LEShape* leShape);
 

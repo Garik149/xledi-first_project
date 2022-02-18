@@ -53,7 +53,7 @@ void MainWindow::initActions(){
 }
 
 void MainWindow::createScene(){
-    scene = new LEdiScene(QRectF(0,0,2500,1500));
+	scene = new LEdiScene(QRect(0,0,2500,1500));
 
     view = new LEdiView(scene);
 	view->show();

@@ -16,7 +16,7 @@ QPoint LEdiView::btg(QPointF point){
 void LEdiView::reset(){
 //    if (hLine != nullptr) {delete(hLine); hLine = nullptr;}
 //    if (hRect != nullptr) {delete(hRect); hRect = nullptr;}
-    hPos1 = QPointF(0,0); hPos2 = QPointF(0,0);
+	hPos1 = QPoint(0,0); hPos2 = QPoint(0,0);
     state = Default;
     setMouseTracking(true);
 }
@@ -31,25 +31,24 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
         default:
             hPos1 = btg(mapToScene(mouseEvent->pos()));
             hLine = new QGraphicsLineItem();
-            hLine->setPen(QPen(QColor(130,0,0), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+			hLine->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             sceneLE->addItem(hLine);
             state = DrawingWire;
             break;
 
         case DrawingWire:
-            hLine->setPen(QPen(QColor(255,0,0), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+			hLine->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             hPos1=hPos2;
             hPos2 = btg(mapToScene(mouseEvent->pos()));
             hLine = new QGraphicsLineItem();
-            hLine->setPen(QPen(QColor(130,0,0), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+			hLine->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             sceneLE->addItem(hLine);
             break;
 
         case PlacingLE:
-            hRect->setPen(QPen(QColor(0,255,0), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-            hRect = new QGraphicsRectItem();
-            hRect->setPen(QPen(QColor(0,130,0), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-            sceneLE->addItem(hRect);
+			hShape->setState(LEShape::State::Default);
+			hLE = new LogicElement("al_ao21","U1");	hShape = new LEShape(hLE);
+			sceneLE->addShape(hShape);
             break;
         }
         break;
@@ -65,7 +64,7 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
             break;
 
         case PlacingLE:
-            delete(hRect);
+			delete(hShape);
             state = Default;
             break;
         }
@@ -75,15 +74,14 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
 
 void LEdiView::mouseMoveEvent(QMouseEvent *mouseEvent){
     switch (state){
-    default:
-        hPos1 = btg(mapToScene(mouseEvent->pos()));
+	default:
         break;
 
     case DrawingWire:
         hPos2 = btg(mapToScene(mouseEvent->pos()));
         if (abs(hPos2.x()-hPos1.x()) < abs(hPos2.y()-hPos1.y())) hPos2.rx()=hPos1.x();
             else hPos2.ry()=hPos1.y();
-        hLine->setLine(QLineF(hPos1,hPos2));
+		hLine->setLine(QLine(hPos1,hPos2));
         break;
 
     case PlacingLE:
@@ -100,18 +98,15 @@ void LEdiView::keyPressEvent(QKeyEvent *keyEvent){
 
 	case Qt::Key_L:
 		switch (state){
-		LogicElement* le;
 		default:
-			le = new LogicElement("al_ao21","U1");
-			hShape = new LEShape(le);
+			hLE = new LogicElement("al_ao21","U1"); hShape = new LEShape(hLE);
 			sceneLE->addShape(hShape);
 			state = PlacingLE;
 			break;
 
 		case DrawingWire:
 			delete(hLine);
-			le = new LogicElement("al_ao21","U2");
-			hShape = new LEShape(le);
+			hLE = new LogicElement("al_dffi","U2");	hShape = new LEShape(hLE);
 			sceneLE->addShape(hShape);
 			state = PlacingLE;
 			break;
