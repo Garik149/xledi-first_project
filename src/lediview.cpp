@@ -47,7 +47,7 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
 
         case PlacingLE:
 			hShape->setState(LEShape::State::Default);
-			hLE = new LogicElement("al_ao21","U1");	hShape = new LEShape(hLE);
+			hShape = new LEShape("al_ao21","U1");
 			sceneLE->addShape(hShape);
             break;
         }
@@ -99,14 +99,14 @@ void LEdiView::keyPressEvent(QKeyEvent *keyEvent){
 	case Qt::Key_L:
 		switch (state){
 		default:
-			hLE = new LogicElement("al_ao21","U1"); hShape = new LEShape(hLE);
+			hShape = new LEShape("al_ao21","U1");
 			sceneLE->addShape(hShape);
 			state = PlacingLE;
 			break;
 
 		case DrawingWire:
 			delete(hLine);
-			hLE = new LogicElement("al_dffi","U2");	hShape = new LEShape(hLE);
+			hShape = new LEShape("al_dffi","U2");
 			sceneLE->addShape(hShape);
 			state = PlacingLE;
 			break;

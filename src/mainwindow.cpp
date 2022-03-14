@@ -7,11 +7,11 @@
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     qApp->setAttribute(Qt::AA_DontShowIconsInMenus, true);
-    initActions();
+	msg = new Locale();
+	initActions();
 
     LogicElement::addBasicElements();
 
-    msg = new Locale();
     //msg->setLocale("Eng");
 
     resize(1200,700);

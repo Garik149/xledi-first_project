@@ -24,14 +24,15 @@ void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
 			painter->drawPoint(i, j);;
 
 
-	QFont font("Courier", 15, QFont::DemiBold);
-	painter->setPen(QColor(Qt::white));
-	painter->setFont(font);
-	painter->translate(QPoint(600, 600));
-	painter->drawText(30, 0, "mMm");
+	//painter->setPen(QColor(Qt::white));
+	//painter->setFont(font);
+	//painter->translate(QPoint(600, 600));
+	//painter->drawText(30, 0, "mMm");
 }
 
 void LEdiScene::addShape(LEShape* leShape){
+	addItem(leShape->type);
+	addItem(leShape->name);
 	addItem(leShape->body);
 	for (int i = 0; i < leShape->ports.size(); i +=1)
 		addItem(leShape->ports[i]);
