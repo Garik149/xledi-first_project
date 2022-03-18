@@ -5,6 +5,8 @@
 #include <QGraphicsItem>
 #include <QMouseEvent>
 #include "defines.h"
+#include <QMenu>
+#include <QAction>
 
 class LEdiView : public QGraphicsView
 {
@@ -15,11 +17,15 @@ class LEdiView : public QGraphicsView
     LEShape* hShape;
 	LogicElement* hLE;
     LEdiScene *sceneLE;
+	//QGraphicsItem *selectEditorItem;
+
+	QMenu* contextMenu;
+	QAction* act1;
+	QAction* act2;
     //CodeEditor *editor;
-    //QGraphicsItem *selectEditorItem;
 
     QPoint btg(QPointF point); //BindedToGrid
-    void reset();
+	void reset();
     //void setItemType(ItemLEdi::TypeItem type) { sceneLE->createItem(type);};
 protected:
     virtual void mousePressEvent(QMouseEvent *mouseEvent) override;
@@ -35,6 +41,9 @@ public:
 
     Q_OBJECT
 public slots:
+	 void slotOnCustomContextMenu(const QPoint&);
+	 void slotAct1();
+	 void slotAct2();
     //void closeEditor();
     //void transferItem(ItemLEdi *item , QGraphicsLineItem *line);
     //void setMode(Mode mode) {myMode = mode;}

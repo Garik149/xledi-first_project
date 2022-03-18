@@ -17,13 +17,13 @@ LEShape::LEShape(QString _type, QString _name){
 	body = new QGraphicsRectItem(QRectF(place.x(), place.y(), 2*GRID_SZ, (h+1)*GRID_SZ));
 
 	type = new QGraphicsSimpleTextItem();
-	type->setFont(QFont("Courier", 10, QFont::DemiBold));
+	type->setFont(QFont("Calibri", 10, QFont::DemiBold));
 	type->setBrush(Qt::red);
 	type->setText(_type);
 	type->setPos(QPoint(place.x(),place.y()+(h+1)*GRID_SZ));
 
 	name = new QGraphicsSimpleTextItem();
-	name->setFont(QFont("Courier", 10, QFont::DemiBold));
+	name->setFont(QFont("Calibri", 10, QFont::DemiBold));
 	name->setBrush(Qt::red);
 	name->setText(le->name);
 	name->setPos(QPoint(place.x(),place.y()-GRID_SZ));

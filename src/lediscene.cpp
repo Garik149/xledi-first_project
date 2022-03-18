@@ -22,12 +22,6 @@ void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
     for (int i = GRID_SZ; i < rect.right(); i += GRID_SZ)
         for (int j = GRID_SZ; j < rect.bottom(); j += GRID_SZ)
 			painter->drawPoint(i, j);;
-
-
-	//painter->setPen(QColor(Qt::white));
-	//painter->setFont(font);
-	//painter->translate(QPoint(600, 600));
-	//painter->drawText(30, 0, "mMm");
 }
 
 void LEdiScene::addShape(LEShape* leShape){
