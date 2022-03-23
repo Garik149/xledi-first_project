@@ -26,6 +26,7 @@ LEdiView::LEdiView(LEdiScene *scene, QWidget *parent) : QGraphicsView(scene, par
     //connect(sceneLE, &LEdiScene::tranferItem, this, &ViewLEdi::transferItem);
 }
 
+void LEdiView::slotOnCustomContextMenu(const QPoint&){}
 void LEdiView::slotAct1(){
 	hLine = new QGraphicsLineItem();
 	hLine->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
@@ -64,6 +65,7 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
 
         case DrawingWire:
 			hLine->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+			hPos1=hPos2;
             hLine = new QGraphicsLineItem();
 			hLine->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             sceneLE->addItem(hLine);
@@ -80,6 +82,7 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
     case Qt::RightButton:
         switch (state){
         default:
+			contextMenu->exec(QCursor::pos());
             break;
 
         case DrawingWire:
@@ -109,7 +112,7 @@ void LEdiView::mouseMoveEvent(QMouseEvent *mouseEvent){
         break;
 
     case PlacingLE:
-		hShape->moveTo(hPos1);
+		hShape->moveTo(hPos2);
         break;
     }
 }
