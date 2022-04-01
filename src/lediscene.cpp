@@ -1,5 +1,6 @@
 #include "lediscene.h"
 #include "leshape.h"
+#include "logicelement.h"
 
 LEdiScene::LEdiScene(const QRect &sceneRect, QObject *parent) : QGraphicsScene(sceneRect, parent)
 {
@@ -30,4 +31,12 @@ void LEdiScene::addShape(LEShape* leShape){
 	addItem(leShape->body);
 	for (int i = 0; i < leShape->ports.size(); i +=1)
 		addItem(leShape->ports[i]);
+}
+
+void LEdiScene::layout(LogicElement* le){
+
+
+	for (int i=0; i<le->inPorts.size(); i++){
+
+	}
 }

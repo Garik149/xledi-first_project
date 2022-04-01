@@ -9,7 +9,7 @@ class LogicElement{
     QString name;
     QList<Port> ports;
      QList<Port*> inPorts;
-     QList<Port*> outPorts;
+	 QList<Port*> outPorts;
     QList<Wire> wires;
     QList<LogicElement> logicElements;
     bool basic:1;
@@ -30,6 +30,7 @@ public:
 	bool initMainLEFromFile(QString &path);
 
     friend class LEShape;
+	friend class LEdiScene;
 };
 
 #endif // LOGICELEMENT_H

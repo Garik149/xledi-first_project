@@ -13,6 +13,7 @@ public:
 	explicit LEdiScene(const QRect &sceneRect, QObject *parent = nullptr);
     ~LEdiScene(){};
 	void addShape(LEShape* leShape);
+	void layout(LogicElement* le);
 
     Q_OBJECT
 private slots:

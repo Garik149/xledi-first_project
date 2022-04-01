@@ -272,7 +272,7 @@ bool LogicElement::initLEFromFile(QString& path){
         else return RESULT_ERROR;
     }
 
-    if (line.contains(QRegExp("\\b(module )\\b"))){
+	if (line.contains(QRegExp("\\b(module)\\b"))){
         p = line.indexOf(QRegExp("\\b(module )\\b"));
         str1 = cutLine(p, line, ';');
         str1.remove(0,7);
@@ -417,7 +417,8 @@ bool LogicElement::initLEFromFile(QString& path){
 
 bool LogicElement::initMainLEFromFile(QString& path){
     this->initLEFromFile(path);
-    name = "main";
+	name = "main";
+
 
     return 0;
 }

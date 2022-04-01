@@ -103,6 +103,7 @@ void MainWindow::slotOpenFile(){
 
     mainLE = new LogicElement();
     if (mainLE->initMainLEFromFile(path) == RESULT_ERROR) qWarning("Module read failure");
+	scene->layout(mainLE);
 }
 
 //Empty

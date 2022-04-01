@@ -3,10 +3,13 @@
 
 #include <QString>
 #include "defines.h"
+#include "wire.h"
 
 struct Port
 {
     QString name;
+	QList<Wire*> insideWires;
+	QList<Wire*> outsideWires;
     bool isOutput;
 
      Port();
