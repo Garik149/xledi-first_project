@@ -1,3 +1,5 @@
+#include <QMap>
+
 #include "lediscene.h"
 #include "leshape.h"
 #include "logicelement.h"
@@ -35,8 +37,12 @@ void LEdiScene::addShape(LEShape* leShape){
 
 void LEdiScene::layout(LogicElement* le){
 
-
-	for (int i=0; i<le->inPorts.size(); i++){
-
-	}
+	//QMap<LogicElement*, int> map;
+	//for (int i=0; i<le->logicElements.size(); i++)
+	//	map.insert(&le->logicElements[i],0);
+	//
+	//for (int i=0; i<le->inPorts.size(); i++){
+	//	for (int i=0; i<le->inPorts.size(); i++)
+	//		;
+	//}
 }

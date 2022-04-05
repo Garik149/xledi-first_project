@@ -7,14 +7,14 @@
 
 struct Port
 {
-    QString name;
-	QList<Wire*> insideWires;
+	QString name;
+	Wire* insideWire;
 	QList<Wire*> outsideWires;
     bool isOutput;
 
      Port();
-     Port(QString _name);
-     Port(QString _name, bool _isOutput);
+	 Port(QString _name);
+	 Port(QString _name, bool _isOutput);
      ~Port();
 };
 

@@ -15,10 +15,11 @@ class LogicElement{
     bool basic:1;
     static QList<LogicElement> library;
 
-    Wire& leWire(QString _name);
-    Port& lePort(QString _name);
+	Wire* leWire(QString _name);
+	bool haveWire(QString _name);
+	Port* lePort(QString _name);
+	bool havePort(QString _name);
 	void resetLists();
-    bool havePort(QString _name);
     bool nameIs(QString _name);
     bool initLEFromFile(QString &path);
 public:
