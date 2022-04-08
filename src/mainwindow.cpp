@@ -98,8 +98,8 @@ void MainWindow::slotNewFile(){
 //
 void MainWindow::slotOpenFile(){
     QString path;
-    path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
-    //path = "C:/Users/goris/_Stuff/Study/Practical_work/examples/input_files/c17.syn_dc.v";
+	//path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
+	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c17.syn_dc.v";
 
     mainLE = new LogicElement();
     if (mainLE->initMainLEFromFile(path) == RESULT_ERROR) qWarning("Module read failure");

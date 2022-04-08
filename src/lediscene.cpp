@@ -3,6 +3,8 @@
 #include "lediscene.h"
 #include "leshape.h"
 #include "logicelement.h"
+#include "port.h"
+#include "wire.h"
 
 LEdiScene::LEdiScene(const QRect &sceneRect, QObject *parent) : QGraphicsScene(sceneRect, parent)
 {
@@ -35,14 +37,20 @@ void LEdiScene::addShape(LEShape* leShape){
 		addItem(leShape->ports[i]);
 }
 
+void check(QHash<LogicElement*, int>* map, Port* port){
+	for (int i=0; i<port->insideWire->drivers.size(); i++){
+		//map()
+		check(map, port->insideWire->drivers[i]);
+	}
+}
 void LEdiScene::layout(LogicElement* le){
 
-	//QMap<LogicElement*, int> map;
-	//for (int i=0; i<le->logicElements.size(); i++)
-	//	map.insert(&le->logicElements[i],0);
-	//
-	//for (int i=0; i<le->inPorts.size(); i++){
-	//	for (int i=0; i<le->inPorts.size(); i++)
-	//		;
-	//}
+	QHash<LogicElement*, int>* map = new QHash<LogicElement*, int>;
+	for (int i=0; i<le->logicElements.size(); i++)
+		map->insert(le->logicElements[i],0);
+
+	for (int i=0; i<le->inPorts.size(); i++)
+		check(map, le->inPorts[i]);
+
+	delete(map);
 }

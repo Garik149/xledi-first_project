@@ -7,11 +7,11 @@
 
 class LogicElement{
     QString name;
-    QList<Port> ports;
+	QList<Port*> ports;
      QList<Port*> inPorts;
 	 QList<Port*> outPorts;
-    QList<Wire> wires;
-    QList<LogicElement> logicElements;
+	QList<Wire*> wires;
+	QList<LogicElement*> logicElements;
     bool basic:1;
     static QList<LogicElement> library;
 
