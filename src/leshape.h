@@ -19,7 +19,7 @@ private:
 	QList<QGraphicsLineItem*> ports;
 
 public:
-	 LEShape(QString _type,QString _name);
+     LEShape(LogicElement* le);
      ~LEShape();
 	void setState(State state);
 	void moveTo(QPoint _place);

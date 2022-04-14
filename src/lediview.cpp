@@ -34,7 +34,7 @@ void LEdiView::slotAct1(){
     state = DrawingWire;
 }
 void LEdiView::slotAct2(){
-    hShape = new LEShape("al_ao21","U1");
+    hShape = new LEShape(new LogicElement("al_ao21","U1"));
     sceneLE->addShape(hShape);
     state = PlacingLE;
 }
@@ -73,7 +73,7 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
 
         case PlacingLE:
             hShape->setState(LEShape::State::Default);
-            hShape = new LEShape("al_ao21","U1");
+            hShape = new LEShape(new LogicElement("al_ao21","U1"));
             sceneLE->addShape(hShape);
             break;
         }

@@ -107,6 +107,7 @@ void MainWindow::slotOpenFile(){
 		qWarning("Module read failure");
 	else
 		scene->layout(mainLE);
+
 }
 
 //Empty

@@ -59,8 +59,12 @@ void LEdiScene::layout(LogicElement* le){
 		map->insert(le->logicElements[i],0);
 
 	for (i=0; i<le->inPorts.size(); i++)
-		for (j=0; j < le->inPorts[i]->insideWire->loads.size(); j++)
+        for (j=0; j<le->inPorts[i]->insideWire->loads.size(); j++)
 			check(map, le->inPorts[i]->insideWire->loads[j],1);
 
-	delete (map);
+    for (i=0; i<map->size(); i++)
+        LEShape(map->key(i));
+
+    delete (map);
+
 }

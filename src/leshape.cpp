@@ -3,8 +3,8 @@
 //#include "wire.h"
 #include "port.h"
 
-LEShape::LEShape(QString _type, QString _name){
-	le = new LogicElement(_type, _name);
+LEShape::LEShape(LogicElement* _le){
+    le=_le;
     place = QPoint(0,0);
 
 	int kOut=0, kIn=0, h, dy;
@@ -19,7 +19,7 @@ LEShape::LEShape(QString _type, QString _name){
 	type = new QGraphicsSimpleTextItem();
 	type->setFont(QFont("Calibri", 10, QFont::DemiBold));
 	type->setBrush(Qt::red);
-	type->setText(_type);
+    type->setText("_type");//!!
 	type->setPos(QPoint(place.x(),place.y()+(h+1)*GRID_SZ));
 
 	name = new QGraphicsSimpleTextItem();
