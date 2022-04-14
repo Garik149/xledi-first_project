@@ -37,20 +37,30 @@ void LEdiScene::addShape(LEShape* leShape){
 		addItem(leShape->ports[i]);
 }
 
-void check(QHash<LogicElement*, int>* map, Port* port){
-	for (int i=0; i<port->insideWire->drivers.size(); i++){
-		//map()
-		check(map, port->insideWire->drivers[i]);
+void LEdiScene::check(QHash<LogicElement*, int>* map, Port* _port, int r){
+	if (map->find(_port->le).value() <= r) map->find(_port->le).value()=r;
+
+	Port* port;
+	Wire* wire;
+	for (int i=0; i < _port->le->outPorts.size(); i++){
+		port=_port->le->outPorts[i];
+		for (int j=0; j < port->outsideWire->loads.size(); j++){
+			wire=port->outsideWire;
+			if (wire == wire->loads[j]->outsideWire)
+				check(map, wire->loads[j],r+1);
+		}
 	}
 }
 void LEdiScene::layout(LogicElement* le){
+	int i, j;
 
 	QHash<LogicElement*, int>* map = new QHash<LogicElement*, int>;
-	for (int i=0; i<le->logicElements.size(); i++)
+	for (i=0; i<le->logicElements.size(); i++)
 		map->insert(le->logicElements[i],0);
 
-	for (int i=0; i<le->inPorts.size(); i++)
-		check(map, le->inPorts[i]);
+	for (i=0; i<le->inPorts.size(); i++)
+		for (j=0; j < le->inPorts[i]->insideWire->loads.size(); j++)
+			check(map, le->inPorts[i]->insideWire->loads[j],1);
 
-	delete(map);
+	delete (map);
 }

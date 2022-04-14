@@ -102,8 +102,10 @@ void MainWindow::slotOpenFile(){
 	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c17.syn_dc.v";
 
     mainLE = new LogicElement();
-    if (mainLE->initMainLEFromFile(path) == RESULT_ERROR) qWarning("Module read failure");
-	//scene->layout(mainLE);
+	if (mainLE->initMainLEFromFile(path) == RESULT_ERROR)
+		qWarning("Module read failure");
+	else
+		scene->layout(mainLE);
 }
 
 //Empty

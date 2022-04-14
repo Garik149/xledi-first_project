@@ -14,7 +14,11 @@ LogicElement::LogicElement(QString _type, QString _name){
 		if (_type == library[i].name){
 			*this=library[i];
 			name = _name;
-			resetLists();
+			for (int j=0; j<ports.size(); j++){
+				ports[j]->le=this;
+				if (ports[j]->isOutput) outPorts.append(ports[j]);
+					else inPorts.append(ports[j]);
+			}
 			return;
 		}
 }
@@ -51,13 +55,6 @@ Port* LogicElement::lePort(QString _name){
 bool LogicElement::havePort(QString _name){
 	if (lePort(_name)==NULL) return false;
 		else return true;
-}
-
-void LogicElement::resetLists(){
-	inPorts.clear(); outPorts.clear();
-	for (int i=0; i<ports.size(); i++)
-		if (ports[i]->isOutput) outPorts.append(ports[i]);
-			else inPorts.append(ports[i]);
 }
 
 bool LogicElement::nameIs(QString _name){
@@ -239,17 +236,18 @@ bool LogicElement::initLEFromFile(QString& path){
 			ports.append(port);
 			wires.append(wire);
 			port->insideWire=wire;
+			port->le=this;
 
 			if (str2.contains(' ')){
 				if (str2.mid(0,6) == "input "){
 					str2.remove(0,6);
 					port->isOutput=false;
-					wire->loads.append(port);
+					wire->drivers.append(port);
 				}
 				else if (str2.mid(0,7) == "output "){
 					str2.remove(0,7);
 					port->isOutput=true;
-					wire->drivers.append(port);
+					wire->loads.append(port);
 				}
 				else return RESULT_ERROR;
 			}
@@ -267,7 +265,7 @@ bool LogicElement::initLEFromFile(QString& path){
 			if (str2 == "") return RESULT_ERROR;
 
 			lePort(str2)->isOutput=false;
-			leWire(str2)->loads.append(lePort(str2));
+			leWire(str2)->drivers.append(lePort(str2));
         }
     }
 
@@ -281,11 +279,13 @@ bool LogicElement::initLEFromFile(QString& path){
 			if (str2 == "") return RESULT_ERROR;
 
 			lePort(str2)->isOutput=true;
-			leWire(str2)->drivers.append(lePort(str2));
+			leWire(str2)->loads.append(lePort(str2));
         }
     }
 
-	resetLists();
+	for (int j=0; j<ports.size(); j++)
+		if (ports[j]->isOutput) outPorts.append(ports[j]);
+			else inPorts.append(ports[j]);
 
     while (line.contains(QRegExp("\\b(wire)\\b"))){
         p = line.indexOf(QRegExp("\\b(wire)\\b"));
@@ -321,12 +321,8 @@ bool LogicElement::initLEFromFile(QString& path){
         p = str1.indexOf('(');
         str3 = str1.mid(0,p); str1.remove(0,p);
 
-        for (i=0; i<library.size(); i++)
-            if (library[i].nameIs(str2)) break;
-        if (i == library.size()) return RESULT_ERROR;
-		LogicElement* le = new LogicElement(library[i]);
+		LogicElement* le = new LogicElement(str2,str3);
 		logicElements.append(le);
-		le->name = str3;
 
         str1.remove(0,1);
         str1.chop(2);
@@ -344,15 +340,17 @@ bool LogicElement::initLEFromFile(QString& path){
 
 				if (!le->havePort(str3)) return RESULT_ERROR;
 				if (le->lePort(str3)->isOutput)
-					leWire(str2)->loads.append(le->lePort(str3));
-                else
 					leWire(str2)->drivers.append(le->lePort(str3));
+                else
+					leWire(str2)->loads.append(le->lePort(str3));
+				le->lePort(str3)->outsideWire=leWire(str2);
             }
             else{
 				if (le->ports[i]->isOutput)
-					leWire(str2)->loads.append(le->lePort(str3));
-                else
 					leWire(str2)->drivers.append(le->lePort(str3));
+                else
+					leWire(str2)->loads.append(le->lePort(str3));
+				le->ports[i]->outsideWire=leWire(str2);
             }
         }
     }
