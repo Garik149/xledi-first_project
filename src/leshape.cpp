@@ -11,7 +11,7 @@ LEShape::LEShape(QString _type, QString _name){
 	QGraphicsLineItem* line;
 
     for (int i=0; i < le->ports.size(); i++)
-		if ((le->ports[i].isOutput)) kOut++; else kIn++;
+		if ((le->ports[i]->isOutput)) kOut++; else kIn++;
 	if (kOut>kIn) h=kOut; else h=kIn;
 
 	body = new QGraphicsRectItem(QRectF(place.x(), place.y(), 2*GRID_SZ, (h+1)*GRID_SZ));
@@ -85,4 +85,12 @@ void LEShape::moveTo(QPoint _place){
 	body->moveBy(dx,dy);
 	for (int i=0; i < ports.size(); i++)
 		ports[i]->moveBy(dx,dy);
+}
+
+bool LEShape::initMainLEFromFile(QString &path){
+	bool flag;
+
+
+	flag=le->initMainLEFromFile(path);
+	return flag;
 }

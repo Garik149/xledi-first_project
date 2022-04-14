@@ -3,15 +3,19 @@
 
 #include <QString>
 #include "defines.h"
+#include "wire.h"
 
 struct Port
 {
-    QString name;
+	LogicElement* le;
+	QString name;
+	Wire* insideWire;
+	Wire* outsideWire;
     bool isOutput;
 
      Port();
-     Port(QString _name);
-     Port(QString _name, bool _isOutput);
+	 Port(LogicElement* _le ,QString _name);
+	 Port(LogicElement* _le ,QString _name, bool _isOutput);
      ~Port();
 };
 
