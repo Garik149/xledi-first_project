@@ -4,7 +4,7 @@
 #include "leshape.h"
 
 LEdiView::LEdiView(LEdiScene *scene, QWidget *parent) : QGraphicsView(scene, parent), sceneLE(scene){
-	{
+    {
 		setContextMenuPolicy(Qt::CustomContextMenu);
 
 		contextMenu = new QMenu(this);
@@ -15,17 +15,19 @@ LEdiView::LEdiView(LEdiScene *scene, QWidget *parent) : QGraphicsView(scene, par
 		contextMenu->addAction(act1);
 		contextMenu->addAction(act2);
 
-		connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(slotOnCustomContextMenu(const QPoint&)));
-
+        connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(slotOnCustomContextMenu(const QPoint&)));
 		connect(act1,	SIGNAL(triggered()), SLOT(slotAct1()));
 		connect(act2,	SIGNAL(triggered()), SLOT(slotAct2()));
-	}
+    }
 
 	reset();
     //setDragMode(QGraphicsView::RubberBandDrag);
     //connect(sceneLE, &LEdiScene::tranferItem, this, &ViewLEdi::transferItem);
 }
 
+void LEdiView::slotOnCustomContextMenu(const QPoint&){
+
+}
 void LEdiView::slotAct1(){
 	hLine = new QGraphicsLineItem();
 	hLine->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
@@ -64,6 +66,7 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
 
         case DrawingWire:
 			hLine->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            hPos1=hPos2;
             hLine = new QGraphicsLineItem();
 			hLine->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             sceneLE->addItem(hLine);
@@ -80,6 +83,7 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
     case Qt::RightButton:
         switch (state){
         default:
+            contextMenu->exec(QCursor::pos());
             break;
 
         case DrawingWire:
@@ -109,7 +113,7 @@ void LEdiView::mouseMoveEvent(QMouseEvent *mouseEvent){
         break;
 
     case PlacingLE:
-		hShape->moveTo(hPos1);
+        hShape->moveTo(hPos2);
         break;
     }
 }

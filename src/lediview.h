@@ -41,7 +41,7 @@ public:
 
     Q_OBJECT
 public slots:
-	 void slotOnCustomContextMenu(const QPoint&);
+     void slotOnCustomContextMenu(const QPoint&);
 	 void slotAct1();
 	 void slotAct2();
     //void closeEditor();
