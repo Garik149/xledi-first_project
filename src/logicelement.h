@@ -7,12 +7,13 @@
 
 class LogicElement{
     QString name;
+	QString type;
 	QList<Port*> ports;
      QList<Port*> inPorts;
 	 QList<Port*> outPorts;
 	QList<Wire*> wires;
 	QList<LogicElement*> logicElements;
-    bool basic:1;
+	bool isBasic:1;
     static QList<LogicElement> library;
 
 	Wire* leWire(QString _name);
@@ -23,6 +24,7 @@ class LogicElement{
     bool initLEFromFile(QString &path);
 public:
 	LogicElement();
+	 LogicElement(LogicElement* _le, QString _name);
 	 LogicElement(QString _type, QString _name);
      ~LogicElement();
     static void addBasicElements();

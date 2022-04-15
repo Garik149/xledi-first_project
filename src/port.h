@@ -7,11 +7,11 @@
 
 struct Port
 {
-	LogicElement* le;
 	QString name;
+	LogicElement* le;
 	Wire* insideWire;
 	Wire* outsideWire;
-    bool isOutput;
+	bool isOutput:1;
 
      Port();
 	 Port(LogicElement* _le ,QString _name);

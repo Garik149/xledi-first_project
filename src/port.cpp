@@ -1,6 +1,6 @@
 #include "port.h"
 
-Port::Port() {}
-Port::Port(LogicElement* _le ,QString _name, bool _isOutput) {le=_le; name=_name; isOutput=_isOutput;}
-Port::Port(LogicElement* _le ,QString _name) {le=_le; name=_name;}
+Port::Port() {le=NULL; insideWire=NULL; outsideWire=NULL; isOutput=false;}
+Port::Port(LogicElement* _le ,QString _name) {name=_name; le=_le; insideWire=NULL; outsideWire=NULL; isOutput=false;}
+Port::Port(LogicElement* _le ,QString _name, bool _isOutput) {name=_name; le=_le; insideWire=NULL; outsideWire=NULL; isOutput=_isOutput;}
 Port::~Port() {name.clear();}

@@ -19,7 +19,7 @@ LEShape::LEShape(LogicElement* _le){
 	type = new QGraphicsSimpleTextItem();
 	type->setFont(QFont("Calibri", 10, QFont::DemiBold));
 	type->setBrush(Qt::red);
-    type->setText("_type");//!!
+	type->setText(le->type);
 	type->setPos(QPoint(place.x(),place.y()+(h+1)*GRID_SZ));
 
 	name = new QGraphicsSimpleTextItem();
