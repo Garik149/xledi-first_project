@@ -7,12 +7,7 @@ LEShape::LEShape(LogicElement* _le){
     le=_le;
     place = QPoint(0,0);
 
-	int kOut=0, kIn=0, h, dy;
-	QGraphicsLineItem* line;
-
-    for (int i=0; i < le->ports.size(); i++)
-		if ((le->ports[i]->isOutput)) kOut++; else kIn++;
-	if (kOut>kIn) h=kOut; else h=kIn;
+    int h = qMax(le->inPorts.size(),le->outPorts.size());
 
 	body = new QGraphicsRectItem(QRectF(place.x(), place.y(), 2*GRID_SZ, (h+1)*GRID_SZ));
 
@@ -28,6 +23,8 @@ LEShape::LEShape(LogicElement* _le){
 	name->setText(le->name);
 	name->setPos(QPoint(place.x(),place.y()-GRID_SZ));
 
+    int dy;
+    QGraphicsLineItem* line;
     for (int i=0; i < le->outPorts.size(); i++){
 		line = new QGraphicsLineItem();
 		dy = (i+1)*GRID_SZ;
@@ -40,7 +37,7 @@ LEShape::LEShape(LogicElement* _le){
 		line->setLine(QLineF(QPoint(place.x(),place.y()+dy),QPoint(place.x()-GRID_SZ,place.y()+dy)));
 		ports.append(line);
 	}
-	setState(State::Moved);
+    setState(State::Default);
 }
 
 LEShape::~LEShape(){

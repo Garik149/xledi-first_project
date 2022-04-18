@@ -8,19 +8,22 @@
 #include "defines.h"
 
 class LEdiScene : public QGraphicsScene{
+    int gridSz;
     virtual void drawBackground(QPainter *painter, const QRectF &rect);
 	void check(QHash<LogicElement*, int>* map, Port* port, int r);
 
 public:
 	explicit LEdiScene(const QRect &sceneRect, QObject *parent = nullptr);
     ~LEdiScene(){};
-	void addShape(LEShape* leShape);
+    void addShape(LEShape* leShape);//??
 	void layout(LogicElement* le);
     Q_OBJECT
 private slots:
     //void slotNameChanged(QString oldName, QString newName);
 signals:
 	//void tranferItem(ItemLEdi* item, QGraphicsLineItem *line);
+
+    friend class LEShape;
 };
 
 #endif // LEDISCENE_H

@@ -8,13 +8,7 @@
 
 LEdiScene::LEdiScene(const QRect &sceneRect, QObject *parent) : QGraphicsScene(sceneRect, parent)
 {
-    //lineWire1 = nullptr;
-    //lineWire2 = nullptr;
-    //firstPin = nullptr;
-    //endPin = nullptr;
-    //wire = nullptr;
-    //currentItem = nullptr;
-    //locationWire = true;
+    gridSz=20;
 }
 
 void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
@@ -52,19 +46,31 @@ void LEdiScene::check(QHash<LogicElement*, int>* map, Port* _port, int r){
 	}
 }
 void LEdiScene::layout(LogicElement* le){
-	int i, j;
+    int i, j;
 
 	QHash<LogicElement*, int>* map = new QHash<LogicElement*, int>;
-	for (i=0; i<le->logicElements.size(); i++)
-		map->insert(le->logicElements[i],0);
+    for (i=0; i<le->logicElements.size(); i++)
+        map->insert(le->logicElements[i],0);
 
 	for (i=0; i<le->inPorts.size(); i++)
         for (j=0; j<le->inPorts[i]->insideWire->loads.size(); j++)
 			check(map, le->inPorts[i]->insideWire->loads[j],1);
 
-    for (i=0; i<map->size(); i++)
-        LEShape(map->key(i));
+    QList<int> rank; QList<int> ql= map->values();
+    for (i=0; i<ql.size(); i++)
+        if (!rank.contains(ql[i])) rank.append(ql[i]);
+    QList<LogicElement*> leList;
+    LEShape* sh; int prevLEHeight;
+    for (i=0; i<rank.size(); i++){
+        leList=map->keys(rank[i]);
+        prevLEHeight=0;
+        for (j=0; j<leList.size(); j++){
+            sh = new LEShape(leList[j]);
+            addShape(sh);
+            sh->moveTo(QPoint(gridSz*(20+7*rank[i]),gridSz*(10+(prevLEHeight+2)*j)));
+            prevLEHeight=sh->body->rect().height()/gridSz;
+        }
+    }
 
     delete (map);
-
 }
