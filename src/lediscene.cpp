@@ -2,6 +2,7 @@
 
 #include "lediscene.h"
 #include "leshape.h"
+#include "portshape.h"
 #include "logicelement.h"
 #include "port.h"
 #include "wire.h"
@@ -20,7 +21,7 @@ void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
     painter->setPen({Qt::gray, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin});
     for (int i = GRID_SZ; i < rect.right(); i += GRID_SZ)
         for (int j = GRID_SZ; j < rect.bottom(); j += GRID_SZ)
-			painter->drawPoint(i, j);;
+			painter->drawPoint(i, j);
 }
 
 void LEdiScene::addShape(LEShape* leShape){
@@ -29,6 +30,12 @@ void LEdiScene::addShape(LEShape* leShape){
 	addItem(leShape->body);
 	for (int i = 0; i < leShape->ports.size(); i +=1)
 		addItem(leShape->ports[i]);
+}
+
+void LEdiScene::addShape(PortShape* portShape){
+	addItem(portShape->name);
+	for (int i = 0; i < 4; i +=1)
+		addItem(portShape->body[i]);
 }
 
 void LEdiScene::check(QHash<LogicElement*, int>* map, Port* _port, int r){
@@ -60,17 +67,34 @@ void LEdiScene::layout(LogicElement* le){
     for (i=0; i<ql.size(); i++)
         if (!rank.contains(ql[i])) rank.append(ql[i]);
     QList<LogicElement*> leList;
-    LEShape* sh; int prevLEHeight;
+	int maxRank = 1;
+
     for (i=0; i<rank.size(); i++){
+		if (maxRank<rank[i]) maxRank=rank[i];
         leList=map->keys(rank[i]);
-        prevLEHeight=0;
-        for (j=0; j<leList.size(); j++){
-            sh = new LEShape(leList[j]);
+		int prevLEHeight=0;
+		for (j=0; j<leList.size(); j++){
+			LEShape* sh;
+			sh = new LEShape(leList[j]);
             addShape(sh);
-            sh->moveTo(QPoint(gridSz*(20+7*rank[i]),gridSz*(10+(prevLEHeight+2)*j)));
+			sh->moveTo(QPoint(gridSz*(10+10*rank[i]),gridSz*(10+(prevLEHeight+2)*j)));
             prevLEHeight=sh->body->rect().height()/gridSz;
         }
     }
+
+	for (i=0; i<le->inPorts.size(); i++){
+		PortShape* sh;
+		sh = new PortShape(le->inPorts[i]);
+		addShape(sh);
+		sh->moveTo(QPoint(gridSz*10,gridSz*(10+4*i)));
+	}
+
+	for (i=0; i<le->outPorts.size(); i++){
+		PortShape* sh;
+		sh = new PortShape(le->outPorts[i]);
+		addShape(sh);
+		sh->moveTo(QPoint(gridSz*(20+10*maxRank),gridSz*(10+4*i)));
+	}
 
     delete (map);
 }

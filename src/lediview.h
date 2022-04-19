@@ -4,9 +4,9 @@
 #include <QGraphicsView>
 #include <QGraphicsItem>
 #include <QMouseEvent>
-#include "defines.h"
 #include <QMenu>
 #include <QAction>
+#include "defines.h"
 
 class LEdiView : public QGraphicsView
 {

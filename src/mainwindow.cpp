@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 
     //setCentralWidget(widget);
 
-    slotOpenFile();
+	//slotOpenFile();
 }
 
 MainWindow::~MainWindow(){}
@@ -98,9 +98,11 @@ void MainWindow::slotNewFile(){
 //
 void MainWindow::slotOpenFile(){
     QString path;
-    //path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
-    //path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c17.syn_dc.v";
-    path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
+	path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
+	//path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s27.syn_dc.v";
+	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
+
+	//if (path == "") return;
 
     mainLE = new LogicElement();
 	if (mainLE->initMainLEFromFile(path) == RESULT_ERROR)

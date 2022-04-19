@@ -4,7 +4,7 @@
 #include "port.h"
 
 LEShape::LEShape(LogicElement* _le){
-    le=_le;
+	le=_le;
     place = QPoint(0,0);
 
     int h = qMax(le->inPorts.size(),le->outPorts.size());

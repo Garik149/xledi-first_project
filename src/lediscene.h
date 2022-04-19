@@ -4,7 +4,6 @@
 #include <QGraphicsScene>
 #include <QString>
 #include <QPainter>
-//#include <QMap>
 #include "defines.h"
 
 class LEdiScene : public QGraphicsScene{
@@ -15,7 +14,8 @@ class LEdiScene : public QGraphicsScene{
 public:
 	explicit LEdiScene(const QRect &sceneRect, QObject *parent = nullptr);
     ~LEdiScene(){};
-    void addShape(LEShape* leShape);//??
+	void addShape(LEShape* leShape);//?
+	void addShape(PortShape* portShape);
 	void layout(LogicElement* le);
     Q_OBJECT
 private slots:
@@ -24,6 +24,7 @@ signals:
 	//void tranferItem(ItemLEdi* item, QGraphicsLineItem *line);
 
     friend class LEShape;
+	friend class PortShape;
 };
 
 #endif // LEDISCENE_H
