@@ -23,15 +23,15 @@ class LogicElement{
     LogicElement* leNamed(QString _name);
      bool haveLE(QString _name);
     bool nameIs(QString _name);
-    bool initLEFromFile(QString &path);
+    bool initLEFromFile(const QString &path);
 public:
 	LogicElement();
      LogicElement(LogicElement* _le);
      ~LogicElement();
+    static bool readLibrary(const QString& path);
     static LogicElement* copyFromLibrary(QString _type, QString _name);
-    static void addBasicElements();
 	void clear();
-	bool initMainLEFromFile(QString &path);
+    bool initMainLEFromFile(const QString &path);
 
     friend class LEShape;
 	friend class LEdiScene;

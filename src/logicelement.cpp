@@ -116,222 +116,6 @@ bool LogicElement::nameIs(QString _name){
     return false;
 }
 
-void LogicElement::addBasicElements(){
-    int i;
-	LogicElement* le;
-    for(i=1; i<=NofBLE; i++){
-		le = new LogicElement();
-		le->isBasic = true;
-        switch(i){
-        case 1:
-			le->type = "al_ao21";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 2:
-			le->type = "al_aoi21";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 3:
-			le->type = "al_ao21ftt";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 4:
-			le->type = "al_aoi21ftt";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 5:
-			le->type = "al_ao21fft";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 6:
-			le->type = "al_aoi21fft";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 7:
-			le->type = "al_ao21ttf";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 8:
-			le->type = "al_aoi21ttf";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 9:
-			le->type = "al_oa21";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 10:
-			le->type = "al_oai21";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 11:
-			le->type = "al_oa21ftt";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 12:
-			le->type = "al_oai21ftt";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 13:
-			le->type = "al_oa21fft";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 14:
-			le->type = "al_oai21fft";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 15:
-			le->type = "al_oa21ttf";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 16:
-			le->type = "al_oai21ttf";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 17:
-			le->type = "al_dffl";
-			le->ports.append(new Port(le,"d",false));
-			le->ports.append(new Port(le,"clk",false));
-			le->ports.append(new Port(le,"q",true));
-            break;
-		case 18:
-			le->type = "al_dffi";
-			le->ports.append(new Port(le,"d",false));
-			le->ports.append(new Port(le,"clk",false));
-			le->ports.append(new Port(le,"q",true));
-            break;
-		case 19:
-			le->type = "al_and2";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 20:
-			le->type = "al_nand2";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 21:
-			le->type = "al_and2ft";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 22:
-			le->type = "al_nand2ft";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 23:
-			le->type = "al_and3";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 24:
-			le->type = "al_nand3";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 25:
-			le->type = "al_and3ftt";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 26:
-			le->type = "al_nand3ftt";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 27:
-			le->type = "al_and3fft";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 28:
-			le->type = "al_nand3fft";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 29:
-			le->type = "al_and3ttf";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-		case 30:
-			le->type = "al_nand3ttf";
-			le->ports.append(new Port(le,"a",false));
-			le->ports.append(new Port(le,"b",false));
-			le->ports.append(new Port(le,"c",false));
-			le->ports.append(new Port(le,"y",true));
-			break;
-        }
-		library.append(*le);
-    }
-}
-
 QString cutLine(int p, QString& line, QChar c){
     int pi = line.indexOf(c,p);
     if (pi == -1) return NULL;
@@ -358,102 +142,106 @@ void deleteComments(QString& line){
 void prepareCode(QString& line){
     deleteComments(line);
 
-    int l=0, r;
-    while((r = line.indexOf(" ", l)) != -1){
+    int l, r;
+
+    l=0;
+    while((r = line.indexOf("\n", l)) != -1){
+        line[r]=' ';
+        l=r+1;
+    }
+
+    l=0;
+    while((r = line.indexOf(" ", l)) != -1)
         if (r == line.indexOf(QRegExp("\\b( )\\b"), r))
             l=r+1;
         else
             line.remove(r,1);
-    }
+
 }
 
-bool LogicElement::readLibrary(QString& path){
+bool LogicElement::readLibrary(const QString& path){
 	QFile file(path);
-	if (file.open(QIODevice::ReadOnly) == RESULT_ERROR) return RESULT_ERROR;
+    if (!file.open(QIODevice::ReadOnly)) return RESULT_ERROR;
 	QString line = file.readAll();
 
 	int k, i, p;
-	QString str1, str2, str3;
+    QString str1, str2;
+    LogicElement* le;
+
+    prepareCode(line);
 
 	while (line.contains(QRegExp("\\b(module)\\b"))){
+        le = new LogicElement();
 		p = line.indexOf(QRegExp("\\b(module )\\b"));
 		str1 = cutLine(p, line, ';');
 		str1.remove(0,7);
 		p = str1.indexOf('(');
-		type = str1.mid(0,p);
+        le->type = str1.mid(0,p);
 		str1.remove(0,p+1); str1.chop(2);
 
-		Port* port;
-		Wire* wire;
+        Port* port;
 
 		k = str1.count(',')+1;
 		for (i=0; i<k; i++){
 			str2 = str1.section(',',i,i);
 			if (str2 == "") return RESULT_ERROR;
 
-			port = new Port(this, str2);
-			wire = new Wire(str2);
-			ports.append(port);
-			wires.append(wire);
-			port->insideWire=wire;
-			port->le=this;
+            port = new Port(le, str2);
+            le->ports.append(port);
 
 			if (str2.contains(' ')){
 				if (str2.mid(0,6) == "input "){
 					str2.remove(0,6);
-					port->isOutput=false;
-					wire->drivers.append(port);
+                    port->isOutput=false;
 				}
 				else if (str2.mid(0,7) == "output "){
 					str2.remove(0,7);
-					port->isOutput=true;
-					wire->loads.append(port);
+                    port->isOutput=true;
 				}
 				else return RESULT_ERROR;
 			}
-
-		if(line.contains(QRegExp("\\b(input)\\b"))) RESULT_ERROR;
-		else{
-		p = line.indexOf(QRegExp("\\b(input)\\b"));
-		str1 = cutLine(p, line, ';');
-		str1.remove(0,6); str1.chop(1);
-		k = str1.count(',')+1;
-		for (i=0; i<k; i++){
-			str2 = str1.section(',',i,i);
-			if (str2 == "") return RESULT_ERROR;
-
-			portNamed(str2)->isOutput=false;
-			wireNamed(str2)->drivers.append(portNamed(str2));
-		}
 		}
 
-		while (line.contains(QRegExp("\\b(output)\\b"))){
-			p = line.indexOf(QRegExp("\\b(output)\\b"));
-			str1 = cutLine(p, line, ';');
-			str1.remove(0,7); str1.chop(1);
-			k = str1.count(',')+1;
-			for (i=0; i<k; i++){
-				str2 = str1.section(',',i,i);
-				if (str2 == "") return RESULT_ERROR;
+        if (line.contains(QRegExp("\\b(input)\\b"))){
+            p = line.indexOf(QRegExp("\\b(input)\\b"));
+            str1 = cutLine(p, line, ';');
+            str1.remove(0,6); str1.chop(1);
+            k = str1.count(',')+1;
+            for (i=0; i<k; i++){
+                str2 = str1.section(',',i,i);
+                if (str2 == "") return RESULT_ERROR;
+                le->portNamed(str2)->isOutput=false;
+            }
+        }
+        else return RESULT_ERROR;
 
-				portNamed(str2)->isOutput=true;
-				wireNamed(str2)->loads.append(portNamed(str2));
-			}
-		}
-		}
+        if (line.contains(QRegExp("\\b(output)\\b"))){
+            p = line.indexOf(QRegExp("\\b(output)\\b"));
+            str1 = cutLine(p, line, ';');
+            str1.remove(0,7); str1.chop(1);
+            k = str1.count(',')+1;
+            for (i=0; i<k; i++){
+                str2 = str1.section(',',i,i);
+                if (str2 == "") return RESULT_ERROR;
+                le->portNamed(str2)->isOutput=true;
+            }
+        }
+        else return RESULT_ERROR;
+
+        le->isBasic=true;
+        library.append(*le);
 	}
-
-
+    return RESULT_SUCCESS;
 }
 
-bool LogicElement::initLEFromFile(QString& path){
+bool LogicElement::initLEFromFile(const QString& _path){
 
-    QFile file(path);
-	if (file.open(QIODevice::ReadOnly) == RESULT_ERROR) return RESULT_ERROR;
+    QFile file(_path);
+    if (!file.open(QIODevice::ReadOnly)) return RESULT_ERROR;
     QString line = file.readAll();
 
     int k, i, p;
-    QString str1, str2, str3;
+    QString str1, str2, str3, path;
 
     prepareCode(line);
 
@@ -618,8 +406,8 @@ bool LogicElement::initLEFromFile(QString& path){
     return RESULT_SUCCESS;
 }
 
-bool LogicElement::initMainLEFromFile(QString& path){
-	if (this->initLEFromFile(path) == RESULT_ERROR) return RESULT_ERROR;
+bool LogicElement::initMainLEFromFile(const QString& _path){
+    if (this->initLEFromFile(_path) == RESULT_ERROR) return RESULT_ERROR;
     name = "main";
 
     return 0;

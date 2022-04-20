@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 	msg = new Locale();
 	initActions();
 
-    LogicElement::addBasicElements();
+    LogicElement::readLibrary("C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v");
 
     //msg->setLocale("Eng");
 
@@ -53,7 +53,7 @@ void MainWindow::initActions(){
 }
 
 void MainWindow::createScene(){
-	scene = new LEdiScene(QRect(0,0,2500,1500));
+    scene = new LEdiScene(QRect(0,0,8000,6000));
 
     view = new LEdiView(scene);
 	view->show();
@@ -98,9 +98,9 @@ void MainWindow::slotNewFile(){
 //
 void MainWindow::slotOpenFile(){
     QString path;
-	path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
+    path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.syn_dc.v)");
 	//path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s27.syn_dc.v";
-	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
+    //path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
 
 	//if (path == "") return;
 
