@@ -7,13 +7,13 @@
 #include "defines.h"
 
 class LEdiScene : public QGraphicsScene{
-    int gridSz;
+	//int gridSz;
     virtual void drawBackground(QPainter *painter, const QRectF &rect);
-	void check(QHash<LogicElement*, int>* map, Port* port, int r);
+	void check(QHash<LogicElement*, int>* map, LogicElement* _le, int r);
 
 public:
-	explicit LEdiScene(const QRect &sceneRect, QObject *parent = nullptr);
-    ~LEdiScene(){};
+	LEdiScene(const QRect &sceneRect, QObject *parent = nullptr);
+	~LEdiScene(){};
 	void addShape(LEShape* leShape);//?
 	void addShape(PortShape* portShape);
 	void layout(LogicElement* le);

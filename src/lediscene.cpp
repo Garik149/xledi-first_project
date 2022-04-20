@@ -9,7 +9,7 @@
 
 LEdiScene::LEdiScene(const QRect &sceneRect, QObject *parent) : QGraphicsScene(sceneRect, parent)
 {
-    gridSz=20;
+	//gridSz=20;
 }
 
 void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
@@ -38,17 +38,18 @@ void LEdiScene::addShape(PortShape* portShape){
 		addItem(portShape->body[i]);
 }
 
-void LEdiScene::check(QHash<LogicElement*, int>* map, Port* _port, int r){
-	if (map->find(_port->le).value() <= r) map->find(_port->le).value()=r;
+void LEdiScene::check(QHash<LogicElement*, int>* map, LogicElement* _le, int _r){
+	int& r = map->find(_le).value();
+	if (r < _r+1) r=_r+1;
 
 	Port* port;
 	Wire* wire;
-	for (int i=0; i < _port->le->outPorts.size(); i++){
-		port=_port->le->outPorts[i];
+	for (int i=0; i < _le->outPorts.size(); i++){
+		port=_le->outPorts[i];
 		for (int j=0; j < port->outsideWire->loads.size(); j++){
 			wire=port->outsideWire;
 			if (wire == wire->loads[j]->outsideWire)
-				check(map, wire->loads[j],r+1);
+				check(map, wire->loads[j]->le,r);
 		}
 	}
 }
@@ -57,43 +58,43 @@ void LEdiScene::layout(LogicElement* le){
 
 	QHash<LogicElement*, int>* map = new QHash<LogicElement*, int>;
     for (i=0; i<le->logicElements.size(); i++)
-        map->insert(le->logicElements[i],0);
+		map->insert(le->logicElements[i],1);
 
 	for (i=0; i<le->inPorts.size(); i++)
         for (j=0; j<le->inPorts[i]->insideWire->loads.size(); j++)
-			check(map, le->inPorts[i]->insideWire->loads[j],1);
+			check(map, le->inPorts[i]->insideWire->loads[j]->le,0);
 
-    QList<int> rank; QList<int> ql= map->values();
-    for (i=0; i<ql.size(); i++)
-        if (!rank.contains(ql[i])) rank.append(ql[i]);
-    QList<LogicElement*> leList;
 	int maxRank = 1;
-
-    for (i=0; i<rank.size(); i++){
-		if (maxRank<rank[i]) maxRank=rank[i];
-        leList=map->keys(rank[i]);
-		int prevLEHeight=0;
-		for (j=0; j<leList.size(); j++){
-			LEShape* sh;
-			sh = new LEShape(leList[j]);
-            addShape(sh);
-			sh->moveTo(QPoint(gridSz*(10+10*rank[i]),gridSz*(10+(prevLEHeight+2)*j)));
-            prevLEHeight=sh->body->rect().height()/gridSz;
-        }
-    }
+	for (i=0; i<le->logicElements.size(); i++){
+		int r=map->find(le->logicElements[i]).value();
+		if (maxRank<r) maxRank=r;
+	}
 
 	for (i=0; i<le->inPorts.size(); i++){
 		PortShape* sh;
 		sh = new PortShape(le->inPorts[i]);
 		addShape(sh);
-		sh->moveTo(QPoint(gridSz*10,gridSz*(10+4*i)));
+		sh->moveTo(QPoint(GRID_SZ*10,GRID_SZ*(10+4*i)));
 	}
+
+	QList<LogicElement*> leList;
+	for (i=1; i<=maxRank; i++){
+		leList=map->keys(i);
+		int Height=0;
+		for (j=0; j<leList.size(); j++){
+			LEShape* sh;
+			sh = new LEShape(leList[j]);
+            addShape(sh);
+			sh->moveTo(QPoint(GRID_SZ*(10+10*i),GRID_SZ*(10+Height)));
+			Height+=sh->body->rect().height()/GRID_SZ+2;
+        }
+    }
 
 	for (i=0; i<le->outPorts.size(); i++){
 		PortShape* sh;
 		sh = new PortShape(le->outPorts[i]);
 		addShape(sh);
-		sh->moveTo(QPoint(gridSz*(20+10*maxRank),gridSz*(10+4*i)));
+		sh->moveTo(QPoint(GRID_SZ*(20+10*maxRank),GRID_SZ*(10+4*i)));
 	}
 
     delete (map);
