@@ -101,17 +101,18 @@ void MainWindow::slotNewFile(){
 
 //
 void MainWindow::slotOpenFile(){
-    QString path;
+	QString path, type;
 	path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
 	//path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c432.syn_dc.v";
     //path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
 
 	//if (path == "") return;
 
-    mainLE = new LogicElement();
-	if (mainLE->initMainLEFromFile(path) == RESULT_ERROR)
+	type=LogicElement::addLEFromFileToLibrary(path);
+	if (type == NULL)
 		qWarning("Module read failure");
     else{
+		mainLE = LogicElement::copyFromLibrary(type,"main");
         scene->clear();
 		scene->layout(mainLE);
     }
