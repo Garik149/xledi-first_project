@@ -84,10 +84,10 @@ void LEShape::moveTo(QPoint _place){
 		ports[i]->moveBy(dx,dy);
 }
 
-bool LEShape::initMainLEFromFile(QString &path){
+bool LEShape::initLEFromFile(QString &path){
 	bool flag;
 
 
-	flag=le->initMainLEFromFile(path);
+	flag=le->initLEFromFile(path);
 	return flag;
 }

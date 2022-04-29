@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 
     //setCentralWidget(widget);
 
-	//slotOpenFile();
+	slotOpenFile();
 }
 
 MainWindow::~MainWindow(){}
@@ -101,18 +101,15 @@ void MainWindow::slotNewFile(){
 
 //
 void MainWindow::slotOpenFile(){
-	QString path, type;
-	path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
-	//path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c432.syn_dc.v";
+	QString path;
+	//path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
+	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c432.syn_dc.v";
     //path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
 
-	//if (path == "") return;
-
-	type=LogicElement::addLEFromFileToLibrary(path);
-	if (type == NULL)
+	mainLE = new LogicElement();
+	if (mainLE->initLEFromFile(path) == RESULT_ERROR)
 		qWarning("Module read failure");
     else{
-		mainLE = LogicElement::copyFromLibrary(type,"main");
         scene->clear();
 		scene->layout(mainLE);
     }

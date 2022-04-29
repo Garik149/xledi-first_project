@@ -23,13 +23,16 @@ class LogicElement{
     LogicElement* leNamed(QString _name);
      bool haveLE(QString _name);
     bool nameIs(QString _name);
+	bool copy(LogicElement* _le);
 public:
 	LogicElement();
      LogicElement(LogicElement* _le);
+	 LogicElement(QString _type, QString _name);
      ~LogicElement();
     static bool readLibrary(const QString& path);
-	static QString addLEFromFileToLibrary(const QString &path);
-	static LogicElement* copyFromLibrary(const QString _type, const QString _name);
+	//static QString addLEFromFileToLibrary(const QString &path);
+	bool initLEFromFile(const QString &path);
+	bool copyFromLibrary(const QString _type, const QString _name);
 	void clear();
 
     friend class LEShape;

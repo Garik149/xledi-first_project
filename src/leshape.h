@@ -23,7 +23,7 @@ public:
      ~LEShape();
 	void setState(State state);
 	void moveTo(QPoint _place);
-	bool initMainLEFromFile(QString &path);
+	bool initLEFromFile(QString &path);
 
 	friend class LEdiScene;
 };
