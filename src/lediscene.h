@@ -7,7 +7,7 @@
 #include "defines.h"
 
 class LEdiScene : public QGraphicsScene{
-	//int gridSz;
+	//int gridSz;//?
     virtual void drawBackground(QPainter *painter, const QRectF &rect);
 	void check(QHash<LogicElement*, int>* map, LogicElement* _le, int r);
 
@@ -17,14 +17,16 @@ public:
 	void addShape(LEShape* leShape);//?
 	void addShape(PortShape* portShape);
 	void layout(LogicElement* le);
+	void tracing(LogicElement* le);
+	LEShape* leInPoint(QPoint _place);
     Q_OBJECT
 private slots:
     //void slotNameChanged(QString oldName, QString newName);
 signals:
 	//void tranferItem(ItemLEdi* item, QGraphicsLineItem *line);
 
-    friend class LEShape;
-	friend class PortShape;
+	//friend class LEShape;
+	//friend class PortShape;
 };
 
 #endif // LEDISCENE_H

@@ -38,6 +38,10 @@ void LEdiScene::addShape(PortShape* portShape){
 		addItem(portShape->body[i]);
 }
 
+LEShape* LEdiScene::leInPoint(QPoint _place){
+
+}
+
 void LEdiScene::check(QHash<LogicElement*, int>* map, LogicElement* _le, int _r){
 	int& r = map->find(_le).value();
 	if (r < _r+1) r=_r+1;
@@ -98,4 +102,51 @@ void LEdiScene::layout(LogicElement* le){
 	}
 
     delete (map);
+}
+
+void LEdiScene::tracing(LogicElement* le){
+	int i, j;
+
+	QHash<LogicElement*, int>* map = new QHash<LogicElement*, int>;
+	for (i=0; i<le->logicElements.size(); i++)
+		map->insert(le->logicElements[i],1);
+
+	for (i=0; i<le->inPorts.size(); i++)
+		for (j=0; j<le->inPorts[i]->insideWire->loads.size(); j++)
+			check(map, le->inPorts[i]->insideWire->loads[j]->le,0);
+
+	int maxRank = 1;
+	for (i=0; i<le->logicElements.size(); i++){
+		int r=map->find(le->logicElements[i]).value();
+		if (maxRank<r) maxRank=r;
+	}
+
+	for (i=0; i<le->inPorts.size(); i++){
+		PortShape* sh;
+		sh = new PortShape(le->inPorts[i]);
+		addShape(sh);
+		sh->moveTo(QPoint(GRID_SZ*10,GRID_SZ*(10+4*i)));
+	}
+
+	QList<LogicElement*> leList;
+	for (i=1; i<=maxRank; i++){
+		leList=map->keys(i);
+		int Height=0;
+		for (j=0; j<leList.size(); j++){
+			LEShape* sh;
+			sh = new LEShape(leList[j]);
+			addShape(sh);
+			sh->moveTo(QPoint(GRID_SZ*(10+10*i),GRID_SZ*(10+Height)));
+			Height+=sh->body->rect().height()/GRID_SZ+2;
+		}
+	}
+
+	for (i=0; i<le->outPorts.size(); i++){
+		PortShape* sh;
+		sh = new PortShape(le->outPorts[i]);
+		addShape(sh);
+		sh->moveTo(QPoint(GRID_SZ*(20+10*maxRank),GRID_SZ*(10+4*i)));
+	}
+
+	delete (map);
 }

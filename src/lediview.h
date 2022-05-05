@@ -14,7 +14,7 @@ class LEdiView : public QGraphicsView
     QGraphicsLineItem* hLine;
 	QPoint hPos1, hPos2; // - holded position
     QGraphicsRectItem* hRect;
-    LEShape* hShape;
+	LEShape* hLEShape;
 	LogicElement* hLE;
     LEdiScene *sceneLE;
 	//QGraphicsItem *selectEditorItem;

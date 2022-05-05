@@ -6,7 +6,7 @@
 #include <QTextItem>
 #include "defines.h"
 
-class LEShape{
+class LEShape : public QGraphicsItem{
 public:
 	enum State {Default, Bolded, Moved};
 private:
@@ -23,7 +23,7 @@ public:
      ~LEShape();
 	void setState(State state);
 	void moveTo(QPoint _place);
-	bool initLEFromFile(QString &path);
+	//bool initLEFromFile(QString &path);
 
 	friend class LEdiScene;
 };

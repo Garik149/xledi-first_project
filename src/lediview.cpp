@@ -3,8 +3,9 @@
 #include "logicelement.h"
 #include "leshape.h"
 
-LEdiView::LEdiView(LEdiScene *scene, QWidget *parent) : QGraphicsView(scene, parent), sceneLE(scene){
-    {
+LEdiView::LEdiView(LEdiScene *scene, QWidget *parent) : QGraphicsView(scene, parent){
+	sceneLE = scene;
+	{
         setContextMenuPolicy(Qt::CustomContextMenu);
 
         contextMenu = new QMenu(this);
@@ -34,8 +35,8 @@ void LEdiView::slotAct1(){
     state = DrawingWire;
 }
 void LEdiView::slotAct2(){
-	hShape = new LEShape(new LogicElement("al_ao21","U1"));
-    sceneLE->addShape(hShape);
+	hLEShape = new LEShape(new LogicElement("al_ao21","U1"));
+	sceneLE->addShape(hLEShape);
     state = PlacingLE;
 }
 
@@ -54,27 +55,31 @@ void LEdiView::reset(){
 
 void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
     hPos1=btg(mapToScene(mouseEvent->pos()));
+	QGraphicsItem* i;
+	LEShape l;
     switch (mouseEvent->button()){
     default:
         break;
 
     case Qt::LeftButton:
         switch (state){
-        default:
+		default:
+
+			i = sceneLE->itemAt(hPos2,transform());
             break;
 
         case DrawingWire:
             hLine->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             hPos1=hPos2;
-            hLine = new QGraphicsLineItem();
+			hLine = new QGraphicsLineItem();
             hLine->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             sceneLE->addItem(hLine);
             break;
 
         case PlacingLE:
-            hShape->setState(LEShape::State::Default);
-			hShape = new LEShape(new LogicElement("al_ao21","U1"));
-            sceneLE->addShape(hShape);
+			hLEShape->setState(LEShape::State::Default);
+			hLEShape = new LEShape(new LogicElement("al_ao21","U1"));
+			sceneLE->addShape(hLEShape);
             break;
         }
         break;
@@ -91,7 +96,7 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
             break;
 
         case PlacingLE:
-            delete(hShape);
+			delete(hLEShape);
             state = Default;
             break;
         }
@@ -112,7 +117,7 @@ void LEdiView::mouseMoveEvent(QMouseEvent *mouseEvent){
         break;
 
     case PlacingLE:
-        hShape->moveTo(hPos2);
+		hLEShape->moveTo(hPos2);
         break;
     }
 }

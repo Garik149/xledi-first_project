@@ -59,7 +59,7 @@ void MainWindow::initActions(){
 void MainWindow::createScene(){
     scene = new LEdiScene(QRect(0,0,8000,6000));
 
-    view = new LEdiView(scene);
+	view = new LEdiView(scene, NULL);
 	view->show();
 
 	setCentralWidget(view);

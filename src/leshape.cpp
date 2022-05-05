@@ -3,7 +3,7 @@
 //#include "wire.h"
 #include "port.h"
 
-LEShape::LEShape(LogicElement* _le){
+LEShape::LEShape(LogicElement* _le) : QGraphicsItem(){
 	le=_le;
     place = QPoint(0,0);
 
@@ -84,10 +84,10 @@ void LEShape::moveTo(QPoint _place){
 		ports[i]->moveBy(dx,dy);
 }
 
-bool LEShape::initLEFromFile(QString &path){
+/*bool LEShape::initLEFromFile(QString &path){
 	bool flag;
 
 
 	flag=le->initLEFromFile(path);
 	return flag;
-}
+}*/
