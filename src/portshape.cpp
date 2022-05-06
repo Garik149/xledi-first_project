@@ -11,6 +11,7 @@ PortShape::PortShape(Port* _port){
 	name->setBrush(Qt::red);
 	name->setText(port->name);
 	name->setPos(QPoint(place.x(),place.y()-GRID_SZ));
+    if (GRID_SZ<20) name->hide();
 
 	if (port->isOutput){
 		body[0] = new QGraphicsLineItem(QLineF(QPoint(place.x(),place.y()+GRID_SZ),QPoint(place.x()+GRID_SZ,place.y()+GRID_SZ)));
@@ -28,22 +29,23 @@ PortShape::PortShape(Port* _port){
 }
 
 void PortShape::setState(State _state){
+    int w=GRID_SZ/20;
 	switch(_state){
 	default:
 		for (int i=0; i < 4; i++)
-			body[i]->setPen(QPen(QColor(0,255,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            body[i]->setPen(QPen(QColor(0,255,0,255), 2*w, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 		state=_state;
 		break;
 
 	case State::Bolded:
 		for (int i=0; i < 4; i++)
-			body[i]->setPen(QPen(QColor(0,255,0,255), 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            body[i]->setPen(QPen(QColor(0,255,0,255), 3*w, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 		state=_state;
 		break;
 
 	case State::Moved:
 		for (int i=0; i < 4; i++)
-			body[i]->setPen(QPen(QColor(0,255,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            body[i]->setPen(QPen(QColor(0,255,0,128), 2*w, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 		state=_state;
 		break;
 	}
