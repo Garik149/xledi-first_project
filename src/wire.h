@@ -17,15 +17,4 @@ struct Wire
      ~Wire();
 };
 
-////Графическое представление
-//class G_Wire
-//{
-//    Wire* wire;
-//    QList<QPoint> segments;
-//
-//public:
-//     G_Wire();
-//     ~G_Wire();
-//};
-
 #endif // WIRE_H

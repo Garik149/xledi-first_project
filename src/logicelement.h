@@ -30,7 +30,6 @@ public:
 	 LogicElement(QString _type, QString _name);
      ~LogicElement();
     static bool readLibrary(const QString& path);
-	//static QString addLEFromFileToLibrary(const QString &path);
 	bool initLEFromFile(const QString &path);
 	bool copyFromLibrary(const QString _type, const QString _name);
 	void clear();

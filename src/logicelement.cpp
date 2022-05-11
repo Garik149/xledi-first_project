@@ -10,7 +10,7 @@ QList<LogicElement> LogicElement::library;
 LogicElement::LogicElement(){isBasic=false;}
 
 LogicElement::LogicElement(LogicElement* _le){
-	copy(_le);
+    copy(_le);
 }
 
 LogicElement::LogicElement(QString _type, QString _name){

@@ -7,18 +7,14 @@
 #include "defines.h"
 
 class LEdiScene : public QGraphicsScene{
-	//int gridSz;//?
-    virtual void drawBackground(QPainter *painter, const QRectF &rect);
+    void drawBackground(QPainter *painter, const QRectF &rect) override;
 	void check(QHash<LogicElement*, int>* map, LogicElement* _le, int r);
 
 public:
-	LEdiScene(const QRect &sceneRect, QObject *parent = nullptr);
-	~LEdiScene(){};
-	void addShape(LEShape* leShape);//?
-	void addShape(PortShape* portShape);
+    LEdiScene(const QRect &sceneRect, QObject *parent = nullptr) : QGraphicsScene(sceneRect,parent){};
+     ~LEdiScene(){};
 	void layout(LogicElement* le);
-	void tracing(LogicElement* le);
-	LEShape* leInPoint(QPoint _place);
+    void tracing(LogicElement* le);
     Q_OBJECT
 private slots:
     //void slotNameChanged(QString oldName, QString newName);

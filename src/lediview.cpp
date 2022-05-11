@@ -2,6 +2,8 @@
 #include "lediscene.h"
 #include "logicelement.h"
 #include "leshape.h"
+#include "portshape.h"
+#include "wireshape.h"
 
 LEdiView::LEdiView(LEdiScene *scene, QWidget *parent) : QGraphicsView(scene, parent){
 	sceneLE = scene;
@@ -22,7 +24,13 @@ LEdiView::LEdiView(LEdiScene *scene, QWidget *parent) : QGraphicsView(scene, par
         connect(act2,	SIGNAL(triggered()), SLOT(slotAct2()));
     }
 
-    reset();
+    hPos1 = QPoint(0,0); hPos2 = QPoint(0,0);
+    hLine = NULL;
+    hRect = NULL;
+    hLEShape = NULL;
+    hPortShape = NULL;
+    state = Default;
+    setMouseTracking(true);
     //setDragMode(QGraphicsView::RubberBandDrag);
     //connect(sceneLE, &LEdiScene::tranferItem, this, &ViewLEdi::transferItem);
 }
@@ -36,7 +44,8 @@ void LEdiView::slotAct1(){
 }
 void LEdiView::slotAct2(){
 	hLEShape = new LEShape(new LogicElement("al_ao21","U1"));
-	sceneLE->addShape(hLEShape);
+    hLEShape->setState(LEShape::State::Moved);
+    sceneLE->addItem(hLEShape);
     state = PlacingLE;
 }
 
@@ -45,18 +54,15 @@ QPoint LEdiView::btg(QPointF point){
     return {qRound(point.x()/GRID_SZ)*GRID_SZ,qRound(point.y()/GRID_SZ)*GRID_SZ};
 }
 
-void LEdiView::reset(){
-//    if (hLine != nullptr) {delete(hLine); hLine = nullptr;}
-//    if (hRect != nullptr) {delete(hRect); hRect = nullptr;}
-    hPos1 = QPoint(0,0); hPos2 = QPoint(0,0);
-    state = Default;
-    setMouseTracking(true);
+void LEdiView::forgetHolded(){
+    if (hLine!=NULL) {hLine = NULL;}
+    if (hRect!=NULL) {hRect = NULL;}
+    if (hLEShape!=NULL) {hLEShape->setState(LEShape::State::Default); hLEShape = NULL;}
+    if (hPortShape!=NULL) {hPortShape->setState(PortShape::State::Default); hPortShape = NULL;}
 }
 
 void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
     hPos1=btg(mapToScene(mouseEvent->pos()));
-	QGraphicsItem* i;
-	LEShape l;
     switch (mouseEvent->button()){
     default:
         break;
@@ -64,8 +70,28 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
     case Qt::LeftButton:
         switch (state){
 		default:
+            forgetHolded();
+            hItem = sceneLE->itemAt(mouseEvent->pos(),transform());
+            if (hItem!=NULL)
+                switch(hItem->type()-QGraphicsItem::UserType){
+                default:
+                    break;
 
-			i = sceneLE->itemAt(hPos2,transform());
+                case 0:
+                    hLEShape = (LEShape*)hItem;
+                    hLEShape->setState(LEShape::State::Bolded);
+                    break;
+
+                case 1:
+                    hPortShape = (PortShape*)hItem;
+                    hPortShape->setState(PortShape::State::Bolded);
+                    break;
+
+                case 2:
+                    hWireShape = (WireShape*)hItem;
+                    hWireShape->setState(WireShape::State::Bolded);
+                    break;
+                }
             break;
 
         case DrawingWire:
@@ -77,9 +103,10 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
             break;
 
         case PlacingLE:
-			hLEShape->setState(LEShape::State::Default);
+            forgetHolded();
 			hLEShape = new LEShape(new LogicElement("al_ao21","U1"));
-			sceneLE->addShape(hLEShape);
+            hLEShape->setState(LEShape::State::Moved);
+            sceneLE->addItem(hLEShape);
             break;
         }
         break;
@@ -87,16 +114,17 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
     case Qt::RightButton:
         switch (state){
         default:
+            forgetHolded();
             contextMenu->exec(QCursor::pos());
             break;
 
         case DrawingWire:
-            delete(hLine);
+            delete(hLine); hLine=NULL;
             state = Default;
             break;
 
         case PlacingLE:
-			delete(hLEShape);
+            delete(hLEShape); hLEShape=NULL;
             state = Default;
             break;
         }
@@ -117,7 +145,7 @@ void LEdiView::mouseMoveEvent(QMouseEvent *mouseEvent){
         break;
 
     case PlacingLE:
-		hLEShape->moveTo(hPos2);
+        hLEShape->setPos(hPos2);
         break;
     }
 }

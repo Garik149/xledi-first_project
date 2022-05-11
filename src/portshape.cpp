@@ -1,60 +1,60 @@
 #include "portshape.h"
 #include "port.h"
 
-PortShape::PortShape(){}
-PortShape::PortShape(Port* _port){
+PortShape::PortShape(Port* _port) : QGraphicsItem(){
 	port = _port;
-	place = QPoint(0,0);
-
-	name = new QGraphicsSimpleTextItem();
-	name->setFont(QFont("Calibri", 10, QFont::DemiBold));
-	name->setBrush(Qt::red);
-	name->setText(port->name);
-	name->setPos(QPoint(place.x(),place.y()-GRID_SZ));
-    if (GRID_SZ<20) name->hide();
+    setPos(0,0);
 
 	if (port->isOutput){
-		body[0] = new QGraphicsLineItem(QLineF(QPoint(place.x(),place.y()+GRID_SZ),QPoint(place.x()+GRID_SZ,place.y()+GRID_SZ)));
-		body[1] = new QGraphicsLineItem(QLineF(QPoint(place.x()+GRID_SZ,place.y()),QPoint(place.x()+GRID_SZ,place.y()+2*GRID_SZ)));
-		body[2] = new QGraphicsLineItem(QLineF(QPoint(place.x()+GRID_SZ,place.y()),QPoint(place.x()+2*GRID_SZ,place.y()+GRID_SZ)));
-		body[3] = new QGraphicsLineItem(QLineF(QPoint(place.x()+GRID_SZ,place.y()+2*GRID_SZ),QPoint(place.x()+2*GRID_SZ,place.y()+GRID_SZ)));
+        body[0] = new QLineF(QPoint(x(),y()+GRID_SZ),QPoint(x()+GRID_SZ,y()+GRID_SZ));
+        body[1] = new QLineF(QPoint(x()+GRID_SZ,y()),QPoint(x()+GRID_SZ,y()+2*GRID_SZ));
+        body[2] = new QLineF(QPoint(x()+GRID_SZ,y()),QPoint(x()+2*GRID_SZ,y()+GRID_SZ));
+        body[3] = new QLineF(QPoint(x()+GRID_SZ,y()+2*GRID_SZ),QPoint(x()+2*GRID_SZ,y()+GRID_SZ));
 	}
 	else{
-		body[0] = new QGraphicsLineItem(QLineF(QPoint(place.x(),place.y()),QPoint(place.x(),place.y()+2*GRID_SZ)));
-		body[1] = new QGraphicsLineItem(QLineF(QPoint(place.x(),place.y()),QPoint(place.x()+GRID_SZ,place.y()+GRID_SZ)));
-		body[2] = new QGraphicsLineItem(QLineF(QPoint(place.x(),place.y()+2*GRID_SZ),QPoint(place.x()+GRID_SZ,place.y()+GRID_SZ)));
-		body[3] = new QGraphicsLineItem(QLineF(QPoint(place.x()+GRID_SZ,place.y()+GRID_SZ),QPoint(place.x()+2*GRID_SZ,place.y()+GRID_SZ)));
+        body[0] = new QLineF(QPoint(x(),y()),QPoint(x(),y()+2*GRID_SZ));
+        body[1] = new QLineF(QPoint(x(),y()),QPoint(x()+GRID_SZ,y()+GRID_SZ));
+        body[2] = new QLineF(QPoint(x(),y()+2*GRID_SZ),QPoint(x()+GRID_SZ,y()+GRID_SZ));
+        body[3] = new QLineF(QPoint(x()+GRID_SZ,y()+GRID_SZ),QPoint(x()+2*GRID_SZ,y()+GRID_SZ));
 	}
 	setState(State::Default);
 }
 
-void PortShape::setState(State _state){
-    int w=GRID_SZ/20;
-	switch(_state){
-	default:
-		for (int i=0; i < 4; i++)
-            body[i]->setPen(QPen(QColor(0,255,0,255), 2*w, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		state=_state;
-		break;
-
-	case State::Bolded:
-		for (int i=0; i < 4; i++)
-            body[i]->setPen(QPen(QColor(0,255,0,255), 3*w, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		state=_state;
-		break;
-
-	case State::Moved:
-		for (int i=0; i < 4; i++)
-            body[i]->setPen(QPen(QColor(0,255,0,128), 2*w, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		state=_state;
-		break;
-	}
+PortShape::~PortShape(){
+    for (int i=0; i<4; i++)
+        delete(body[i]);
 }
 
-void PortShape::moveTo(QPoint _place){
-	int dx=_place.x()-place.x(), dy=_place.y()-place.y();
-	place=_place;
-	name->moveBy(dx,dy);
-	for (int i=0; i < 4; i++)
-		body[i]->moveBy(dx,dy);
+
+QRectF PortShape::boundingRect() const{
+    return QRectF(0,-1*GRID_SZ,2*GRID_SZ,3*GRID_SZ);
+}
+
+void PortShape::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+
+    painter->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter->setFont(QFont("Calibri", 11, QFont::DemiBold));
+    painter->drawText(QRectF(0, -1*GRID_SZ, 2*GRID_SZ, 1*GRID_SZ),0,port->name);
+
+    switch(state){
+    default:
+        painter->setPen(QPen(QColor(0,255,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        break;
+
+    case State::Bolded:
+        painter->setPen(QPen(QColor(0,255,0,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        break;
+
+    case State::Moved:
+        painter->setPen(QPen(QColor(0,255,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        break;
+    }
+    for (int i=0; i < 4; i++) painter->drawLine(*body[i]);
+
+    return;
+}
+
+void PortShape::setState(State _state){
+    state=_state;
+    update();
 }

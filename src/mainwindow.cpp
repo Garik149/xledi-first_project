@@ -12,8 +12,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 
 	QString path;
 	//path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
-	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC_libs/XD_LE_PtcV1.80T25.v";
-	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v";
+    //path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC_libs/XD_LE_PtcV1.80T25.v";
+    path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v";
 	LogicElement::readLibrary(path);
 
     //msg->setLocale("Eng");
@@ -38,8 +38,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 	slotOpenFile();
 }
 
-MainWindow::~MainWindow(){}
-
 void MainWindow::initActions(){
     AnewFile = new QAction(QIcon{":/images/New.png"}, msg->get1(), this);
     connect(AnewFile, &QAction::triggered, this, &MainWindow::slotNewFile);
@@ -57,7 +55,7 @@ void MainWindow::initActions(){
 }
 
 void MainWindow::createScene(){
-    scene = new LEdiScene(QRect(0,0,8000,6000));
+    scene = new LEdiScene(QRect(0,0,W*GRID_SZ,H*GRID_SZ));
 
 	view = new LEdiView(scene, NULL);
 	view->show();
@@ -103,8 +101,8 @@ void MainWindow::slotNewFile(){
 void MainWindow::slotOpenFile(){
 	QString path;
 	//path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
-	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c432.syn_dc.v";
-    //path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
+    //path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c17.syn_dc.v";
+    path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
 
 	mainLE = new LogicElement();
 	if (mainLE->initLEFromFile(path) == RESULT_ERROR)

@@ -2,28 +2,26 @@
 #define LESHAPE_H
 
 #include <QGraphicsItem>
-#include <QGraphicsView>
-#include <QTextItem>
+#include <QPainter>
 #include "defines.h"
 
 class LEShape : public QGraphicsItem{
 public:
+    enum {Type = UserType};
 	enum State {Default, Bolded, Moved};
 private:
 	State state;
     LogicElement* le;
-	QPoint place;
-	QGraphicsSimpleTextItem* type;
-	QGraphicsSimpleTextItem* name;
-	QGraphicsRectItem* body;
-	QList<QGraphicsLineItem*> ports;
+    QRectF* body;
+    QList<QLineF*> ports;
 
 public:
 	 LEShape(LogicElement* _le);
      ~LEShape();
-	void setState(State state);
-	void moveTo(QPoint _place);
-	//bool initLEFromFile(QString &path);
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) override;
+    int type() const override {return Type;}
+    void setState(State state);
 
 	friend class LEdiScene;
 };

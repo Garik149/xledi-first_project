@@ -2,24 +2,25 @@
 #define PORTSHAPE_H
 
 #include <QGraphicsItem>
-#include <QTextItem>
+#include <QPainter>
 #include "defines.h"
 
-class PortShape{
+class PortShape : public QGraphicsItem{
 public:
+    enum { Type = UserType+1};
 	enum State {Default, Bolded, Moved};
 private:
 	State state;
-	Port* port;
-	QPoint place;
-	QGraphicsSimpleTextItem* name;
-	QGraphicsLineItem* body[4];
+    Port* port;
+    QLineF* body[4];
 
 public:
-	PortShape();
-	 PortShape(Port* _port);
-	void setState(State _state);
-	void moveTo(QPoint _place);
+    PortShape(Port* _port);
+     ~PortShape();
+    QRectF boundingRect() const override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) override;
+    int type() const override {return Type;}
+    void setState(State _state);
 
 	friend class LEdiScene;
 };

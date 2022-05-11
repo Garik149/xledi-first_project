@@ -4,84 +4,73 @@
 #include "port.h"
 
 LEShape::LEShape(LogicElement* _le) : QGraphicsItem(){
-	le=_le;
-    place = QPoint(0,0);
+    le=_le;
+    setPos(0,0);
 
     int h = qMax(le->inPorts.size(),le->outPorts.size());
 
-	body = new QGraphicsRectItem(QRectF(place.x(), place.y(), 2*GRID_SZ, (h+1)*GRID_SZ));
+    body = new QRectF(0, 0, 2*GRID_SZ, (h+1)*GRID_SZ);
 
-	type = new QGraphicsSimpleTextItem();
-	type->setFont(QFont("Calibri", 10, QFont::DemiBold));
-	type->setBrush(Qt::red);
-	type->setText(le->type);
-	type->setPos(QPoint(place.x(),place.y()+(h+1)*GRID_SZ));
+    int ody=0, idy=0;
+    for (int i=0; i < le->ports.size(); i++)
+        if (le->ports[i]->isOutput){
+            ody += GRID_SZ;
+            ports.append(new QLineF(QPoint(2*GRID_SZ,ody),QPoint(3*GRID_SZ,ody)));
+        }
+        else{
+            idy += GRID_SZ;
+            ports.append(new QLineF(QPoint(-1*GRID_SZ,idy),QPoint(0,idy)));
+        }
 
-	name = new QGraphicsSimpleTextItem();
-	name->setFont(QFont("Calibri", 10, QFont::DemiBold));
-	name->setBrush(Qt::red);
-	name->setText(le->name);
-	name->setPos(QPoint(place.x(),place.y()-GRID_SZ));
-
-    int dy;
-    QGraphicsLineItem* line;
-    for (int i=0; i < le->outPorts.size(); i++){
-		line = new QGraphicsLineItem();
-		dy = (i+1)*GRID_SZ;
-        line->setLine(QLineF(QPoint(place.x()+2*GRID_SZ,place.y()+dy),QPoint(place.x()+3*GRID_SZ,place.y()+dy)));
-		ports.append(line);
-    }
-	for (int i=0; i < le->inPorts.size(); i++){
-		line = new QGraphicsLineItem();
-		dy = (i+1)*GRID_SZ;
-		line->setLine(QLineF(QPoint(place.x(),place.y()+dy),QPoint(place.x()-GRID_SZ,place.y()+dy)));
-		ports.append(line);
-	}
-    setState(State::Default);
+    setState(Default);
 }
 
 LEShape::~LEShape(){
-	delete(le);
-	delete(type);
-	delete(name);
 	delete(body);
 	for (int i=0; i<ports.size(); i++)
 		delete(ports[i]);
 }
 
-void LEShape::setState(State _state){
-	switch(_state){
-	default:
-		body->setPen(QPen(QColor(0,255,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		for (int i=0; i < ports.size(); i++)
-			ports[i]->setPen(QPen(QColor(0,255,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		state=_state;
-		break;
 
-	case State::Bolded:
-		body->setPen(QPen(QColor(0,255,0,255), 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		for (int i=0; i < ports.size(); i++)
-			ports[i]->setPen(QPen(QColor(0,255,0,255), 3, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		state=_state;
-		break;
-
-	case State::Moved:
-		body->setPen(QPen(QColor(0,255,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		for (int i=0; i < ports.size(); i++)
-			ports[i]->setPen(QPen(QColor(0,255,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		state=_state;
-		break;
-	}
+QRectF LEShape::boundingRect() const{
+    return QRectF(-1*GRID_SZ,-1*GRID_SZ,4*GRID_SZ,body->height()+2*GRID_SZ);
 }
 
-void LEShape::moveTo(QPoint _place){
-	int dx=_place.x()-place.x(), dy=_place.y()-place.y();
-	place=_place;
-	type->moveBy(dx,dy);
-	name->moveBy(dx,dy);
-	body->moveBy(dx,dy);
-	for (int i=0; i < ports.size(); i++)
-		ports[i]->moveBy(dx,dy);
+void LEShape::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+
+    painter->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter->setFont(QFont("Calibri", 11, QFont::DemiBold));
+    painter->drawText(QRectF(-1*GRID_SZ, -1*GRID_SZ, 4*GRID_SZ, 1*GRID_SZ),0,le->name);
+    painter->drawText(QRectF(-1*GRID_SZ, body->height(), 4*GRID_SZ, 1*GRID_SZ),0,le->type);
+
+    painter->setFont(QFont("Calibri", 8, QFont::DemiBold));
+    for (int i=0; i < ports.size(); i++)
+        painter->drawText(QRectF(ports[i]->p1().x()+0.25*GRID_SZ, ports[i]->p1().y(), 0.5*GRID_SZ, 1*GRID_SZ),0,le->ports[i]->name);
+
+
+    switch(state){
+    default:
+        painter->setPen(QPen(QColor(0,255,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        break;
+
+    case State::Bolded:
+        painter->setPen(QPen(QColor(0,255,0,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        break;
+
+    case State::Moved:
+        painter->setPen(QPen(QColor(0,255,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        break;
+    }
+    painter->drawRect(*body);
+    for (int i=0; i < ports.size(); i++)
+        painter->drawLine(*ports[i]);
+
+    return;
+}
+
+void LEShape::setState(State _state){
+    state=_state;
+    update();
 }
 
 /*bool LEShape::initLEFromFile(QString &path){

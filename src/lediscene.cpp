@@ -1,16 +1,13 @@
 #include <QMap>
 
 #include "lediscene.h"
+#include "lediview.h"
 #include "leshape.h"
 #include "portshape.h"
+#include "wireshape.h"
 #include "logicelement.h"
 #include "port.h"
 #include "wire.h"
-
-LEdiScene::LEdiScene(const QRect &sceneRect, QObject *parent) : QGraphicsScene(sceneRect, parent)
-{
-	//gridSz=20;
-}
 
 void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
 {
@@ -22,24 +19,6 @@ void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
     for (int i = GRID_SZ; i < rect.right(); i += GRID_SZ)
         for (int j = GRID_SZ; j < rect.bottom(); j += GRID_SZ)
 			painter->drawPoint(i, j);
-}
-
-void LEdiScene::addShape(LEShape* leShape){
-	addItem(leShape->type);
-	addItem(leShape->name);
-	addItem(leShape->body);
-	for (int i = 0; i < leShape->ports.size(); i +=1)
-		addItem(leShape->ports[i]);
-}
-
-void LEdiScene::addShape(PortShape* portShape){
-	addItem(portShape->name);
-	for (int i = 0; i < 4; i +=1)
-		addItem(portShape->body[i]);
-}
-
-LEShape* LEdiScene::leInPoint(QPoint _place){
-
 }
 
 void LEdiScene::check(QHash<LogicElement*, int>* map, LogicElement* _le, int _r){
@@ -77,9 +56,9 @@ void LEdiScene::layout(LogicElement* le){
 	for (i=0; i<le->inPorts.size(); i++){
 		PortShape* sh;
 		sh = new PortShape(le->inPorts[i]);
-		addShape(sh);
-		sh->moveTo(QPoint(GRID_SZ*10,GRID_SZ*(10+4*i)));
-	}
+        addItem(sh);
+        sh->setPos(QPoint(GRID_SZ*10,GRID_SZ*(10+4*i)));
+    }
 
 	QList<LogicElement*> leList;
 	for (i=1; i<=maxRank; i++){
@@ -88,65 +67,74 @@ void LEdiScene::layout(LogicElement* le){
 		for (j=0; j<leList.size(); j++){
 			LEShape* sh;
 			sh = new LEShape(leList[j]);
-            addShape(sh);
-			sh->moveTo(QPoint(GRID_SZ*(10+10*i),GRID_SZ*(10+Height)));
-			Height+=sh->body->rect().height()/GRID_SZ+2;
+            addItem(sh);
+            sh->setPos(QPoint(GRID_SZ*(10+10*i),GRID_SZ*(10+Height)));
+            Height+=sh->body->height()/GRID_SZ+2;
         }
     }
 
 	for (i=0; i<le->outPorts.size(); i++){
 		PortShape* sh;
 		sh = new PortShape(le->outPorts[i]);
-		addShape(sh);
-		sh->moveTo(QPoint(GRID_SZ*(20+10*maxRank),GRID_SZ*(10+4*i)));
+        addItem(sh);
+        sh->setPos(QPoint(GRID_SZ*(20+10*maxRank),GRID_SZ*(10+4*i)));
 	}
 
     delete (map);
 }
 
 void LEdiScene::tracing(LogicElement* le){
-	int i, j;
 
-	QHash<LogicElement*, int>* map = new QHash<LogicElement*, int>;
-	for (i=0; i<le->logicElements.size(); i++)
-		map->insert(le->logicElements[i],1);
+    enum {Empty, Block, HLine, VLine};
+    int i, j, k;
+    QPointF point;
+    QGraphicsItem* item;
+    WireShape* wireShape;
+    short int M[H][W];
 
-	for (i=0; i<le->inPorts.size(); i++)
-		for (j=0; j<le->inPorts[i]->insideWire->loads.size(); j++)
-			check(map, le->inPorts[i]->insideWire->loads[j]->le,0);
+    for (i=0; i<H; i++)
+        for (j=0; j<W; j++){
+            point=QPointF(j*GRID_SZ,i*GRID_SZ);
+            item = itemAt(point,views().back()->transform());
+            if (item!=NULL)
+                switch(item->type()-QGraphicsItem::UserType){
+                default:
+                    M[i][j]=Empty;
+                    break;
 
-	int maxRank = 1;
-	for (i=0; i<le->logicElements.size(); i++){
-		int r=map->find(le->logicElements[i]).value();
-		if (maxRank<r) maxRank=r;
-	}
+                case 0: //LEShape
+                    M[i][j]=Block;
+                    break;
 
-	for (i=0; i<le->inPorts.size(); i++){
-		PortShape* sh;
-		sh = new PortShape(le->inPorts[i]);
-		addShape(sh);
-		sh->moveTo(QPoint(GRID_SZ*10,GRID_SZ*(10+4*i)));
-	}
+                case 1: //PortShape
+                    M[i][j]=Block;
+                    break;
 
-	QList<LogicElement*> leList;
-	for (i=1; i<=maxRank; i++){
-		leList=map->keys(i);
-		int Height=0;
-		for (j=0; j<leList.size(); j++){
-			LEShape* sh;
-			sh = new LEShape(leList[j]);
-			addShape(sh);
-			sh->moveTo(QPoint(GRID_SZ*(10+10*i),GRID_SZ*(10+Height)));
-			Height+=sh->body->rect().height()/GRID_SZ+2;
-		}
-	}
+                case 2: //WireShape
+                    wireShape=(WireShape*)item;
+                    if ((point != wireShape->line().p1())&&(point != wireShape->line().p2()))
+                        if (wireShape->line().p1().x() == wireShape->line().p2().x())
+                            M[i][j]=HLine;
+                        else
+                            M[i][j]=VLine;
+                    else
+                        M[i][j]=Block;
+                    break;
+                }
+            else
+                M[i][j]=Empty;
+        }
 
-	for (i=0; i<le->outPorts.size(); i++){
-		PortShape* sh;
-		sh = new PortShape(le->outPorts[i]);
-		addShape(sh);
-		sh->moveTo(QPoint(GRID_SZ*(20+10*maxRank),GRID_SZ*(10+4*i)));
-	}
+    Wire* wire;
+    QList<QGraphicsLineItem*> U1;
+    QList<QGraphicsLineItem*> U2;
 
-	delete (map);
+    for (i=0; i<le->wires.size(); i++){
+        wire=le->wires[i];
+        for (j=0; j<wire->drivers.size(); j++)
+            for (k=0; k<wire->loads.size(); k++){
+                wireShape = new WireShape(wire);
+
+            }
+    }
 }
