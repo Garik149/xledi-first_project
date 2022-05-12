@@ -14,13 +14,15 @@ class LogicElement{
 	QList<Wire*> wires;
 	QList<LogicElement*> logicElements;
 	bool isBasic:1;
+	LEShape* shape;
     static QList<LogicElement> library;
 
     Wire* wireNamed(QString _name);
      bool haveWire(QString _name);
     Port* portNamed(QString _name);
      bool havePort(QString _name);
-    LogicElement* leNamed(QString _name);
+	int leIndex(Port* _port);
+	LogicElement* leNamed(QString _name);
      bool haveLE(QString _name);
     bool nameIs(QString _name);
 	bool copy(LogicElement* _le);

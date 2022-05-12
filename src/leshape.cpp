@@ -5,6 +5,7 @@
 
 LEShape::LEShape(LogicElement* _le) : QGraphicsItem(){
     le=_le;
+	le->shape=this;
     setPos(0,0);
 
     int h = qMax(le->inPorts.size(),le->outPorts.size());
@@ -15,11 +16,11 @@ LEShape::LEShape(LogicElement* _le) : QGraphicsItem(){
     for (int i=0; i < le->ports.size(); i++)
         if (le->ports[i]->isOutput){
             ody += GRID_SZ;
-            ports.append(new QLineF(QPoint(2*GRID_SZ,ody),QPoint(3*GRID_SZ,ody)));
+			ports.append(new QLineF(QPoint(2*GRID_SZ,ody),QPoint(3*GRID_SZ,ody)));
         }
         else{
             idy += GRID_SZ;
-            ports.append(new QLineF(QPoint(-1*GRID_SZ,idy),QPoint(0,idy)));
+			ports.append(new QLineF(QPoint(-1*GRID_SZ,idy),QPoint(0,idy)));
         }
 
     setState(Default);

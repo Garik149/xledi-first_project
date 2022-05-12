@@ -7,24 +7,19 @@
 
 QList<LogicElement> LogicElement::library;
 
-LogicElement::LogicElement(){isBasic=false;}
+LogicElement::LogicElement(){
+	isBasic=false;
+	shape=NULL;
+}
 
 LogicElement::LogicElement(LogicElement* _le){
     copy(_le);
+	shape=NULL;
 }
 
 LogicElement::LogicElement(QString _type, QString _name){
 	copyFromLibrary(_type, _name);
-}
-
-bool LogicElement::copyFromLibrary(QString _type, QString _name){
-	for (int i=0; i<library.size(); i++)
-		if (_type == library[i].type){
-			copy(&library[i]);
-			name = _name;
-			return RESULT_SUCCESS;
-		}
-	return RESULT_ERROR;
+	shape=NULL;
 }
 
 LogicElement::~LogicElement(){
@@ -42,9 +37,7 @@ void LogicElement::clear(){
 }
 
 Wire* LogicElement::wireNamed(QString _name){
-    int i;
-
-    for (i=0; i<wires.size(); i++)
+	for (int i=0; i<wires.size(); i++)
 		if (wires[i]->name == _name) return wires[i];
 	return NULL;
 }
@@ -54,9 +47,7 @@ bool LogicElement::haveWire(QString _name){
 }
 
 Port* LogicElement::portNamed(QString _name){
-    int i;
-
-    for (i=0; i<ports.size(); i++)
+	for (int i=0; i<ports.size(); i++)
 		if (ports[i]->name == _name) return ports[i];
 	return NULL;
 }
@@ -65,10 +56,13 @@ bool LogicElement::havePort(QString _name){
 		else return true;
 }
 
+int LogicElement::leIndex(Port* _port){
+	for (int i=0; i<ports.size();i++)
+		if (ports[i] == _port) return i;
+	return -1;
+}
 LogicElement* LogicElement::leNamed(QString _name){
-    int i;
-
-    for (i=0; i<logicElements.size(); i++)
+	for (int i=0; i<logicElements.size(); i++)
         if (logicElements[i]->name == _name) return logicElements[i];
     return NULL;
 }
@@ -170,8 +164,8 @@ void prepareCode(QString& line){
 
 }
 
-bool LogicElement::readLibrary(const QString& path){
-	QFile file(path);
+bool LogicElement::readLibrary(const QString& _path){
+	QFile file(_path);
     if (!file.open(QIODevice::ReadOnly)) return RESULT_ERROR;
 	QString line = file.readAll();
 
@@ -399,6 +393,16 @@ bool LogicElement::initLEFromFile(const QString& _path){
 	}
 
 	return RESULT_SUCCESS;
+}
+
+bool LogicElement::copyFromLibrary(QString _type, QString _name){
+	for (int i=0; i<library.size(); i++)
+		if (_type == library[i].type){
+			copy(&library[i]);
+			name = _name;
+			return RESULT_SUCCESS;
+		}
+	return RESULT_ERROR;
 }
 
 /*QString LogicElement::addLEFromFileToLibrary(const QString& _path){

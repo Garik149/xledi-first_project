@@ -83,13 +83,13 @@ void LEdiScene::layout(LogicElement* le){
     delete (map);
 }
 
-void LEdiScene::tracing(LogicElement* le){
+void LEdiScene::tracing(LogicElement* _le){
 
-    enum {Empty, Block, HLine, VLine};
+	//enum {Empty, Block, HLine, VLine};
     int i, j, k;
-    QPointF point;
+	/*QPointF point;
     QGraphicsItem* item;
-    WireShape* wireShape;
+
     short int M[H][W];
 
     for (i=0; i<H; i++)
@@ -123,18 +123,33 @@ void LEdiScene::tracing(LogicElement* le){
                 }
             else
                 M[i][j]=Empty;
-        }
+		}*/
 
-    Wire* wire;
-    QList<QGraphicsLineItem*> U1;
-    QList<QGraphicsLineItem*> U2;
+	WireShape* wireShape;
+	Wire* wire;
+	Port* port;
+	//QList<QGraphicsLineItem*> U1;
+	//QList<QGraphicsLineItem*> U2;
+	QPointF begin, end;
 
-    for (i=0; i<le->wires.size(); i++){
-        wire=le->wires[i];
-        for (j=0; j<wire->drivers.size(); j++)
-            for (k=0; k<wire->loads.size(); k++){
+	for (i=0; i<_le->wires.size(); i++){
+		wire=_le->wires[i];
+		for (j=0; j<wire->drivers.size(); j++){
+			port=wire->drivers[j];
+			if (_le->havePort(port->name) == true)
+				begin=QPointF(0,0);
+			else
+				begin=port->le->shape->pos()+port->le->shape->ports[port->le->leIndex(port)]->p2();
+			for (k=0; k<wire->loads.size(); k++){
+				port=wire->loads[k];
+				if (_le->havePort(port->name) == true)
+					end=QPointF(80,40);
+				else
+					end=port->le->shape->pos()+port->le->shape->ports[port->le->leIndex(port)]->p2();
                 wireShape = new WireShape(wire);
-
+				wireShape->setLine(QLineF(begin,end));
+				addItem(wireShape);
             }
-    }
+		}
+	}
 }
