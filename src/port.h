@@ -11,6 +11,7 @@ struct Port
 	Wire* insideWire;
 	Wire* outsideWire;
 	bool isOutput:1;
+	PortShape* shape;
 
      Port();
 	 Port(LogicElement* _le ,QString _name);

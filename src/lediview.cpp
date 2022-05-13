@@ -3,6 +3,7 @@
 #include "logicelement.h"
 #include "leshape.h"
 #include "portshape.h"
+#include "wire.h"
 #include "wireshape.h"
 
 LEdiView::LEdiView(LEdiScene *scene, QWidget *parent) : QGraphicsView(scene, parent){
@@ -18,17 +19,18 @@ LEdiView::LEdiView(LEdiScene *scene, QWidget *parent) : QGraphicsView(scene, par
         contextMenu->addAction(act1);
         contextMenu->addAction(act2);
 
-        connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(slotOnCustomContextMenu(const QPoint&)));
+		connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(slotOnCustomContextMenu(const QPoint&)));
 
-        connect(act1,	SIGNAL(triggered()), SLOT(slotAct1()));
-        connect(act2,	SIGNAL(triggered()), SLOT(slotAct2()));
+		connect(act1, SIGNAL(triggered()), SLOT(slotAct1()));
+		connect(act2, SIGNAL(triggered()), SLOT(slotAct2()));
     }
 
     hPos1 = QPoint(0,0); hPos2 = QPoint(0,0);
-    hLine = NULL;
+	hWire = NULL;
     hRect = NULL;
-    hLEShape = NULL;
-    hPortShape = NULL;
+	hLE = NULL;
+	hPort = NULL;
+	hScale = 1;
     state = Default;
     setMouseTracking(true);
     //setDragMode(QGraphicsView::RubberBandDrag);
@@ -37,15 +39,15 @@ LEdiView::LEdiView(LEdiScene *scene, QWidget *parent) : QGraphicsView(scene, par
 
 void LEdiView::slotOnCustomContextMenu(const QPoint&){}
 void LEdiView::slotAct1(){
-    hLine = new QGraphicsLineItem();
-    hLine->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    sceneLE->addItem(hLine);
+	hWire = new WireShape(new Wire());
+	hWire->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+	sceneLE->addItem(hWire);
     state = DrawingWire;
 }
 void LEdiView::slotAct2(){
-	hLEShape = new LEShape(new LogicElement("al_ao21","U1"));
-    hLEShape->setState(LEShape::State::Moved);
-    sceneLE->addItem(hLEShape);
+	hLE = new LEShape(new LogicElement("al_ao21","U1"));
+	hLE->setState(LEShape::State::Moved);
+	sceneLE->addItem(hLE);
     state = PlacingLE;
 }
 
@@ -55,10 +57,10 @@ QPoint LEdiView::btg(QPointF point){
 }
 
 void LEdiView::forgetHolded(){
-    if (hLine!=NULL) {hLine = NULL;}
+	if (hWire!=NULL) {hWire = NULL;}
     if (hRect!=NULL) {hRect = NULL;}
-    if (hLEShape!=NULL) {hLEShape->setState(LEShape::State::Default); hLEShape = NULL;}
-    if (hPortShape!=NULL) {hPortShape->setState(PortShape::State::Default); hPortShape = NULL;}
+	if (hLE!=NULL) {hLE->setState(LEShape::State::Default); hLE = NULL;}
+	if (hPort!=NULL) {hPort->setState(PortShape::State::Default); hPort = NULL;}
 }
 
 void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
@@ -78,35 +80,35 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
                     break;
 
                 case 0:
-                    hLEShape = (LEShape*)hItem;
-                    hLEShape->setState(LEShape::State::Bolded);
+					hLE = (LEShape*)hItem;
+					hLE->setState(LEShape::State::Bolded);
                     break;
 
                 case 1:
-                    hPortShape = (PortShape*)hItem;
-                    hPortShape->setState(PortShape::State::Bolded);
+					hPort = (PortShape*)hItem;
+					hPort->setState(PortShape::State::Bolded);
                     break;
 
                 case 2:
-                    hWireShape = (WireShape*)hItem;
-                    hWireShape->setState(WireShape::State::Bolded);
+					hWire = (WireShape*)hItem;
+					hWire->setState(WireShape::State::Bolded);
                     break;
                 }
             break;
 
         case DrawingWire:
-            hLine->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+			hWire->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
             hPos1=hPos2;
-			hLine = new QGraphicsLineItem();
-            hLine->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-            sceneLE->addItem(hLine);
+			hWire = new WireShape(new Wire());
+			hWire->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+			sceneLE->addItem(hWire);
             break;
 
         case PlacingLE:
             forgetHolded();
-			hLEShape = new LEShape(new LogicElement("al_ao21","U1"));
-            hLEShape->setState(LEShape::State::Moved);
-            sceneLE->addItem(hLEShape);
+			hLE = new LEShape(new LogicElement("al_ao21","U1"));
+			hLE->setState(LEShape::State::Moved);
+			sceneLE->addItem(hLE);
             break;
         }
         break;
@@ -119,12 +121,12 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
             break;
 
         case DrawingWire:
-            delete(hLine); hLine=NULL;
+			delete(hWire); hWire=NULL;
             state = Default;
             break;
 
         case PlacingLE:
-            delete(hLEShape); hLEShape=NULL;
+			delete(hLE); hLE=NULL;
             state = Default;
             break;
         }
@@ -141,11 +143,11 @@ void LEdiView::mouseMoveEvent(QMouseEvent *mouseEvent){
     case DrawingWire:
         if (abs(hPos2.x()-hPos1.x()) < abs(hPos2.y()-hPos1.y())) hPos2.rx()=hPos1.x();
             else hPos2.ry()=hPos1.y();
-        hLine->setLine(QLine(hPos2,hPos1));
+		hWire->setLine(QLine(hPos2,hPos1));
         break;
 
     case PlacingLE:
-        hLEShape->setPos(hPos2);
+		hLE->setPos(hPos2);
         break;
     }
 }
@@ -154,5 +156,15 @@ void LEdiView::keyPressEvent(QKeyEvent *keyEvent){
     switch (keyEvent->key()){
     default:
         break;
+
+	case Qt::Key_Minus:
+		hScale*=0.8;
+		scale(0.8,0.8);
+		break;
+
+	case Qt::Key_Equal:
+		hScale*=1.25;
+		scale(1.25,1.25);
+		break;
     }
 }

@@ -15,12 +15,12 @@ class LEdiView : public QGraphicsView
 	//QGraphicsItem *selectEditorItem;
 
     QPoint hPos1, hPos2; // - holded position
-    QGraphicsItem* hItem;
-    QGraphicsLineItem* hLine;
+	QGraphicsItem* hItem;
     QGraphicsRectItem* hRect;
-    LEShape* hLEShape;
-    PortShape* hPortShape;
-    WireShape* hWireShape;
+	LEShape* hLE;
+	PortShape* hPort;
+	WireShape* hWire;
+	int hScale;
 
 	QMenu* contextMenu;
 	QAction* act1;

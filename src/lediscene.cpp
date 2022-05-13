@@ -136,16 +136,16 @@ void LEdiScene::tracing(LogicElement* _le){
 		wire=_le->wires[i];
 		for (j=0; j<wire->drivers.size(); j++){
 			port=wire->drivers[j];
-			if (_le->havePort(port->name) == true)
-				begin=QPointF(0,0);
+			if (_le->havePort(port->name))
+				begin=port->shape->pos() + *(port->shape->ending);
 			else
-				begin=port->le->shape->pos()+port->le->shape->ports[port->le->leIndex(port)]->p2();
+				begin=port->le->shape->pos() + *(port->le->shape->ports[port->le->leIndex(port)]);
 			for (k=0; k<wire->loads.size(); k++){
 				port=wire->loads[k];
-				if (_le->havePort(port->name) == true)
-					end=QPointF(80,40);
+				if (_le->havePort(port->name))
+					end=port->shape->pos() + *(port->shape->ending);
 				else
-					end=port->le->shape->pos()+port->le->shape->ports[port->le->leIndex(port)]->p2();
+					end=port->le->shape->pos() + *(port->le->shape->ports[port->le->leIndex(port)]);
                 wireShape = new WireShape(wire);
 				wireShape->setLine(QLineF(begin,end));
 				addItem(wireShape);

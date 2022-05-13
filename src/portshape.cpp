@@ -3,19 +3,22 @@
 
 PortShape::PortShape(Port* _port) : QGraphicsItem(){
 	port = _port;
+	port->shape=this;
     setPos(0,0);
 
 	if (port->isOutput){
-        body[0] = new QLineF(QPoint(x(),y()+GRID_SZ),QPoint(x()+GRID_SZ,y()+GRID_SZ));
-        body[1] = new QLineF(QPoint(x()+GRID_SZ,y()),QPoint(x()+GRID_SZ,y()+2*GRID_SZ));
-        body[2] = new QLineF(QPoint(x()+GRID_SZ,y()),QPoint(x()+2*GRID_SZ,y()+GRID_SZ));
-        body[3] = new QLineF(QPoint(x()+GRID_SZ,y()+2*GRID_SZ),QPoint(x()+2*GRID_SZ,y()+GRID_SZ));
+		body[0] = new QLineF(QPoint(0,GRID_SZ),QPoint(GRID_SZ,GRID_SZ));
+		body[1] = new QLineF(QPoint(GRID_SZ,0),QPoint(GRID_SZ,2*GRID_SZ));
+		body[2] = new QLineF(QPoint(GRID_SZ,0),QPoint(2*GRID_SZ,GRID_SZ));
+		body[3] = new QLineF(QPoint(GRID_SZ,2*GRID_SZ),QPoint(2*GRID_SZ,GRID_SZ));
+		ending = new QPointF(0,GRID_SZ);
 	}
 	else{
-        body[0] = new QLineF(QPoint(x(),y()),QPoint(x(),y()+2*GRID_SZ));
-        body[1] = new QLineF(QPoint(x(),y()),QPoint(x()+GRID_SZ,y()+GRID_SZ));
-        body[2] = new QLineF(QPoint(x(),y()+2*GRID_SZ),QPoint(x()+GRID_SZ,y()+GRID_SZ));
-        body[3] = new QLineF(QPoint(x()+GRID_SZ,y()+GRID_SZ),QPoint(x()+2*GRID_SZ,y()+GRID_SZ));
+		body[0] = new QLineF(QPoint(0,0),QPoint(0,2*GRID_SZ));
+		body[1] = new QLineF(QPoint(0,0),QPoint(GRID_SZ,GRID_SZ));
+		body[2] = new QLineF(QPoint(0,2*GRID_SZ),QPoint(GRID_SZ,GRID_SZ));
+		body[3] = new QLineF(QPoint(GRID_SZ,GRID_SZ),QPoint(2*GRID_SZ,GRID_SZ));
+		ending = new QPointF(2*GRID_SZ,GRID_SZ);
 	}
 	setState(State::Default);
 }
@@ -36,6 +39,7 @@ void PortShape::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setFont(QFont("Calibri", 11, QFont::DemiBold));
     painter->drawText(QRectF(0, -1*GRID_SZ, 2*GRID_SZ, 1*GRID_SZ),0,port->name);
 
+
     switch(state){
     default:
         painter->setPen(QPen(QColor(0,255,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
@@ -50,6 +54,9 @@ void PortShape::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         break;
     }
     for (int i=0; i < 4; i++) painter->drawLine(*body[i]);
+
+	painter->setPen(QPen(QColor(255,0,0,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+	painter->drawPoint(*ending);
 
     return;
 }

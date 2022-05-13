@@ -6,6 +6,7 @@
 LEShape::LEShape(LogicElement* _le) : QGraphicsItem(){
     le=_le;
 	le->shape=this;
+	shownLabels = true;
     setPos(0,0);
 
     int h = qMax(le->inPorts.size(),le->outPorts.size());
@@ -16,11 +17,11 @@ LEShape::LEShape(LogicElement* _le) : QGraphicsItem(){
     for (int i=0; i < le->ports.size(); i++)
         if (le->ports[i]->isOutput){
             ody += GRID_SZ;
-			ports.append(new QLineF(QPoint(2*GRID_SZ,ody),QPoint(3*GRID_SZ,ody)));
+			ports.append(new QPointF(3*GRID_SZ,ody));
         }
         else{
             idy += GRID_SZ;
-			ports.append(new QLineF(QPoint(-1*GRID_SZ,idy),QPoint(0,idy)));
+			ports.append(new QPointF(-1*GRID_SZ,idy));
         }
 
     setState(Default);
@@ -39,15 +40,16 @@ QRectF LEShape::boundingRect() const{
 
 void LEShape::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
 
-    painter->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    painter->setFont(QFont("Calibri", 11, QFont::DemiBold));
-    painter->drawText(QRectF(-1*GRID_SZ, -1*GRID_SZ, 4*GRID_SZ, 1*GRID_SZ),0,le->name);
-    painter->drawText(QRectF(-1*GRID_SZ, body->height(), 4*GRID_SZ, 1*GRID_SZ),0,le->type);
+	if (shownLabels){
+		painter->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+		painter->setFont(QFont("Calibri", 11, QFont::DemiBold));
+		painter->drawText(QRectF(-1*GRID_SZ, -1*GRID_SZ, 4*GRID_SZ, 1*GRID_SZ),0,le->name);
+		painter->drawText(QRectF(-1*GRID_SZ, body->height(), 4*GRID_SZ, 1*GRID_SZ),0,le->type);
 
-    painter->setFont(QFont("Calibri", 8, QFont::DemiBold));
-    for (int i=0; i < ports.size(); i++)
-        painter->drawText(QRectF(ports[i]->p1().x()+0.25*GRID_SZ, ports[i]->p1().y(), 0.5*GRID_SZ, 1*GRID_SZ),0,le->ports[i]->name);
-
+		painter->setFont(QFont("Calibri", 8, QFont::DemiBold));
+		for (int i=0; i < ports.size(); i++)
+			painter->drawText(QRectF(ports[i]->x()-0.5*GRID_SZ, ports[i]->y(), 1*GRID_SZ, 0.75*GRID_SZ),0,le->ports[i]->name);
+	}
 
     switch(state){
     default:
@@ -64,7 +66,14 @@ void LEShape::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     }
     painter->drawRect(*body);
     for (int i=0; i < ports.size(); i++)
-        painter->drawLine(*ports[i]);
+		if (le->ports[i]->isOutput)
+			painter->drawLine(QLineF(2*GRID_SZ,ports[i]->y(),ports[i]->x(),ports[i]->y()));
+		else
+			painter->drawLine(QLineF(0,ports[i]->y(),ports[i]->x(),ports[i]->y()));
+
+	painter->setPen(QPen(QColor(255,0,0,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+	for (int i=0; i < ports.size(); i++)
+		painter->drawPoint(*ports[i]);
 
     return;
 }

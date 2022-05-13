@@ -13,13 +13,14 @@ private:
 	State state;
     LogicElement* le;
     QRectF* body;
-    QList<QLineF*> ports;
+	QList<QPointF*> ports;
+	bool shownLabels;
 
 public:
 	 LEShape(LogicElement* _le);
      ~LEShape();
     QRectF boundingRect() const override;
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) override;
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) override;
     int type() const override {return Type;}
     void setState(State state);
 
