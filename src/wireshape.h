@@ -16,7 +16,7 @@ private:
 public:
     WireShape(Wire* _wire);
     ~WireShape() {};
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) override;
     int type() const override {return Type;}
     void setState(State state);
 };

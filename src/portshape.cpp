@@ -4,6 +4,7 @@
 PortShape::PortShape(Port* _port) : QGraphicsItem(){
 	port = _port;
 	port->shape=this;
+    shownLabels=true;
     setPos(0,0);
 
 	if (port->isOutput){
@@ -33,29 +34,30 @@ QRectF PortShape::boundingRect() const{
     return QRectF(0,-1*GRID_SZ,2*GRID_SZ,3*GRID_SZ);
 }
 
-void PortShape::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+void PortShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) {
 
-    painter->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    painter->setFont(QFont("Calibri", 11, QFont::DemiBold));
-    painter->drawText(QRectF(0, -1*GRID_SZ, 2*GRID_SZ, 1*GRID_SZ),0,port->name);
-
+    if (shownLabels){
+        painter->setPen(QPen(QColor(RED,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter->setFont(QFont("Calibri", 11, QFont::DemiBold));
+        painter->drawText(QRectF(0, -1*GRID_SZ, 2*GRID_SZ, 1*GRID_SZ),0,port->name);
+    }
 
     switch(state){
     default:
-        painter->setPen(QPen(QColor(0,255,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter->setPen(QPen(QColor(GREEN,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         break;
 
     case State::Bolded:
-        painter->setPen(QPen(QColor(0,255,0,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter->setPen(QPen(QColor(GREEN,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         break;
 
     case State::Moved:
-        painter->setPen(QPen(QColor(0,255,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter->setPen(QPen(QColor(GREEN,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         break;
     }
     for (int i=0; i < 4; i++) painter->drawLine(*body[i]);
 
-	painter->setPen(QPen(QColor(255,0,0,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    painter->setPen(QPen(QColor(RED,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 	painter->drawPoint(*ending);
 
     return;

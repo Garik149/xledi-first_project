@@ -11,7 +11,7 @@
 class LEdiView : public QGraphicsView
 {
     enum State {Default, DrawingWire, PlacingLE}; State state;
-    LEdiScene *sceneLE;
+    LEdiScene* scene;
 	//QGraphicsItem *selectEditorItem;
 
     QPoint hPos1, hPos2; // - holded position
@@ -20,7 +20,7 @@ class LEdiView : public QGraphicsView
 	LEShape* hLE;
 	PortShape* hPort;
 	WireShape* hWire;
-	int hScale;
+    float hScale;
 
 	QMenu* contextMenu;
 	QAction* act1;

@@ -20,7 +20,7 @@ public:
 	 LEShape(LogicElement* _le);
      ~LEShape();
     QRectF boundingRect() const override;
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) override;
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) override;
     int type() const override {return Type;}
     void setState(State state);
 

@@ -6,8 +6,8 @@
 #include "wire.h"
 #include "wireshape.h"
 
-LEdiView::LEdiView(LEdiScene *scene, QWidget *parent) : QGraphicsView(scene, parent){
-	sceneLE = scene;
+LEdiView::LEdiView(LEdiScene *_scene, QWidget *_parent) : QGraphicsView(_scene, _parent){
+    scene = _scene;
 	{
         setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -41,31 +41,31 @@ void LEdiView::slotOnCustomContextMenu(const QPoint&){}
 void LEdiView::slotAct1(){
 	hWire = new WireShape(new Wire());
 	hWire->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-	sceneLE->addItem(hWire);
+    scene->addItem(hWire);
     state = DrawingWire;
 }
 void LEdiView::slotAct2(){
 	hLE = new LEShape(new LogicElement("al_ao21","U1"));
 	hLE->setState(LEShape::State::Moved);
-	sceneLE->addItem(hLE);
+    scene->addItem(hLE);
     state = PlacingLE;
 }
 
 
-QPoint LEdiView::btg(QPointF point){
-    return {qRound(point.x()/GRID_SZ)*GRID_SZ,qRound(point.y()/GRID_SZ)*GRID_SZ};
+QPoint LEdiView::btg(QPointF _point){
+    return {qRound(_point.x()/GRID_SZ)*GRID_SZ,qRound(_point.y()/GRID_SZ)*GRID_SZ};
 }
 
 void LEdiView::forgetHolded(){
-	if (hWire!=NULL) {hWire = NULL;}
     if (hRect!=NULL) {hRect = NULL;}
 	if (hLE!=NULL) {hLE->setState(LEShape::State::Default); hLE = NULL;}
 	if (hPort!=NULL) {hPort->setState(PortShape::State::Default); hPort = NULL;}
+    if (hWire!=NULL) {hWire->setState(WireShape::State::Default); hWire = NULL;}
 }
 
-void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
-    hPos1=btg(mapToScene(mouseEvent->pos()));
-    switch (mouseEvent->button()){
+void LEdiView::mousePressEvent(QMouseEvent *_mouseEvent){
+    hPos1=btg(mapToScene(_mouseEvent->pos()));
+    switch (_mouseEvent->button()){
     default:
         break;
 
@@ -73,7 +73,7 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
         switch (state){
 		default:
             forgetHolded();
-            hItem = sceneLE->itemAt(mouseEvent->pos(),transform());
+            hItem = scene->itemAt(mapToScene(_mouseEvent->pos()),QTransform());
             if (hItem!=NULL)
                 switch(hItem->type()-QGraphicsItem::UserType){
                 default:
@@ -101,14 +101,14 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
             hPos1=hPos2;
 			hWire = new WireShape(new Wire());
 			hWire->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-			sceneLE->addItem(hWire);
+            scene->addItem(hWire);
             break;
 
         case PlacingLE:
             forgetHolded();
 			hLE = new LEShape(new LogicElement("al_ao21","U1"));
 			hLE->setState(LEShape::State::Moved);
-			sceneLE->addItem(hLE);
+            scene->addItem(hLE);
             break;
         }
         break;
@@ -134,8 +134,8 @@ void LEdiView::mousePressEvent(QMouseEvent *mouseEvent){
     }
 }
 
-void LEdiView::mouseMoveEvent(QMouseEvent *mouseEvent){
-    hPos2=btg(mapToScene(mouseEvent->pos()));
+void LEdiView::mouseMoveEvent(QMouseEvent *_mouseEvent){
+    hPos2=btg(mapToScene(_mouseEvent->pos()));
     switch (state){
     default:
         break;
@@ -152,19 +152,25 @@ void LEdiView::mouseMoveEvent(QMouseEvent *mouseEvent){
     }
 }
 
-void LEdiView::keyPressEvent(QKeyEvent *keyEvent){
-    switch (keyEvent->key()){
+void LEdiView::keyPressEvent(QKeyEvent *_keyEvent){
+    switch (_keyEvent->key()){
     default:
         break;
 
 	case Qt::Key_Minus:
-		hScale*=0.8;
-		scale(0.8,0.8);
+        if (hScale > 0.5){
+            hScale*=0.8;
+            scale(0.8,0.8);
+            scene->scaleUpdate(hScale);
+        }
 		break;
 
 	case Qt::Key_Equal:
-		hScale*=1.25;
-		scale(1.25,1.25);
-		break;
+        if (hScale < 2){
+            hScale*=1.25;
+            scale(1.25,1.25);
+            scene->scaleUpdate(hScale);
+        }
+        break;
     }
 }

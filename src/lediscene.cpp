@@ -21,7 +21,46 @@ void LEdiScene::drawBackground(QPainter *painter, const QRectF &rect)
 			painter->drawPoint(i, j);
 }
 
-void LEdiScene::check(QHash<LogicElement*, int>* map, LogicElement* _le, int _r){
+void LEdiScene::scaleUpdate(float scale){
+    LEShape* le;
+    PortShape* port;
+    QList<QGraphicsItem*> item = items();
+
+    for (int i=0; i<item.size(); i++)
+    if (scale < 0.6)
+        switch(item[i]->type()-QGraphicsItem::UserType){
+        default:
+            break;
+
+        case 0:
+            le = (LEShape*)item[i];
+            le->shownLabels=false;
+            break;
+
+        case 1:
+            port = (PortShape*)item[i];
+            port->shownLabels=false;
+            break;
+        }
+    else
+        switch(item[i]->type()-QGraphicsItem::UserType){
+        default:
+            break;
+
+        case 0:
+            le = (LEShape*)item[i];
+            le->shownLabels=true;
+            break;
+
+        case 1:
+            port = (PortShape*)item[i];
+            port->shownLabels=true;
+            break;
+        }
+}
+
+
+void LEdiScene::setRank(QHash<LogicElement*, int>* map, LogicElement* _le, int _r){
 	int& r = map->find(_le).value();
 	if (r < _r+1) r=_r+1;
 
@@ -32,7 +71,7 @@ void LEdiScene::check(QHash<LogicElement*, int>* map, LogicElement* _le, int _r)
 		for (int j=0; j < port->outsideWire->loads.size(); j++){
 			wire=port->outsideWire;
 			if (wire == wire->loads[j]->outsideWire)
-				check(map, wire->loads[j]->le,r);
+                setRank(map, wire->loads[j]->le,r);
 		}
 	}
 }
@@ -45,7 +84,7 @@ void LEdiScene::layout(LogicElement* le){
 
 	for (i=0; i<le->inPorts.size(); i++)
         for (j=0; j<le->inPorts[i]->insideWire->loads.size(); j++)
-			check(map, le->inPorts[i]->insideWire->loads[j]->le,0);
+            setRank(map, le->inPorts[i]->insideWire->loads[j]->le,0);
 
 	int maxRank = 1;
 	for (i=0; i<le->logicElements.size(); i++){
@@ -128,8 +167,8 @@ void LEdiScene::tracing(LogicElement* _le){
 	WireShape* wireShape;
 	Wire* wire;
 	Port* port;
-	//QList<QGraphicsLineItem*> U1;
-	//QList<QGraphicsLineItem*> U2;
+    QList<QGraphicsLineItem*> U1;
+    QList<QGraphicsLineItem*> U2;
 	QPointF begin, end;
 
 	for (i=0; i<_le->wires.size(); i++){

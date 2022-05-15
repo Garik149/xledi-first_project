@@ -9,19 +9,19 @@ WireShape::WireShape(Wire* _wire) : QGraphicsLineItem(){
 }
 
 
-void WireShape::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+void WireShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) {
 
     switch(state){
     default:
-        painter->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter->setPen(QPen(QColor(BLUE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         break;
 
     case State::Bolded:
-        painter->setPen(QPen(QColor(255,0,0,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter->setPen(QPen(QColor(BLUE,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         break;
 
     case State::Moved:
-        painter->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        painter->setPen(QPen(QColor(BLUE,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         break;
     }
 
