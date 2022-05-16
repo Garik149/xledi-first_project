@@ -1,6 +1,8 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
+#include <qdebug.h>
+
 #define RESULT_ERROR 1
 #define RESULT_SUCCESS 0
 #define W 320
@@ -10,12 +12,13 @@
 #define RED 230,20,20
 #define GREEN 50,210,20
 
-struct Port;
-struct Wire;
 class LogicElement;
 class LEShape;
+struct Port;
 class PortShape;
+struct Wire;
 class WireShape;
+class WireSeg;
 class LEdiScene;
 class LEdiView;
 class Locale;

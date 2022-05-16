@@ -42,22 +42,25 @@ void PortShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidge
         painter->drawText(QRectF(0, -1*GRID_SZ, 2*GRID_SZ, 1*GRID_SZ),0,port->name);
     }
 
-    switch(state){
-    default:
-        painter->setPen(QPen(QColor(GREEN,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        break;
+	QPen pen(QColor(GREEN,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+	switch(state){
+	default:
+		break;
 
-    case State::Bolded:
-        painter->setPen(QPen(QColor(GREEN,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        break;
+	case State::Bolded:
+		pen.setWidth(pen.width()+1);
+		break;
 
-    case State::Moved:
-        painter->setPen(QPen(QColor(GREEN,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-        break;
-    }
-    for (int i=0; i < 4; i++) painter->drawLine(*body[i]);
+	case State::Moved:
+		pen.setColor(QColor(pen.color().red(),pen.color().green(),pen.color().blue(),128));
+		break;
+	}
 
-    painter->setPen(QPen(QColor(RED,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+	painter->setPen(pen);
+	for (int i=0; i < 4; i++) painter->drawLine(*body[i]);
+
+	pen.setWidth(pen.width()+4);
+	painter->setPen(pen);
 	painter->drawPoint(*ending);
 
     return;

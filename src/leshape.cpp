@@ -52,7 +52,6 @@ void LEShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*
 	}
 
     QPen pen(QColor(GREEN,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-
     switch(state){
     default:
         break;
@@ -65,13 +64,13 @@ void LEShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*
         pen.setColor(QColor(pen.color().red(),pen.color().green(),pen.color().blue(),128));
         break;
     }
+
     painter->setPen(pen);
     painter->drawRect(*body);
 
     pen.setWidth(pen.width()+4);
     painter->setPen(pen);
-    for (int i=0; i < ports.size(); i++)
-		painter->drawPoint(*ports[i]);
+	for (int i=0; i < ports.size(); i++) painter->drawPoint(*ports[i]);
 
     return;
 }

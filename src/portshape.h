@@ -11,7 +11,7 @@ public:
 	enum State {Default, Bolded, Moved};
 private:
 	State state;
-    Port* port;
+	Port* data;
     QLineF* body[4];
 	QPointF* ending;
     bool shownLabels;

@@ -11,7 +11,7 @@ public:
 	enum State {Default, Bolded, Moved};
 private:
 	State state;
-    LogicElement* le;
+	LogicElement* data;
     QRectF* body;
 	QList<QPointF*> ports;
 	bool shownLabels;

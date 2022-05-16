@@ -10,7 +10,8 @@ struct Wire
     QString name;
     QList<Port*> drivers;
     QList<Port*> loads;
-    QList<Wire*> assigns;
+	//QList<Wire*> assigns;
+	WireShape* shape;
 
      Wire();
      Wire(QString _name);

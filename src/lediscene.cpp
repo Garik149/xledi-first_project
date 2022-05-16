@@ -1,5 +1,4 @@
 #include <QMap>
-
 #include "lediscene.h"
 #include "lediview.h"
 #include "leshape.h"
@@ -149,10 +148,10 @@ void LEdiScene::tracing(LogicElement* _le){
                     M[i][j]=Block;
                     break;
 
-                case 2: //WireShape
-                    wireShape=(WireShape*)item;
-                    if ((point != wireShape->line().p1())&&(point != wireShape->line().p2()))
-                        if (wireShape->line().p1().x() == wireShape->line().p2().x())
+				case 2: //WireShape
+					wireShape=(WireShape*)item;
+					if ((point != wireShape->line().p1())&&(point != wireShape->line().p2()))
+						if (wireShape->line().p1().x() == wireShape->line().p2().x())
                             M[i][j]=HLine;
                         else
                             M[i][j]=VLine;
@@ -167,12 +166,13 @@ void LEdiScene::tracing(LogicElement* _le){
 	WireShape* wireShape;
 	Wire* wire;
 	Port* port;
-    QList<QGraphicsLineItem*> U1;
-    QList<QGraphicsLineItem*> U2;
+	QList<QGraphicsLineItem*> U1;
+	QList<QGraphicsLineItem*> U2;
 	QPointF begin, end;
 
 	for (i=0; i<_le->wires.size(); i++){
 		wire=_le->wires[i];
+		wireShape = new WireShape(wire);
 		for (j=0; j<wire->drivers.size(); j++){
 			port=wire->drivers[j];
 			if (_le->havePort(port->name))
@@ -185,9 +185,9 @@ void LEdiScene::tracing(LogicElement* _le){
 					end=port->shape->pos() + *(port->shape->ending);
 				else
 					end=port->le->shape->pos() + *(port->le->shape->ports[port->le->leIndex(port)]);
-                wireShape = new WireShape(wire);
-				wireShape->setLine(QLineF(begin,end));
-				addItem(wireShape);
+
+				wireShape->addSeg(QLineF(begin,end));
+				wireShape->addToScene(this);
             }
 		}
 	}

@@ -1,24 +1,38 @@
 #ifndef WIRESHAPE_H
 #define WIRESHAPE_H
 
-#include <QGraphicsItem>
+#include <QGraphicsLineItem>
 #include <QPainter>
 #include "defines.h"
+#include "lediscene.h"
 
-class WireShape : public QGraphicsLineItem{
+class WireShape{
+	Wire* data;
+	QList <WireSeg*> seg;
+
 public:
-    enum {Type = UserType + 2};
-    enum State {Default, Bolded, Moved};
+	WireShape(Wire* _wire);
+	~WireShape() {};
+
+	void addToScene(LEdiScene* _scene);
+	void addSeg(QLineF line);
+};
+
+
+class WireSeg : public QGraphicsLineItem{
+public:
+	enum {Type = UserType + 2};
+	enum State {Default, Bolded, Moved};
 private:
-    State state;
-    Wire* wire;
+	State state;
+	WireShape* whole;
 
 public:
-    WireShape(Wire* _wire);
-    ~WireShape() {};
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) override;
-    int type() const override {return Type;}
-    void setState(State state);
+	WireSeg(WireShape* _whole, QLineF _line);
+	~WireSeg() {};
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) override;
+	int type() const override {return Type;}
+	void setState(State state);
 };
 
 #endif // WIRESHAPE_H
