@@ -4,18 +4,18 @@
 #include "port.h"
 
 LEShape::LEShape(LogicElement* _le) : QGraphicsItem(){
-    le=_le;
-	le->shape=this;
+    data =_le;
+    data->shape=this;
 	shownLabels = true;
     setPos(0,0);
 
-    int h = qMax(le->inPorts.size(),le->outPorts.size());
+    int h = qMax(data->inPorts.size(),data->outPorts.size());
 
     body = new QRectF(0, 0, 2*GRID_SZ, (h+1)*GRID_SZ);
 
     int ody=0, idy=0;
-    for (int i=0; i < le->ports.size(); i++)
-        if (le->ports[i]->isOutput){
+    for (int i=0; i < data->ports.size(); i++)
+        if (data->ports[i]->isOutput){
             ody += GRID_SZ;
             ports.append(new QPointF(2*GRID_SZ,ody));
         }
@@ -35,7 +35,7 @@ LEShape::~LEShape(){
 
 
 QRectF LEShape::boundingRect() const{
-    return QRectF(-1*GRID_SZ,-1*GRID_SZ,3*GRID_SZ,body->height()+1*GRID_SZ);
+    return QRectF(-0.9*GRID_SZ,-0.9*GRID_SZ,3.8*GRID_SZ,body->height()+1.8*GRID_SZ);
 }
 
 void LEShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) {
@@ -43,12 +43,12 @@ void LEShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*
 	if (shownLabels){
         painter->setPen(QPen(QColor(RED,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 		painter->setFont(QFont("Calibri", 11, QFont::DemiBold));
-		painter->drawText(QRectF(-1*GRID_SZ, -1*GRID_SZ, 4*GRID_SZ, 1*GRID_SZ),0,le->name);
-		painter->drawText(QRectF(-1*GRID_SZ, body->height(), 4*GRID_SZ, 1*GRID_SZ),0,le->type);
+        painter->drawText(QRectF(-0.9*GRID_SZ, -0.9*GRID_SZ, 3.8*GRID_SZ, 0.9*GRID_SZ),0,data->name);
+        painter->drawText(QRectF(-0.9*GRID_SZ, body->height(), 3.8*GRID_SZ, 0.9*GRID_SZ),0,data->type);
 
 		painter->setFont(QFont("Calibri", 8, QFont::DemiBold));
 		for (int i=0; i < ports.size(); i++)
-			painter->drawText(QRectF(ports[i]->x()-0.5*GRID_SZ, ports[i]->y(), 1*GRID_SZ, 0.75*GRID_SZ),0,le->ports[i]->name);
+            painter->drawText(QRectF(ports[i]->x()-0.5*GRID_SZ, ports[i]->y(), 1*GRID_SZ, 0.75*GRID_SZ),0,data->ports[i]->name);
 	}
 
     QPen pen(QColor(GREEN,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);

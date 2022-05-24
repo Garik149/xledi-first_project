@@ -16,7 +16,7 @@ class LEdiView : public QGraphicsView
 
     QPoint hPos1, hPos2; // - holded position
 	QGraphicsItem* hItem;
-    QGraphicsRectItem* hRect;
+    WireSeg* hWireSeg;
 	LEShape* hLE;
 	PortShape* hPort;
 	WireShape* hWire;

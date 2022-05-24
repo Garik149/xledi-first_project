@@ -2,17 +2,17 @@
 #include "wire.h"
 
 //WireShape
-WireShape::WireShape(Wire* _wire){
+WireShape::WireShape(Wire* _wire, LEdiScene* _scene){
 	_wire->shape=this;
+    scene=_scene;
 	data=_wire;
 }
 
-void WireShape::addToScene(LEdiScene* _scene){
-	for (int i=0; i<seg.size();i++) _scene->addItem(seg[i]);
-}
-
-void WireShape::addSeg(QLineF line){
-	seg.append(new WireSeg(this, line));
+WireSeg* WireShape::addSeg(QLineF line){
+    WireSeg* hWireSeg=new WireSeg(this, line);
+    seg.append(hWireSeg);
+    scene->addItem(hWireSeg);
+    return hWireSeg;
 }
 
 
@@ -27,20 +27,21 @@ WireSeg::WireSeg(WireShape* _shape, QLineF _line) : QGraphicsLineItem(_line){
 
 void WireSeg::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) {
 
-	switch(state){
+    QPen pen(QPen(QColor(BLUE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+    switch(state){
 	default:
-		painter->setPen(QPen(QColor(BLUE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		break;
+        break;
 
 	case State::Bolded:
-		painter->setPen(QPen(QColor(BLUE,255), 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		break;
+        pen.setWidth(pen.width()+1);
+        break;
 
 	case State::Moved:
-		painter->setPen(QPen(QColor(BLUE,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-		break;
+        pen.setColor(QColor(pen.color().red(),pen.color().green(),pen.color().blue(),128));
+        break;
 	}
 
+    painter->setPen(pen);
 	painter->drawLine(line());
 
 	return;

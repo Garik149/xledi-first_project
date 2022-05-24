@@ -7,15 +7,40 @@
 #include "defines.h"
 
 class LEdiScene : public QGraphicsScene{
-    void drawBackground(QPainter *painter, const QRectF &rect) override;
-    void setRank(QHash<LogicElement*, int>* map, LogicElement* _le, int r);
 
+private:
+    void drawBackground(QPainter *painter, const QRectF &rect) override;
 public:
     LEdiScene(const QRect &sceneRect, QObject *parent = nullptr) : QGraphicsScene(sceneRect,parent){};
      ~LEdiScene(){};
     void scaleUpdate(float scale);
 
-	void layout(LogicElement* le);
+    //placing
+private:
+    QHash<LogicElement*, int> rank;
+    void setRank(LogicElement* _le, int r);
+public:
+    void layout(LogicElement* le);
+
+    //tracing
+private:
+    int iter;
+    bool flagH;
+    WireShape* hWireShape;
+    QList<QList<QLineF*>> H1;
+    QList<QList<QLineF*>> H2;
+    QList<QList<QLineF*>> V1;
+    QList<QList<QLineF*>> V2;
+    QLineF* makeHLine(QPointF _point);
+    QLineF* makeVLine(QPointF _point);
+    QList<QLineF*> makeHNormalsToVLines(QList<QLineF*> parent);
+    QList<QLineF*> makeVNormalsToHLines(QList<QLineF*> parent);
+    QLineF* findMidLine();
+    QPointF findOverlap(QLineF* l1, QLineF* l2);
+    QPair<QPointF, QLineF*> findOverlapWithList(QLineF* line, QList<QLineF*> lineList);
+    bool trace();
+    void makePath(QLineF* midLine);
+public:
     void tracing(LogicElement* le);
 
     Q_OBJECT

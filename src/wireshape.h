@@ -7,15 +7,15 @@
 #include "lediscene.h"
 
 class WireShape{
+    LEdiScene* scene;
 	Wire* data;
 	QList <WireSeg*> seg;
 
 public:
-	WireShape(Wire* _wire);
-	~WireShape() {};
+    WireShape(Wire* _wire, LEdiScene* _scene);
+    ~WireShape() {};
 
-	void addToScene(LEdiScene* _scene);
-	void addSeg(QLineF line);
+    WireSeg* addSeg(QLineF line);
 };
 
 

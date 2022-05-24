@@ -340,9 +340,7 @@ bool LogicElement::initLEFromFile(const QString& _path){
 		str1 = cutLine(p, line, ';');
 		str1.remove(0,7); str1.chop(1);
 		str2 = str1.section('=',0,0);
-		str3 = str1.section('=',1,1);
-		wireNamed(str3)->assigns.append(wireNamed(str2));
-		wireNamed(str2)->assigns.append(wireNamed(str3));
+        str3 = str1.section('=',1,1);
 	}
 
 	while (line.contains(QRegExp("\\b"))){

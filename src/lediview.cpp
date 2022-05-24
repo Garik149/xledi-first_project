@@ -26,10 +26,10 @@ LEdiView::LEdiView(LEdiScene *_scene, QWidget *_parent) : QGraphicsView(_scene, 
     }
 
     hPos1 = QPoint(0,0); hPos2 = QPoint(0,0);
-	hWire = NULL;
-    hRect = NULL;
+    hWire = NULL;
 	hLE = NULL;
 	hPort = NULL;
+    hWireSeg = NULL;
 	hScale = 1;
     state = Default;
     setMouseTracking(true);
@@ -39,9 +39,9 @@ LEdiView::LEdiView(LEdiScene *_scene, QWidget *_parent) : QGraphicsView(_scene, 
 
 void LEdiView::slotOnCustomContextMenu(const QPoint&){}
 void LEdiView::slotAct1(){
-	hWire = new WireShape(new Wire());
-	hWire->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    scene->addItem(hWire);
+    hWire = new WireShape(new Wire(),scene);
+    hWireSeg = hWire->addSeg(QLineF());
+    hWireSeg->setState(WireSeg::State::Moved);
     state = DrawingWire;
 }
 void LEdiView::slotAct2(){
@@ -57,10 +57,9 @@ QPoint LEdiView::btg(QPointF _point){
 }
 
 void LEdiView::forgetHolded(){
-    if (hRect!=NULL) {hRect = NULL;}
 	if (hLE!=NULL) {hLE->setState(LEShape::State::Default); hLE = NULL;}
 	if (hPort!=NULL) {hPort->setState(PortShape::State::Default); hPort = NULL;}
-    if (hWire!=NULL) {hWire->setState(WireShape::State::Default); hWire = NULL;}
+    if (hWireSeg!=NULL) {hWireSeg->setState(WireSeg::State::Default); hWireSeg = NULL;}
 }
 
 void LEdiView::mousePressEvent(QMouseEvent *_mouseEvent){
@@ -90,18 +89,17 @@ void LEdiView::mousePressEvent(QMouseEvent *_mouseEvent){
                     break;
 
                 case 2:
-					hWire = (WireShape*)hItem;
-					hWire->setState(WireShape::State::Bolded);
+                    hWireSeg = (WireSeg*)hItem;
+                    hWireSeg->setState(WireSeg::State::Bolded);
                     break;
                 }
             break;
 
         case DrawingWire:
-			hWire->setPen(QPen(QColor(255,0,0,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+            hWireSeg->setState(WireSeg::State::Default);
             hPos1=hPos2;
-			hWire = new WireShape(new Wire());
-			hWire->setPen(QPen(QColor(255,0,0,128), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-            scene->addItem(hWire);
+            hWireSeg = hWire->addSeg(QLineF());
+            hWireSeg->setState(WireSeg::State::Moved);
             break;
 
         case PlacingLE:
@@ -121,7 +119,7 @@ void LEdiView::mousePressEvent(QMouseEvent *_mouseEvent){
             break;
 
         case DrawingWire:
-			delete(hWire); hWire=NULL;
+            delete(hWireSeg); hWireSeg=NULL;
             state = Default;
             break;
 
@@ -143,7 +141,7 @@ void LEdiView::mouseMoveEvent(QMouseEvent *_mouseEvent){
     case DrawingWire:
         if (abs(hPos2.x()-hPos1.x()) < abs(hPos2.y()-hPos1.y())) hPos2.rx()=hPos1.x();
             else hPos2.ry()=hPos1.y();
-		hWire->setLine(QLine(hPos2,hPos1));
+        hWireSeg->setLine(QLine(hPos2,hPos1));
         break;
 
     case PlacingLE:
