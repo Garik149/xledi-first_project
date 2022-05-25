@@ -24,23 +24,19 @@ public:
 
     //tracing
 private:
-    int iter;
-    bool flagH;
-    WireShape* hWireShape;
-    QList<QList<QLineF*>> H1;
-    QList<QList<QLineF*>> H2;
-    QList<QList<QLineF*>> V1;
-    QList<QList<QLineF*>> V2;
+	int iter;
+	bool flagH;
+	WireShape* hWireShape;
     QLineF* makeHLine(QPointF _point);
     QLineF* makeVLine(QPointF _point);
 	bool pointIsOnHLines(QPointF _point, QList<QLineF*> h);
 	bool pointIsOnVLines(QPointF _point, QList<QLineF*> v);
     QList<QLineF*> makeHNormalsToVLines(QList<QLineF*> parent);
     QList<QLineF*> makeVNormalsToHLines(QList<QLineF*> parent);
-    QLineF* findMidLine();
+	QLineF* findMidLine(QList<QLineF*> _bLL, QList<QLineF*> _eLL);
     QPointF findOverlap(QLineF* l1, QLineF* l2);
-    QPair<QPointF, QLineF*> findOverlapWithList(QLineF* line, QList<QLineF*> lineList);
-    bool trace();
+	QLineF* findOverlapWithList(QLineF* l, QList<QLineF*> lL);
+	bool trace(QList<QLineF*> bLL, QList<QLineF*> eLL);
     void makePath(QLineF* midLine);
 public:
     void tracing(LogicElement* le);
