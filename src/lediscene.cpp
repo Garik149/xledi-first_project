@@ -129,36 +129,28 @@ QLineF* LEdiScene::makeHLine(QPointF _point){
 
     QPointF point = _point;
     bool end;
-    int i, x, xl, xr;
-
-    {
-        QList<QLineF*> &h = H1.back();
-        for (i=0; i<h.size(); i++)
-            if ((_point.y() == h[i]->y1())&&(_point.x() > qMin(h[i]->x1(),h[i]->x2()))&&(_point.x() < qMax(h[i]->x1(),h[i]->x2()))) return NULL;
-    }
-    {
-        QList<QLineF*> &h = H2.back();
-        for (i=0; i<h.size(); i++)
-            if ((_point.y() == h[i]->y1())&&(_point.x() > qMin(h[i]->x1(),h[i]->x2()))&&(_point.x() < qMax(h[i]->x1(),h[i]->x2()))) return NULL;
-    }
+	int x, xl, xr;
 
     //Left direction
-    x=_point.x();
-    xl=x;
+	xl=_point.x();
+	x=xl-GRID_SZ;
     end=false;
-    while((!end) && (x>0)){
-        x-=GRID_SZ;
+	while((!end) && (x>0)){
         point.setX(x);
-        item = itemAt(point,QTransform());
+		item = itemAt(point,QTransform());
         if (item!=NULL)
-            switch(item->type()-QGraphicsItem::UserType){
+			switch(item->type()-QGraphicsItem::UserType){
             default:
                 xl=x;
                 break;
 
-            case 0-1: //LEShape, PortShape
+			case 0: //LEShape
                 end=true;
                 break;
+
+			case 1: //PortShape
+				end=true;
+				break;
 
             case 2: //WireSeg
                 wireSeg=(WireSeg*)item;
@@ -168,14 +160,14 @@ QLineF* LEdiScene::makeHLine(QPointF _point){
             }
         else
             xl=x;
-    }
+		x-=GRID_SZ;
+	}
 
     //Right direction
-    x=_point.x();
-    xr=x;
+	xr=_point.x();
+	x=xr+GRID_SZ;
     end=false;
-    while((!end) && (x<W*GRID_SZ)){
-        x+=GRID_SZ;
+	while((!end) && (x<W*GRID_SZ)){
         point.setX(x);
         item = itemAt(point,QTransform());
         if (item!=NULL)
@@ -184,9 +176,13 @@ QLineF* LEdiScene::makeHLine(QPointF _point){
                 xr=x;
                 break;
 
-            case 0-1: //LEShape, PortShape
-                end=true;
-                break;
+			case 0: //LEShape
+				end=true;
+				break;
+
+			case 1: //PortShape
+				end=true;
+				break;
 
             case 2: //WireSeg
                 wireSeg=(WireSeg*)item;
@@ -196,9 +192,11 @@ QLineF* LEdiScene::makeHLine(QPointF _point){
             }
         else
             xr=x;
+		x+=GRID_SZ;
     }
 
-    return new QLineF(QPointF(xl,_point.y()),QPointF(xr,_point.y()));
+	if (xl==xr) return NULL;
+	else return new QLineF(QPointF(xl,_point.y()),QPointF(xr,_point.y()));
 }
 QLineF* LEdiScene::makeVLine(QPointF _point){
 
@@ -207,25 +205,14 @@ QLineF* LEdiScene::makeVLine(QPointF _point){
 
     QPointF point=_point;
     bool end;
-    int i, y, yt, yb;
-
-    {
-        QList<QLineF*> &h = H1.back();
-        for (i=0; i<h.size(); i++)
-            if ((_point.x() == h[i]->x1())&&(_point.y() > qMin(h[i]->y1(),h[i]->y2()))&&(_point.y() < qMax(h[i]->y1(),h[i]->y2()))) return NULL;
-    }
-    {
-        QList<QLineF*> &h = H2.back();
-        for (i=0; i<h.size(); i++)
-            if ((_point.x() == h[i]->x1())&&(_point.y() > qMin(h[i]->y1(),h[i]->y2()))&&(_point.y() < qMax(h[i]->y1(),h[i]->y2()))) return NULL;
-    }
+	int y, yt, yb;
 
     //Up direction
-    y=_point.y();
-    yt=y;
+	yt=_point.y();
+	y=yt-GRID_SZ;
     end=false;
     while((!end) && (y>0)){
-        y-=GRID_SZ;
+
         point.setY(y);
         item = itemAt(point,QTransform());
         if (item!=NULL)
@@ -234,9 +221,13 @@ QLineF* LEdiScene::makeVLine(QPointF _point){
                 yt=y;
                 break;
 
-            case 0-1: //LEShape, PortShape
-                end=true;
-                break;
+			case 0: //LEShape
+				end=true;
+				break;
+
+			case 1: //PortShape
+				end=true;
+				break;
 
             case 2: //WireSeg
                 wireSeg=(WireSeg*)item;
@@ -246,14 +237,14 @@ QLineF* LEdiScene::makeVLine(QPointF _point){
             }
         else
             yt=y;
+		y-=GRID_SZ;
     }
 
     //Down direction
-    y=_point.y();
-    yb=y;
+	yb=_point.y();
+	y=yb+GRID_SZ;
     end=false;
     while((!end) && (y<H*GRID_SZ)){
-        y+=GRID_SZ;
         point.setY(y);
         item = itemAt(point,QTransform());
         if (item!=NULL)
@@ -262,31 +253,49 @@ QLineF* LEdiScene::makeVLine(QPointF _point){
                 yb=y;
                 break;
 
-            case 0-1: //LEShape, PortShape
-                end=true;
-                break;
+			case 0: //LEShape
+				end=true;
+				break;
+
+			case 1: //PortShape
+				end=true;
+				break;
 
             case 2: //WireSeg
-                wireSeg=(WireSeg*)item;
+				wireSeg=(WireSeg*)item;
                 if ((point == wireSeg->line().p1())||(point == wireSeg->line().p2()))
                     end=true;
                 break;
             }
         else
             yb=y;
+		y+=GRID_SZ;
     }
 
-    return new QLineF(QPointF(_point.x(),yt),QPointF(_point.x(),yb));
+	if (yt==yb) return NULL;
+	else return new QLineF(QPointF(_point.x(),yt),QPointF(_point.x(),yb));
+}
+bool LEdiScene::pointIsOnHLines(QPointF _point, QList<QLineF*> h){
+	for (int i=0; i<h.size(); i++)
+		if ((_point.y() == h[i]->y1())&&(_point.x() > h[i]->x1())&&(_point.x() < h[i]->x2())) return true;
+	return false;
+}
+bool LEdiScene::pointIsOnVLines(QPointF _point, QList<QLineF*> v){
+	for (int i=0; i<v.size(); i++)
+		if ((_point.x() == v[i]->x1())&&(_point.y() > v[i]->y1())&&(_point.y() < v[i]->y2())) return true;
+	return false;
 }
 QList<QLineF*> LEdiScene::makeHNormalsToVLines(QList<QLineF*> parents){
     QLineF* line;
-    int i, x, y;
+	QPointF p;
+	int i;
 
     QList<QLineF*> childs;
     for (i=0; i<parents.size(); i++){
-        x=parents[i]->x1();
-        for (y=qMin(parents[i]->y1(), parents[i]->y2()); y<=qMax(parents[i]->y1(),parents[i]->y2()); y+=GRID_SZ){
-            line = makeHLine(QPointF(x,y));
+		p.setX(parents[i]->x1());
+		for (p.ry()=parents[i]->y1(); p.ry()<=parents[i]->y2(); p.ry()+=GRID_SZ)
+		if (!pointIsOnHLines(p, childs)){
+			line = makeHLine(p);
             if (line != NULL) childs.append(line);
         }
     }
@@ -294,13 +303,15 @@ QList<QLineF*> LEdiScene::makeHNormalsToVLines(QList<QLineF*> parents){
 }
 QList<QLineF*> LEdiScene::makeVNormalsToHLines(QList<QLineF*> parents){
     QLineF* line;
-    int i, x, y;
+	QPointF p;
+	int i;
 
     QList<QLineF*> childs;
     for (i=0; i<parents.size(); i++){
-        y=parents[i]->y1();
-        for (x=qMin(parents[i]->x1(),parents[i]->x2()); x<=qMax(parents[i]->x1(),parents[i]->x2()); x+=GRID_SZ){
-            line = makeHLine(QPointF(x,y));
+		p.setY(parents[i]->y1());
+		for (p.rx()=parents[i]->x1(); p.rx()<=parents[i]->x2(); p.rx()+=GRID_SZ)
+		if (!pointIsOnVLines(p, childs)){
+			line = makeVLine(p);
             if (line != NULL) childs.append(line);
         }
     }
@@ -348,11 +359,11 @@ QPair<QPointF, QLineF*> LEdiScene::findOverlapWithList(QLineF* line, QList<QLine
 QPointF LEdiScene::findOverlap(QLineF* l1, QLineF* l2){
 
     QLineF* h; QLineF* v;
-    if (l1->y1() == l1->y2()) {h=l1; v=l2;}
+	if (l1->y1() == l1->y2()) {h=l1; v=l2;}
     else {h=l2; v=l1;}
 
-    if ((h->y1() > v->y1()) && (h->y1() < v->y2()) &&
-    (v->x1() > h->x1()) && (v->x1() < h->x2()))
+	if ((h->y1() >= v->y1()) && (h->y1() <= v->y2()) &&
+	(v->x1() >= h->x1()) && (v->x1() <= h->x2()))
         return QPointF(v->x1(),h->y1());
 
     return QPointF(-1,-1);
@@ -417,12 +428,12 @@ void LEdiScene::makePath(QLineF* midLine){
     while (iter != 0){
         beginPoint = beginPair.first; endPoint = endPair.first;
         if (iter%2 == 0){
-            beginPair = findOverlapWithList(beginPair.second, V1[(iter-1)/2]);
-            endPair = findOverlapWithList(endPair.second, V2[(iter-1)/2]);
+			beginPair = findOverlapWithList(beginPair.second, V1[(iter-2)/2]);
+			endPair = findOverlapWithList(endPair.second, V2[(iter-2)/2]);
         }
         else{
-            beginPair = findOverlapWithList(beginPair.second, H1[iter/2]);
-            endPair = findOverlapWithList(endPair.second, H2[iter/2]);
+			beginPair = findOverlapWithList(beginPair.second, H1[(iter-1)/2]);
+			endPair = findOverlapWithList(endPair.second, H2[(iter-1)/2]);
         }
         hWireShape->addSeg(QLineF(beginPoint, beginPair.first));
         hWireShape->addSeg(QLineF(endPoint, endPair.first));
@@ -434,27 +445,32 @@ void LEdiScene::makePath(QLineF* midLine){
 }
 void LEdiScene::tracing(LogicElement* _le){
 
-    //int i, j, k;
+	int i, j, k;
     QPointF begin, end;
 
-    //Wire* wire;
-    //Port* port;
+	Wire* wire;
+	Port* port;
 
-    begin = *_le->logicElements[1]->shape->ports[0];
-    end = *_le->logicElements[0]->shape->ports.back();
+	LEShape* leShape;
+	leShape=_le->logicElements[3]->shape;
+	begin = leShape->pos()+*leShape->ports[0];
+	leShape=_le->logicElements[0]->shape;
+	end = leShape->pos()+*leShape->ports[2];
+
+	hWireShape = new WireShape(new Wire(), this);
 
     iter=0;
     H1.append(QList<QLineF*>());
-    H1.back().append(makeHLine(begin));
-    H2.append(QList<QLineF*>());
+	H1.back().append(makeHLine(begin));
+	H2.append(QList<QLineF*>());
     H2.back().append(makeHLine(end));
     if (H1.back().back()->p2() == end)
         hWireShape->addSeg(QLineF(begin, end));
     else
-        trace();
+		trace();
 
-    /*for (i=0; i<_le->wires.size(); i++){
-		wire=_le->wires[i];
+	/*for (i=0; i<_le->wires.size(); i++){
+		wire=_le->wires[1];
         hWireShape = new WireShape(wire, this);
 		for (j=0; j<wire->drivers.size(); j++){
 			port=wire->drivers[j];
@@ -469,17 +485,17 @@ void LEdiScene::tracing(LogicElement* _le){
 				else
 					end=port->le->shape->pos() + *(port->le->shape->ports[port->le->leIndex(port)]);
 
-                H1.append(QList<QLineF*>());
-                H1.back().append(makeHLine(begin));
-                if (H1.back().back()->p2() == end)
-                    hWireShape->addSeg(QLineF(begin, end));
-                else{
-                    H2.append(QList<QLineF*>());
-                    H2.back().append(makeHLine(end));
-                    iter=0;
-                    trace();
-                }
+				iter=0;
+				H1.append(QList<QLineF*>());
+				H1.back().append(makeHLine(begin));
+				H2.append(QList<QLineF*>());
+				H2.back().append(makeHLine(end));
+				if (H1.back().back()->p2() == end)
+					hWireShape->addSeg(QLineF(begin, end));
+				else
+					trace();
+
             }
 		}
-    }*/
+	}*/
 }

@@ -33,6 +33,8 @@ private:
     QList<QList<QLineF*>> V2;
     QLineF* makeHLine(QPointF _point);
     QLineF* makeVLine(QPointF _point);
+	bool pointIsOnHLines(QPointF _point, QList<QLineF*> h);
+	bool pointIsOnVLines(QPointF _point, QList<QLineF*> v);
     QList<QLineF*> makeHNormalsToVLines(QList<QLineF*> parent);
     QList<QLineF*> makeVNormalsToHLines(QList<QLineF*> parent);
     QLineF* findMidLine();

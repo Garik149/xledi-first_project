@@ -31,7 +31,7 @@ PortShape::~PortShape(){
 
 
 QRectF PortShape::boundingRect() const{
-    return QRectF(0,-1*GRID_SZ,2*GRID_SZ,3*GRID_SZ);
+	return QRectF(-0.9*GRID_SZ,-0.9*GRID_SZ,3.8*GRID_SZ,3.8*GRID_SZ);
 }
 
 void PortShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) {
