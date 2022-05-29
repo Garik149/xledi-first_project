@@ -1,15 +1,20 @@
-#include "wireshape.h"
-#include "wire.h"
+#include "WireShape.h"
+#include "WireData.h"
 
 //WireShape
-WireShape::WireShape(Wire* _wire, LEdiScene* _scene){
+WireShape::WireShape(WireData* _wire, LEdiScene* _scene){
 	_wire->shape=this;
     scene=_scene;
 	data=_wire;
 }
 
+WireShape::~WireShape(){
+    for (int i=0; i<seg.size(); i++) delete(seg[i]);
+    for (int i=0; i<nodes.size(); i++) delete(nodes[i]);
+}
+
 WireSeg* WireShape::addSeg(QLineF line){
-    WireSeg* hWireSeg=new WireSeg(this, line);
+    WireSeg* hWireSeg=new WireSeg(this, QLineF(qMin(line.x1(),line.x2()),qMin(line.y1(),line.y2()),qMax(line.x1(),line.x2()),qMax(line.y1(),line.y2())));
     seg.append(hWireSeg);
     scene->addItem(hWireSeg);
     return hWireSeg;
@@ -50,4 +55,17 @@ void WireSeg::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*
 void WireSeg::setState(State _state){
 	state=_state;
 	update();
+}
+
+void WireSeg::shiftLeft(){
+    QLineF segLine = line();
+    for (int i=0; i<whole->seg.size(); i++){
+        WireSeg* seg = whole->seg[i];
+        if (segLine.p1() == seg->line().p1()){
+            seg->line().setP1(segLine.p1());
+        }
+        if (segLine.p2() == seg->line().p2()){
+            seg->line().setP1(segLine.p2());
+        }
+    }
 }

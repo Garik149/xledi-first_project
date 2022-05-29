@@ -12,11 +12,11 @@
 #define RED 230,20,20
 #define GREEN 50,210,20
 
-class LogicElement;
+class LEData;
 class LEShape;
-struct Port;
+struct PortData;
 class PortShape;
-struct Wire;
+struct WireData;
 class WireShape;
 class WireSeg;
 class LEdiScene;

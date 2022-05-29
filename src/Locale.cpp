@@ -1,4 +1,4 @@
-#include "locale.h"
+#include "Locale.h"
 
 Locale::Locale() {locale = 0;}
 Locale::~Locale() {}

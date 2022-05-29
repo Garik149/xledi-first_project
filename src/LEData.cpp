@@ -1,86 +1,86 @@
 #include <QFileDialog>
 #include <QFile>
 #include "defines.h"
-#include "port.h"
-#include "wire.h"
-#include "logicelement.h"
+#include "PortData.h"
+#include "WireData.h"
+#include "LEData.h"
 
-QList<LogicElement> LogicElement::library;
+QList<LEData> LEData::library;
 
-LogicElement::LogicElement(){
+LEData::LEData(){
 	isBasic=false;
 	shape=NULL;
 }
 
-LogicElement::LogicElement(LogicElement* _le){
+LEData::LEData(LEData* _le){
     copy(_le);
 	shape=NULL;
 }
 
-LogicElement::LogicElement(QString _type, QString _name){
+LEData::LEData(QString _type, QString _name){
 	copyFromLibrary(_type, _name);
 	shape=NULL;
 }
 
-LogicElement::~LogicElement(){
+LEData::~LEData(){
 	int i;
 	for (i=0;i<ports.size();i++) delete(ports[i]);
 	for (i=0;i<wires.size();i++) delete(wires[i]);
-	for (i=0;i<logicElements.size();i++) delete(logicElements[i]);
+    for (i=0;i<les.size();i++) delete(les[i]);
 }
 
-void LogicElement::clear(){
+void LEData::clear(){
     name.clear();
     ports.clear();
     wires.clear();
-	logicElements.clear();
+    les.clear();
 }
 
-Wire* LogicElement::wireNamed(QString _name){
+WireData* LEData::wireNamed(QString _name){
 	for (int i=0; i<wires.size(); i++)
 		if (wires[i]->name == _name) return wires[i];
 	return NULL;
 }
-bool LogicElement::haveWire(QString _name){
+bool LEData::haveWire(QString _name){
     if (wireNamed(_name)==NULL) return false;
 		else return true;
 }
 
-Port* LogicElement::portNamed(QString _name){
+PortData* LEData::portNamed(QString _name){
 	for (int i=0; i<ports.size(); i++)
 		if (ports[i]->name == _name) return ports[i];
 	return NULL;
 }
-bool LogicElement::havePort(QString _name){
+bool LEData::havePort(QString _name){
     if (portNamed(_name)==NULL) return false;
 		else return true;
 }
 
-int LogicElement::leIndex(Port* _port){
+int LEData::leIndex(PortData* _port){
 	for (int i=0; i<ports.size();i++)
 		if (ports[i] == _port) return i;
 	return -1;
 }
-LogicElement* LogicElement::leNamed(QString _name){
-	for (int i=0; i<logicElements.size(); i++)
-        if (logicElements[i]->name == _name) return logicElements[i];
+LEData* LEData::leNamed(QString _name){
+    for (int i=0; i<les.size(); i++)
+        if (les[i]->name == _name) return les[i];
     return NULL;
 }
-bool LogicElement::haveLE(QString _name){
+bool LEData::haveLE(QString _name){
     if (leNamed(_name)==NULL) return false;
         else return true;
 }
 
-bool LogicElement::nameIs(QString _name){
+bool LEData::nameIs(QString _name){
     if (name == _name) return true;
     return false;
 }
 
-bool LogicElement::copy(LogicElement* _le){
+bool LEData::copy(LEData* _le){
 	int i,j;
-	Wire* wire;
-	Port *port, *_port;
-	LogicElement *iLE, *_iLE;
+    WireData* wire;
+    PortData *port, *_port;
+    LEData *iLE, *_iLE;
 
 	clear();
 	name=_le->name;
@@ -89,7 +89,7 @@ bool LogicElement::copy(LogicElement* _le){
 
 	for (i=0; i<_le->ports.size(); i++){
 		_port=_le->ports[i];
-		port=new Port(this,_port->name,_port->isOutput);
+        port=new PortData(this,_port->name,_port->isOutput);
 		ports.append(port);
 		if (port->isOutput) outPorts.append(port);
 			else inPorts.append(port);
@@ -98,13 +98,13 @@ bool LogicElement::copy(LogicElement* _le){
 	if (isBasic) return RESULT_SUCCESS;
 
 	for (i=0; i<_le->wires.size(); i++)
-		wires.append(new Wire(_le->wires[i]->name));
+        wires.append(new WireData(_le->wires[i]->name));
 
-	for (i=0; i<_le->logicElements.size(); i++){
-		_iLE=_le->logicElements[i];
-		iLE = new LogicElement();
+    for (i=0; i<_le->les.size(); i++){
+        _iLE=_le->les[i];
+        iLE = new LEData();
 		iLE->copyFromLibrary(_iLE->type,_iLE->name);
-		logicElements.append(iLE);
+        les.append(iLE);
 		for (j=0; j<_iLE->ports.size(); j++){
 			_port=_iLE->ports[j];
 			port=portNamed(_port->name);
@@ -164,19 +164,19 @@ void prepareCode(QString& line){
 
 }
 
-bool LogicElement::readLibrary(const QString& _path){
+bool LEData::readLibrary(const QString& _path){
 	QFile file(_path);
     if (!file.open(QIODevice::ReadOnly)) return RESULT_ERROR;
 	QString line = file.readAll();
 
 	int k, i, p;
     QString str1, str2;
-    LogicElement* le;
+    LEData* le;
 
     prepareCode(line);
 
 	while (line.contains(QRegExp("\\b(module)\\b"))){
-        le = new LogicElement();
+        le = new LEData();
 		p = line.indexOf(QRegExp("\\b(module )\\b"));
 		str1 = cutLine(p, line, ';');
 		str1.remove(0,7);
@@ -184,14 +184,14 @@ bool LogicElement::readLibrary(const QString& _path){
         le->type = str1.mid(0,p);
 		str1.remove(0,p+1); str1.chop(2);
 
-        Port* port;
+        PortData* port;
 
 		k = str1.count(',')+1;
 		for (i=0; i<k; i++){
 			str2 = str1.section(',',i,i);
 			if (str2 == "") return RESULT_ERROR;
 
-            port = new Port(le, str2);
+            port = new PortData(le, str2);
             le->ports.append(port);
 
 			if (str2.contains(' ')){
@@ -239,7 +239,7 @@ bool LogicElement::readLibrary(const QString& _path){
     return RESULT_SUCCESS;
 }
 
-bool LogicElement::initLEFromFile(const QString& _path){
+bool LEData::initLEFromFile(const QString& _path){
 
 	QFile file(_path);
 	if (!file.open(QIODevice::ReadOnly)) return RESULT_ERROR;
@@ -251,8 +251,8 @@ bool LogicElement::initLEFromFile(const QString& _path){
 	prepareCode(line);
 
 	if (line.contains(QRegExp("\\b(module)\\b"))){
-		Port* port;
-		Wire* wire;
+        PortData* port;
+        WireData* wire;
 
 		p = line.indexOf(QRegExp("\\b(module )\\b"));
 		str1 = cutLine(p, line, ';');
@@ -266,8 +266,8 @@ bool LogicElement::initLEFromFile(const QString& _path){
 			str2 = str1.section(',',i,i);
 			if (str2 == "") return RESULT_ERROR;
 
-			port = new Port(this, str2);
-			wire = new Wire(str2);
+            port = new PortData(this, str2);
+            wire = new WireData(str2);
 			ports.append(port);
 			wires.append(wire);
 			port->insideWire=wire;
@@ -331,7 +331,7 @@ bool LogicElement::initLEFromFile(const QString& _path){
 			str2 = str1.section(',',i,i).trimmed();
 			if (str2 == "") continue;
 
-			wires.append(new Wire(str2));
+            wires.append(new WireData(str2));
 		}
 	}
 
@@ -344,7 +344,7 @@ bool LogicElement::initLEFromFile(const QString& _path){
 	}
 
 	while (line.contains(QRegExp("\\b"))){
-		LogicElement* le;
+        LEData* le;
 
 		p = line.indexOf(QRegExp("\\b"));
 
@@ -356,8 +356,8 @@ bool LogicElement::initLEFromFile(const QString& _path){
 		p = str1.indexOf('(');
 		str3 = str1.mid(0,p); str1.remove(0,p);
 
-		le = new LogicElement(str2,str3);
-		logicElements.append(le);
+        le = new LEData(str2,str3);
+        les.append(le);
 
 		str1.remove(0,1);
 		str1.chop(2);
@@ -393,7 +393,7 @@ bool LogicElement::initLEFromFile(const QString& _path){
 	return RESULT_SUCCESS;
 }
 
-bool LogicElement::copyFromLibrary(QString _type, QString _name){
+bool LEData::copyFromLibrary(QString _type, QString _name){
 	for (int i=0; i<library.size(); i++)
 		if (_type == library[i].type){
 			copy(&library[i]);
@@ -403,9 +403,9 @@ bool LogicElement::copyFromLibrary(QString _type, QString _name){
 	return RESULT_ERROR;
 }
 
-/*QString LogicElement::addLEFromFileToLibrary(const QString& _path){
+/*QString LEData::addLEFromFileToLibrary(const QString& _path){
 
-	LogicElement* le = new LogicElement();
+    LEData* le = new LEData();
 
     QFile file(_path);
 	if (!file.open(QIODevice::ReadOnly)) return NULL;
@@ -438,16 +438,16 @@ bool LogicElement::copyFromLibrary(QString _type, QString _name){
 		le->type = str1.mid(0,p);
         str1.remove(0,p+1); str1.chop(2);
 
-		Port* port;
-		Wire* wire;
+        PortData* port;
+        WireData* wire;
 
         k = str1.count(',')+1;
 		for (i=0; i<k; i++){
             str2 = str1.section(',',i,i);
 			if (str2 == "") return NULL;
 
-			port = new Port(le, str2);
-			wire = new Wire(str2);
+            port = new PortData(le, str2);
+            wire = new WireData(str2);
 			le->ports.append(port);
 			le->wires.append(wire);
 			port->insideWire=wire;
@@ -507,7 +507,7 @@ bool LogicElement::copyFromLibrary(QString _type, QString _name){
             str2 = str1.section(',',i,i).trimmed();
             if (str2 == "") continue;
 
-			le->wires.append(new Wire(str2));
+            le->wires.append(new WireData(str2));
         }
     }
 
@@ -532,9 +532,9 @@ bool LogicElement::copyFromLibrary(QString _type, QString _name){
         p = str1.indexOf('(');
         str3 = str1.mid(0,p); str1.remove(0,p);
 
-		LogicElement* _le;
+        LEData* _le;
         le = copyFromLibrary(str2,str3);
-        logicElements.append(le);
+        les.append(le);
 
         str1.remove(0,1);
         str1.chop(2);

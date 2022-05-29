@@ -1,9 +1,9 @@
 #include <QTextStream>
-#include "mainwindow.h"
-#include "locale.h"
-#include "lediscene.h"
-#include "lediview.h"
-#include "logicelement.h"
+#include "MainWindow.h"
+#include "Locale.h"
+#include "LEdiScene.h"
+#include "LEdiView.h"
+#include "LEData.h"
 
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     qApp->setAttribute(Qt::AA_DontShowIconsInMenus, true);
@@ -12,9 +12,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 
 	QString path;
 	//path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
-	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC_libs/XD_LE_PtcV1.80T25.v";
-	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v";
-	LogicElement::readLibrary(path);
+    //path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC_libs/XD_LE_PtcV1.80T25.v";
+    path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v";
+    LEData::readLibrary(path);
 
     //msg->setLocale("Eng");
 
@@ -23,19 +23,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     createMenu();
     createToolBar();
     createStatusBar();
-    //tabWidget = nullptr;
 
-    //QWidget *widget = new QWidget{};
-    //QHBoxLayout *layout = new QHBoxLayout{};
-    //layout->addWidget(toolBox);
-
-    //layout->addWidget(tabWidget);
-
-    //widget->setLayout(layout);
-
-    //setCentralWidget(widget);
-
-	slotOpenFile();
+    slotOpenFile();
 }
 
 void MainWindow::initActions(){
@@ -100,19 +89,19 @@ void MainWindow::slotNewFile(){
 //
 void MainWindow::slotOpenFile(){
 	QString path;
-	//path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
-	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c17.syn_dc.v";
+    //path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
+    //path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c17.syn_dc.v";
     //path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c432.syn_dc.v";
-	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
-	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c432.syn_dc.v";
+    path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
+    //path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c432.syn_dc.v";
 
-	mainLE = new LogicElement();
+    mainLE = new LEData();
 	if (mainLE->initLEFromFile(path) == RESULT_ERROR)
 		qWarning("Module read failure");
     else{
         scene->clear();
 		scene->layout(mainLE);
-		scene->tracing(mainLE);
+        scene->tracing(mainLE);
     }
 
 }

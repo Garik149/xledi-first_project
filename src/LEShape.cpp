@@ -1,9 +1,9 @@
-#include "leshape.h"
-#include "logicelement.h"
+#include "LEShape.h"
+#include "LEData.h"
 //#include "wire.h"
-#include "port.h"
+#include "PortData.h"
 
-LEShape::LEShape(LogicElement* _le) : QGraphicsItem(){
+LEShape::LEShape(LEData* _le) : QGraphicsItem(){
     data =_le;
     data->shape=this;
 	shownLabels = true;

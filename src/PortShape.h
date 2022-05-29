@@ -1,30 +1,30 @@
-#ifndef LESHAPE_H
-#define LESHAPE_H
+#ifndef PORTSHAPE_H
+#define PORTSHAPE_H
 
 #include <QGraphicsItem>
 #include <QPainter>
 #include "defines.h"
 
-class LEShape : public QGraphicsItem{
+class PortShape : public QGraphicsItem{
 public:
-    enum {Type = UserType};
+	enum {Type = UserType+1};
 	enum State {Default, Bolded, Moved};
 private:
 	State state;
-	LogicElement* data;
-    QRectF* body;
-	QList<QPointF*> ports;
-	bool shownLabels;
+    PortData* data;
+    QLineF* body[4];
+	QPointF* ending;
+    bool shownLabels;
 
 public:
-	 LEShape(LogicElement* _le);
-     ~LEShape();
+    PortShape(PortData* _port);
+     ~PortShape();
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) override;
     int type() const override {return Type;}
-    void setState(State state);
+    void setState(State _state);
 
 	friend class LEdiScene;
 };
 
-#endif // LESHAPE_H
+#endif // PORTSHAPE_H

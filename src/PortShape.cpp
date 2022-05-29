@@ -1,7 +1,7 @@
-#include "portshape.h"
-#include "port.h"
+#include "PortShape.h"
+#include "PortData.h"
 
-PortShape::PortShape(Port* _port) : QGraphicsItem(){
+PortShape::PortShape(PortData* _port) : QGraphicsItem(){
     data = _port;
     data->shape=this;
     shownLabels=true;

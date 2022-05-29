@@ -62,6 +62,6 @@ private:
     LEdiView* view;
 
     Locale* msg;
-    LogicElement* mainLE;
+    LEData* mainLE;
 };
 #endif // MAINWINDOW_H

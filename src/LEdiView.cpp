@@ -1,10 +1,10 @@
-#include "lediview.h"
-#include "lediscene.h"
-#include "logicelement.h"
-#include "leshape.h"
-#include "portshape.h"
-#include "wire.h"
-#include "wireshape.h"
+#include "LEdiView.h"
+#include "LEdiScene.h"
+#include "LEData.h"
+#include "LEShape.h"
+#include "PortShape.h"
+#include "WireData.h"
+#include "WireShape.h"
 
 LEdiView::LEdiView(LEdiScene *_scene, QWidget *_parent) : QGraphicsView(_scene, _parent){
     scene = _scene;
@@ -39,13 +39,13 @@ LEdiView::LEdiView(LEdiScene *_scene, QWidget *_parent) : QGraphicsView(_scene, 
 
 void LEdiView::slotOnCustomContextMenu(const QPoint&){}
 void LEdiView::slotAct1(){
-    hWire = new WireShape(new Wire(),scene);
+    hWire = new WireShape(new WireData(),scene);
     hWireSeg = hWire->addSeg(QLineF());
     hWireSeg->setState(WireSeg::State::Moved);
     state = DrawingWire;
 }
 void LEdiView::slotAct2(){
-	hLE = new LEShape(new LogicElement("al_ao21","U1"));
+    hLE = new LEShape(new LEData("al_ao21","U1"));
 	hLE->setState(LEShape::State::Moved);
     scene->addItem(hLE);
     state = PlacingLE;
@@ -104,7 +104,7 @@ void LEdiView::mousePressEvent(QMouseEvent *_mouseEvent){
 
         case PlacingLE:
             forgetHolded();
-			hLE = new LEShape(new LogicElement("al_ao21","U1"));
+            hLE = new LEShape(new LEData("al_ao21","U1"));
 			hLE->setState(LEShape::State::Moved);
             scene->addItem(hLE);
             break;
@@ -156,7 +156,7 @@ void LEdiView::keyPressEvent(QKeyEvent *_keyEvent){
         break;
 
 	case Qt::Key_Minus:
-        if (hScale > 0.5){
+        if (hScale > 0.2){
             hScale*=0.8;
             scale(0.8,0.8);
             scene->scaleUpdate(hScale);
@@ -164,7 +164,7 @@ void LEdiView::keyPressEvent(QKeyEvent *_keyEvent){
 		break;
 
 	case Qt::Key_Equal:
-        if (hScale < 2){
+        if (hScale < 5){
             hScale*=1.25;
             scale(1.25,1.25);
             scene->scaleUpdate(hScale);
