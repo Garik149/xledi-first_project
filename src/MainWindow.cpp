@@ -28,23 +28,23 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 }
 
 void MainWindow::initActions(){
-    AnewFile = new QAction(QIcon{":/images/New.png"}, msg->get1(), this);
-    connect(AnewFile, &QAction::triggered, this, &MainWindow::slotNewFile);
+    //newFileAction = new QAction(QIcon{":/images/New.png"}, msg->get1(), this);
+    //connect(newFileAction, &QAction::triggered, this, &MainWindow::slotNewFile);
 
-    AopenFile = new QAction(QIcon{":/images/Open.png"}, msg->get2(), this);
-    connect(AopenFile, &QAction::triggered, this, &MainWindow::slotOpenFile);
+    openFileAction = new QAction(QIcon{":/images/Open.png"}, msg->get2(), this);
+    connect(openFileAction, &QAction::triggered, this, &MainWindow::slotOpenFile);
 
-    AsaveFile = new QAction(QIcon{":/images/Save.png"}, msg->get3(), this);
-	AsaveFile->setShortcut(tr("CTRL+S"));
-    connect(AsaveFile, &QAction::triggered, this, &MainWindow::slotSaveFile);
+    saveFileAction = new QAction(QIcon{":/images/Save.png"}, msg->get3(), this);
+    saveFileAction->setShortcut(tr("CTRL+S"));
+    connect(saveFileAction, &QAction::triggered, this, &MainWindow::slotSaveFile);
 
-    Aquit = new QAction(QIcon{":/images/Quit.png"}, msg->get4(), this);
-	Aquit->setShortcut(tr("CTRL+Q"));
-    connect(Aquit, &QAction::triggered, this, &MainWindow::slotQuit);
+    quitAction = new QAction(QIcon{":/images/Quit.png"}, msg->get4(), this);
+    quitAction->setShortcut(tr("CTRL+Q"));
+    connect(quitAction, &QAction::triggered, this, &MainWindow::slotQuit);
 }
 
 void MainWindow::createScene(){
-    scene = new LEdiScene(QRect(0,0,W*GRID_SZ,H*GRID_SZ));
+    scene = new LEdiScene(QRect(0,0,80*GRID_SZ,60*GRID_SZ));
 
 	view = new LEdiView(scene, NULL);
 	view->show();
@@ -56,19 +56,19 @@ void MainWindow::createMenu(){
     fileMenu = new QMenu(msg->get0());
 	menuBar()->addMenu(fileMenu);
 
-	fileMenu->addAction(AnewFile);
-	fileMenu->addAction(AopenFile);
-	fileMenu->addAction(AsaveFile);
+    //fileMenu->addAction(newFileAction);
+    fileMenu->addAction(openFileAction);
+    fileMenu->addAction(saveFileAction);
 	fileMenu->addSeparator();
-	fileMenu->addAction(Aquit);
+    fileMenu->addAction(quitAction);
 }
 
 void MainWindow::createToolBar(){
 	toolBar = new QToolBar(this);
 
-	toolBar->addAction(AnewFile);
-	toolBar->addAction(AopenFile);
-	toolBar->addAction(AsaveFile);
+    //toolBar->addAction(newFileAction);
+    toolBar->addAction(openFileAction);
+    toolBar->addAction(saveFileAction);
 	toolBar->setMovable(true);
 
 	addToolBar(Qt::TopToolBarArea, toolBar);
@@ -100,10 +100,9 @@ void MainWindow::slotOpenFile(){
 		qWarning("Module read failure");
     else{
         scene->clear();
-		scene->layout(mainLE);
-        scene->tracing(mainLE);
+        scene->setSceneRect(scene->layoutLE(mainLE));
+        scene->traceLE(mainLE);
     }
-
 }
 
 //Empty

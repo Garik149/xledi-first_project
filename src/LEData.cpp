@@ -150,7 +150,12 @@ void prepareCode(QString& line){
     int l, r;
 
     l=0;
-    while((r = line.indexOf("\n", l)) != -1){
+    while((r = line.indexOf('\n', l)) != -1){
+        line[r]=' ';
+        l=r+1;
+    }
+    l=0;
+    while((r = line.indexOf('\t', l)) != -1){
         line[r]=' ';
         l=r+1;
     }
@@ -165,7 +170,44 @@ void prepareCode(QString& line){
 }
 
 bool LEData::readLibrary(const QString& _path){
-	QFile file(_path);
+
+    /*for(int i=1; i<=19; i++){
+        LEData le;
+        le.isBasic = true;
+        switch(i){
+        case 1:
+            le.type = "not";
+            le.ports.append(new PortData(NULL,"a",false));
+            le.ports.append(new PortData(NULL,"y",true));
+            break;
+        case 2:
+            le.type = "and";
+            le.ports.append(new PortData(NULL,"a",false));
+            le.ports.append(new PortData(NULL,"b",false));
+            le.ports.append(new PortData(NULL,"y",true));
+            break;
+        case 3:
+            le.type = "or";
+            le.ports.append(new PortData(NULL,"a",false));
+            le.ports.append(new PortData(NULL,"b",false));
+            le.ports.append(new PortData(NULL,"y",true));
+            break;
+        case 4:
+            le.type = "xor";
+            le.ports.append(new PortData(NULL,"a",false));
+            le.ports.append(new PortData(NULL,"b",false));
+            le.ports.append(new PortData(NULL,"y",true));
+            break;
+        case 5:
+            le.type = "buf";
+            le.ports.append(new PortData(NULL,"a",false));
+            le.ports.append(new PortData(NULL,"y",true));
+            break;
+        }
+        library.append(le);
+    }*/
+
+    QFile file(_path);
     if (!file.open(QIODevice::ReadOnly)) return RESULT_ERROR;
 	QString line = file.readAll();
 
@@ -191,7 +233,7 @@ bool LEData::readLibrary(const QString& _path){
 			str2 = str1.section(',',i,i);
 			if (str2 == "") return RESULT_ERROR;
 
-            port = new PortData(le, str2);
+            port = new PortData(NULL, str2);
             le->ports.append(port);
 
 			if (str2.contains(' ')){
@@ -252,7 +294,6 @@ bool LEData::initLEFromFile(const QString& _path){
 
 	if (line.contains(QRegExp("\\b(module)\\b"))){
         PortData* port;
-        WireData* wire;
 
 		p = line.indexOf(QRegExp("\\b(module )\\b"));
 		str1 = cutLine(p, line, ';');
@@ -262,30 +303,28 @@ bool LEData::initLEFromFile(const QString& _path){
 		str1.remove(0,p+1); str1.chop(2);
 
 		k = str1.count(',')+1;
-		for (i=0; i<k; i++){
-			str2 = str1.section(',',i,i);
+        bool outputFlag=false;
+        for (i=0; i<k; i++){
+            str2 = str1.section(',',i,i);
+
+            if (str2.contains(' ')){
+                if (str2.mid(0,6) == "input "){
+                    str2.remove(0,6);
+                    outputFlag=false;
+                }
+                else if (str2.mid(0,7) == "output "){
+                    str2.remove(0,7);
+                    outputFlag=true;
+                }
+                else return RESULT_ERROR;
+            }
+
 			if (str2 == "") return RESULT_ERROR;
 
             port = new PortData(this, str2);
-            wire = new WireData(str2);
-			ports.append(port);
-			wires.append(wire);
-			port->insideWire=wire;
-			port->le=this;
-
-			if (str2.contains(' ')){
-				if (str2.mid(0,6) == "input "){
-					str2.remove(0,6);
-					port->isOutput=false;
-					wire->drivers.append(port);
-				}
-				else if (str2.mid(0,7) == "output "){
-					str2.remove(0,7);
-					port->isOutput=true;
-					wire->loads.append(port);
-				}
-				else return NULL;
-			}
+            ports.append(port);
+            port->le=this;
+            port->isOutput=outputFlag;
 		}
 	}
 	else return RESULT_ERROR;
@@ -298,9 +337,7 @@ bool LEData::initLEFromFile(const QString& _path){
 		for (i=0; i<k; i++){
 			str2 = str1.section(',',i,i);
 			if (str2 == "") return RESULT_ERROR;
-
-			portNamed(str2)->isOutput=false;
-			wireNamed(str2)->drivers.append(portNamed(str2));
+            portNamed(str2)->isOutput=false;
 		}
 	}
 
@@ -312,15 +349,24 @@ bool LEData::initLEFromFile(const QString& _path){
 		for (i=0; i<k; i++){
 			str2 = str1.section(',',i,i);
 			if (str2 == "") return RESULT_ERROR;
-
-			portNamed(str2)->isOutput=true;
-			wireNamed(str2)->loads.append(portNamed(str2));
+            portNamed(str2)->isOutput=true;
 		}
 	}
 
-	for (i=0; i<ports.size(); i++)
-		if (ports[i]->isOutput) outPorts.append(ports[i]);
-			else inPorts.append(ports[i]);
+    for (i=0; i<ports.size(); i++){
+        WireData* wire;
+        wire = new WireData(ports[i]->name);
+        wires.append(wire);
+        ports[i]->insideWire=wire;
+        if (!ports[i]->isOutput){
+            inPorts.append(ports[i]);
+            wire->drivers.append(ports[i]);
+        }
+        else{
+            outPorts.append(ports[i]);
+            wire->loads.append(ports[i]);
+        }
+    }
 
 	while (line.contains(QRegExp("\\b(wire)\\b"))){
 		p = line.indexOf(QRegExp("\\b(wire)\\b"));

@@ -48,7 +48,7 @@ void LEShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*
 
 		painter->setFont(QFont("Calibri", 8, QFont::DemiBold));
 		for (int i=0; i < ports.size(); i++)
-            painter->drawText(QRectF(ports[i]->x()-0.5*GRID_SZ, ports[i]->y(), 1*GRID_SZ, 0.75*GRID_SZ),0,data->ports[i]->name);
+            painter->drawText(QRectF(ports[i]->x()+0.1*GRID_SZ, ports[i]->y()+0.1*GRID_SZ, 0.8*GRID_SZ, 0.8*GRID_SZ),0,data->ports[i]->name);
 	}
 
     QPen pen(QColor(GREEN,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);

@@ -7,38 +7,48 @@
 #include "defines.h"
 
 class LEdiScene : public QGraphicsScene{
-
 private:
-    void drawBackground(QPainter *painter, const QRectF &rect) override;
+    bool largeGrid;
+
+    void drawBackground(QPainter*, const QRectF&) override;
 public:
-    LEdiScene(const QRect &sceneRect, QObject *parent = nullptr) : QGraphicsScene(sceneRect,parent){};
+    LEdiScene(const QRect &sceneRect, QObject *parent = nullptr);
      ~LEdiScene(){};
     void scaleUpdate(float scale);
 
     //placing
 private:
     QHash<LEData*, int> rank;
-    void setRank(LEData* _le, int r);
+    QList<PortData*> restrictedPorts;
+    QList<LEData*> passedLE;
+    void rankingStep(LEData* _le, int r);
 public:
-    void layout(LEData* le);
+    QRectF layoutLE(LEData* le);
 
     //tracing
 private:
+    QLineF const nullLine{-1,-1,-1,-1};
+    QPointF const nullPoint{-1,-1};
     int iter;
-	WireShape* hWireShape;
-    QLineF* makeHLine(QPointF _point);
-    QLineF* makeVLine(QPointF _point);
-    QLineF* lineWithPoint(QPointF _point, QList<QLineF*> ll);
-    QList<QLineF*> makeHNormalsToVLines(QList<QLineF*> parent, QList<QLineF*> restrictLines);
-    QList<QLineF*> makeVNormalsToHLines(QList<QLineF*> parent, QList<QLineF*> restrictLines);
-    QPointF findCrossLvsL(QLineF* l1, QLineF* l2);
-    QPointF findCrossLvsLL(QLineF* l, QList<QLineF*> ll);
-    QPointF findCrossLLvsLL(QList<QLineF*> ll1, QList<QLineF*> ll2);
-    QPointF findCrossLLvsHoldedWire(QList<QLineF*> ll);
-    QPair<QPointF, QPointF> bothSideTraceStep(QList<QLineF*> bLL, QList<QLineF*> eLL, QList<QLineF*> _bLLPrev, QList<QLineF*> _eLLPrev);
-    QPointF oneSideTraceStep(QList<QLineF*>, QList<QLineF*>);
+    LEData* hLE;
+    WireData* hWire;
+    WireShape* hWireShapeToDelete;
+    QList<WireShape*> wireShapeList;
+
+    QLineF makeHLine(QPointF _point);
+    QLineF makeVLine(QPointF _point);
+    QLineF const& lineWithPoint(QPointF _point, QList<QLineF> const& ll);
+    void makeHNormalsToVLines(QPair<QList<QLineF>,QList<QPointF>>& childs, QPair<QList<QLineF>,QList<QPointF>> const& parents, QList<QLineF> const& restrictLines);
+    void makeVNormalsToHLines(QPair<QList<QLineF>,QList<QPointF>>& childs, QPair<QList<QLineF>,QList<QPointF>> const& parents, QList<QLineF> const& restrictLines);
+    QPointF findCrossLvsL(QLineF l1, QLineF l2);
+    QPointF findCrossLvsLL(QLineF l, QList<QLineF> const& ll);
+    QPointF findCrossLLvsLL(QList<QLineF> const& ll1, QList<QLineF> const& ll2);
+    QPointF findCrossLLvsHoldedWire(QPair<QList<QLineF>,QList<QPointF>> const& lPair);
+    QPair<QPointF, QPointF> bothSideTraceStep(QPair<QList<QLineF>,QList<QPointF>> const& _bLPair, QPair<QList<QLineF>,QList<QPointF>> const& _eLPair, QList<QLineF> const& _bLLPrev, QList<QLineF> const& _eLLPrev);
+    QPointF oneSideTraceStep(QPair<QList<QLineF>,QList<QPointF>> const& _lPair, QList<QLineF> const& _llPrev);
+    bool traceHoldedWire();
 public:
-    void tracing(LEData* le);
+    void traceLE(LEData* le);
 
     Q_OBJECT
 private slots:

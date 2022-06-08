@@ -18,6 +18,8 @@ public:
     WireShape(WireData* _wire, LEdiScene* _scene);
     ~WireShape();
 
+    void erase();
+    void addNode(QPointF);
     WireSeg* addSeg(QLineF line);
 
     friend class LEdiScene;

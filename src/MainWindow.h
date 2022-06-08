@@ -38,10 +38,10 @@ private:
     //void saveDataLE();
     //void loadDataLE();
 
-	QAction* AnewFile;
-	QAction* AopenFile;
-	QAction* AsaveFile;
-	QAction* Aquit;
+    QAction* newFileAction;
+    QAction* openFileAction;
+    QAction* saveFileAction;
+    QAction* quitAction;
 
     //QPixmap createImage(ItemLEdi::TypeItem type);
     //QWidget *createCellWidget(const QString &text, ItemLEdi::TypeItem type);
