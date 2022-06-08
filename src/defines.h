@@ -7,7 +7,7 @@
 #define RESULT_SUCCESS 0
 #define GRID_SZ 20
 #define BLUE 40,100,200
-#define RED 230,20,20
+#define RED 230,90,80
 #define GREEN 50,210,20
 
 class LEData;

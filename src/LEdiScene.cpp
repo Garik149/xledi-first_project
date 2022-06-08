@@ -134,6 +134,8 @@ QRectF LEdiScene::layoutLE(LEData* le){
     }
     if (maxH < GRID_SZ*(10+4*i)) maxH = GRID_SZ*(10+4*i);
 
+	const int L=2+3+2*le->les.size()/maxRank;
+
     QList<LEData*> leList;
 	for (i=1; i<=maxRank; i++){
         leList=rank.keys(i);
@@ -142,7 +144,7 @@ QRectF LEdiScene::layoutLE(LEData* le){
 			LEShape* sh;
 			sh = new LEShape(leList[j]);
             addItem(sh);
-            sh->setPos(QPoint(GRID_SZ*(10+10*i),GRID_SZ*(10+height)));
+			sh->setPos(QPoint(GRID_SZ*(10+L*i),GRID_SZ*(10+height)));
             height+=sh->body->height()/GRID_SZ+2;
         }
         if (maxH < height) maxH = height;
@@ -152,13 +154,13 @@ QRectF LEdiScene::layoutLE(LEData* le){
 		PortShape* sh;
 		sh = new PortShape(le->outPorts[i]);
         addItem(sh);
-        sh->setPos(QPoint(GRID_SZ*(20+10*maxRank),GRID_SZ*(10+4*i)));
+		sh->setPos(QPoint(GRID_SZ*(10+(L+1)*maxRank),GRID_SZ*(10+4*i)));
 	}
     if (maxH < GRID_SZ*(10+4*i)) maxH = GRID_SZ*(10+4*i);
 
     restrictedPorts.clear();
     rank.clear();
-    return QRectF(0,0,GRID_SZ*(30+10*maxRank),maxH + GRID_SZ*10);
+	return QRectF(0,0,GRID_SZ*(20+(L+1)*maxRank),maxH + GRID_SZ*10);
 }
 
 
@@ -422,20 +424,21 @@ QPointF LEdiScene::findCrossLLvsLL(QList<QLineF> const& ll1, QList<QLineF> const
 }
 QPointF LEdiScene::findCrossLLvsHoldedWire(QPair<QList<QLineF>,QList<QPointF>> const& lPair){
     QPointF point;
-    int dist;
+	//int dist;
     QPointF closestPoint = nullPoint;
 
     QList<QLineF> const& ll = lPair.first;
 
-    for (int j=0; j< ll.size(); j++){
+	//for (int j=0; j< ll.size(); j++){
         for (int i=0; i< hWire->shape->seg.size(); i++){
             point=findCrossLvsLL(hWire->shape->seg[i]->line(),ll);
             if (point != nullPoint){
-
+				closestPoint=point;
                 point = nullPoint;
+				break;
             }
         }
-    }
+	//}
 
     return closestPoint;
 }
@@ -496,7 +499,7 @@ QPointF LEdiScene::oneSideTraceStep(QPair<QList<QLineF>,QList<QPointF>> const& _
 
         point1 = findCrossLLvsHoldedWire(lPair);
         if (point1 != nullPoint){
-            hWire->shape->addNode(point1);
+			//hWire->shape->addNode(point1);
             QLineF lastLine = lineWithPoint(point1, ll);
             point2 = findCrossLvsLL(lastLine, _ll);
             hWire->shape->addSeg(QLineF(point1, point2));
@@ -568,7 +571,7 @@ bool LEdiScene::traceHoldedWire(){
         if (lPair.first.first() != nullLine){
             QPointF point = findCrossLLvsHoldedWire(lPair);
             if (point != nullPoint){
-                hWire->shape->addNode(point);
+				//hWire->shape->addNode(point);
                 hWire->shape->addSeg(QLineF(point, end));
             }
             else{
@@ -585,14 +588,16 @@ bool LEdiScene::traceHoldedWire(){
 }
 void LEdiScene::traceLE(LEData* _le){
     hLE=_le;
-    QList<WireData*> wiresToTrace = _le->wires;
+	if (wiresToTrace.isEmpty()) wiresToTrace = _le->wires;
 
-    int k=0; int const maxK=wiresToTrace.size();
+	int k=0; int const maxK=7+wiresToTrace.size()/5;
     while((!wiresToTrace.isEmpty())&&(k < maxK)){
         hWire=wiresToTrace.first();
+		wiresToTrace.removeFirst();
         new WireShape(hWire,this);
         if (!traceHoldedWire()){
-            for (int j=0; j<wireShapeList.size(); j++){
+			int j;
+			for (j=0; j<wireShapeList.size(); j++){
                 hWireShapeToDelete=wireShapeList[j];
                 if (traceHoldedWire()){
                     k++;
@@ -602,8 +607,11 @@ void LEdiScene::traceLE(LEData* _le){
                 }
             }
             hWireShapeToDelete=NULL;
-        }
-        wireShapeList.append(hWire->shape);
-        wiresToTrace.removeFirst();
-    }
+			if (j==wireShapeList.size())
+				continue;
+		}
+		wireShapeList.append(hWire->shape);
+	}
+
+	if (!wiresToTrace.isEmpty()) qWarning("Module read failure %d",8);
 }

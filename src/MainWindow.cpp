@@ -12,8 +12,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
 
 	QString path;
 	//path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
-    //path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC_libs/XD_LE_PtcV1.80T25.v";
-    path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v";
+	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC_libs/XD_LE_PtcV1.80T25.v";
+	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v";
     LEData::readLibrary(path);
 
     //msg->setLocale("Eng");
@@ -90,9 +90,9 @@ void MainWindow::slotNewFile(){
 void MainWindow::slotOpenFile(){
 	QString path;
     //path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
-    //path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c17.syn_dc.v";
-    //path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c432.syn_dc.v";
-    path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
+	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s27.syn_dc.v";
+	//path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s344.syn_dc.v";
+	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
     //path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c432.syn_dc.v";
 
     mainLE = new LEData();
