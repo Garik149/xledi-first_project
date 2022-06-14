@@ -13,6 +13,7 @@ WireShape::~WireShape(){
 }
 
 void WireShape::erase(){
+	data->shape=NULL;
     for (int i=0; i<seg.size(); i++) delete(seg[i]);
     seg.clear();
     for (int i=0; i<nodes.size(); i++) delete(nodes[i]);
@@ -25,6 +26,7 @@ void WireShape::addNode(QPointF _point){
     hEllipse->setBrush(QBrush(QColor(BLUE,255)));
     nodes.append(hEllipse);
     scene->addItem(hEllipse);
+	hEllipse->hide();
 }
 
 WireSeg* WireShape::addSeg(QLineF line){

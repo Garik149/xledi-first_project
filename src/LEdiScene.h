@@ -33,6 +33,7 @@ private:
     LEData* hLE;
     WireData* hWire;
     WireShape* hWireShapeToDelete;
+	QList<WireData*> wiresToTrace;
     QList<WireShape*> wireShapeList;
 
     QLineF makeHLine(QPointF _point);

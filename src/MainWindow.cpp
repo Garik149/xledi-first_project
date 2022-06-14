@@ -90,10 +90,17 @@ void MainWindow::slotNewFile(){
 void MainWindow::slotOpenFile(){
 	QString path;
     //path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
+<<<<<<< HEAD
     path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s27.syn_dc.v";
 	//path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s344.syn_dc.v";
     //path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
     //path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c432.syn_dc.v";
+=======
+	//path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s27.syn_dc.v";
+	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c432.syn_dc.v";
+	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c17.syn_dc.v";
+	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c432.syn_dc.v";
+>>>>>>> 897ee37b166e8100e466a8c05c0fb96ef4145a38
 
     mainLE = new LEData();
 	if (mainLE->initLEFromFile(path) == RESULT_ERROR)

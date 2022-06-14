@@ -102,7 +102,7 @@ void LEdiScene::rankingStep(LEData* _le, int _r){
     passedLE.removeAll(_le);
 }
 QRectF LEdiScene::layoutLE(LEData* le){
-    int i, j;
+	int i, j;
 
     for (i=0; i<le->les.size(); i++)
         rank.insert(le->les[i],1);
@@ -136,8 +136,8 @@ QRectF LEdiScene::layoutLE(LEData* le){
 
 	const int L=2+3+2*le->les.size()/maxRank;
 
-    QList<LEData*> leList;
 	for (i=1; i<=maxRank; i++){
+		QList<LEData*> leList;
         leList=rank.keys(i);
         int height=0;
 		for (j=0; j<leList.size(); j++){
@@ -158,8 +158,33 @@ QRectF LEdiScene::layoutLE(LEData* le){
 	}
     if (maxH < GRID_SZ*(10+4*i)) maxH = GRID_SZ*(10+4*i);
 
-    restrictedPorts.clear();
+	/*for (i=maxRank; i>=1; i--){
+		QList<LEData*> leList;
+		leList=rank.keys(i);
+		for (j=0; j<leList.size(); j++)
+			for (int k=0; k<leList[j]->outPorts.size(); k++)
+				wiresToTrace.append(leList[j]->outPorts[k]->outsideWire);
+	}
+	for (i=0; i<le->inPorts.size(); i++)
+		wiresToTrace.append(le->inPorts[i]->insideWire);*/
+
+	QList<WireData*> wireList=le->wires;
+	while(!wireList.isEmpty()){
+		int k;
+		k=1;
+		for (i=0; i<wireList.size(); i++)
+			k=qMax(k,wireList[i]->loads.size());
+		for (i=0; i<wireList.size(); i++)
+			if (wireList[i]->loads.size()==k){
+				wiresToTrace.append(wireList[i]);
+				wireList.removeAt(i);
+			}
+
+	}
+
+	restrictedPorts.clear();
     rank.clear();
+	passedLE.clear();
 	return QRectF(0,0,GRID_SZ*(20+(L+1)*maxRank),maxH + GRID_SZ*10);
 }
 
@@ -499,7 +524,7 @@ QPointF LEdiScene::oneSideTraceStep(QPair<QList<QLineF>,QList<QPointF>> const& _
 
         point1 = findCrossLLvsHoldedWire(lPair);
         if (point1 != nullPoint){
-			//hWire->shape->addNode(point1);
+			hWire->shape->addNode(point1);
             QLineF lastLine = lineWithPoint(point1, ll);
             point2 = findCrossLvsLL(lastLine, _ll);
             hWire->shape->addSeg(QLineF(point1, point2));
@@ -571,7 +596,7 @@ bool LEdiScene::traceHoldedWire(){
         if (lPair.first.first() != nullLine){
             QPointF point = findCrossLLvsHoldedWire(lPair);
             if (point != nullPoint){
-				//hWire->shape->addNode(point);
+				hWire->shape->addNode(point);
                 hWire->shape->addSeg(QLineF(point, end));
             }
             else{
@@ -588,30 +613,36 @@ bool LEdiScene::traceHoldedWire(){
 }
 void LEdiScene::traceLE(LEData* _le){
     hLE=_le;
-	if (wiresToTrace.isEmpty()) wiresToTrace = _le->wires;
+	if (wiresToTrace.isEmpty()) return;
 
-	int k=0; int const maxK=7+wiresToTrace.size()/5;
-    while((!wiresToTrace.isEmpty())&&(k < maxK)){
+	int k=1;
+	int const maxK=7+wiresToTrace.size()/5;
+	while(wiresToTrace.size() > k+1){
         hWire=wiresToTrace.first();
 		wiresToTrace.removeFirst();
         new WireShape(hWire,this);
-        if (!traceHoldedWire()){
+		if (!traceHoldedWire()&&(k <= maxK)){
 			int j;
+			k++;
 			for (j=0; j<wireShapeList.size(); j++){
                 hWireShapeToDelete=wireShapeList[j];
-                if (traceHoldedWire()){
-                    k++;
-                    wiresToTrace.append(hWireShapeToDelete->data);
-                    wireShapeList.removeAll(hWireShapeToDelete); delete(hWireShapeToDelete);
-                    break;
-                }
-            }
-            hWireShapeToDelete=NULL;
-			if (j==wireShapeList.size())
-				continue;
+				if (traceHoldedWire()){
+					wiresToTrace.append(hWireShapeToDelete->data);
+					wireShapeList.removeAll(hWireShapeToDelete); delete(hWireShapeToDelete);
+					break;
+				}
+			}
+			hWireShapeToDelete=NULL;
 		}
-		wireShapeList.append(hWire->shape);
+		if (hWire->shape != NULL)
+			wireShapeList.append(hWire->shape);
+		hWire=NULL;
 	}
 
-	if (!wiresToTrace.isEmpty()) qWarning("Module read failure %d",8);
+	if (wireShapeList.size() != _le->wires.size()){
+		qWarning("%d wire(s) not been traced!", wiresToTrace.size());
+		wiresToTrace.clear();
+	}
+
+	hLE=NULL;
 }
