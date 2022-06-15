@@ -108,7 +108,7 @@ void MainWindow::slotOpenFile(){
     else{
         scene->clear();
         scene->setSceneRect(scene->layoutLE(mainLE));
-        scene->traceLE(mainLE);
+		scene->traceLE(mainLE);
     }
 }
 

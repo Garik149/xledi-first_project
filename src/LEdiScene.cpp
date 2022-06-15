@@ -154,19 +154,9 @@ QRectF LEdiScene::layoutLE(LEData* le){
 		PortShape* sh;
 		sh = new PortShape(le->outPorts[i]);
         addItem(sh);
-		sh->setPos(QPoint(GRID_SZ*(10+(L+1)*maxRank),GRID_SZ*(10+4*i)));
+		sh->setPos(QPoint(GRID_SZ*(10+L*(maxRank+1)),GRID_SZ*(10+4*i)));
 	}
-    if (maxH < GRID_SZ*(10+4*i)) maxH = GRID_SZ*(10+4*i);
-
-	/*for (i=maxRank; i>=1; i--){
-		QList<LEData*> leList;
-		leList=rank.keys(i);
-		for (j=0; j<leList.size(); j++)
-			for (int k=0; k<leList[j]->outPorts.size(); k++)
-				wiresToTrace.append(leList[j]->outPorts[k]->outsideWire);
-	}
-	for (i=0; i<le->inPorts.size(); i++)
-		wiresToTrace.append(le->inPorts[i]->insideWire);*/
+	if (maxH < GRID_SZ*(10+4*i)) maxH = GRID_SZ*(10+4*i);
 
 	QList<WireData*> wireList=le->wires;
 	while(!wireList.isEmpty()){
@@ -179,7 +169,6 @@ QRectF LEdiScene::layoutLE(LEData* le){
 				wiresToTrace.append(wireList[i]);
 				wireList.removeAt(i);
 			}
-
 	}
 
 	restrictedPorts.clear();
@@ -617,7 +606,7 @@ void LEdiScene::traceLE(LEData* _le){
 
 	int k=1;
 	int const maxK=7+wiresToTrace.size()/5;
-	while(wiresToTrace.size() > k+1){
+	while((!wiresToTrace.isEmpty()) && k<=maxK){
         hWire=wiresToTrace.first();
 		wiresToTrace.removeFirst();
         new WireShape(hWire,this);
