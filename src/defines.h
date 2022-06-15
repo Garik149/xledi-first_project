@@ -9,6 +9,7 @@
 #define BLUE 40,100,200
 #define RED 230,90,80
 #define GREEN 50,210,20
+#define WHITE 255,255,255
 
 class LEData;
 class LEShape;

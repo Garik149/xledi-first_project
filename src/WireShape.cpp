@@ -31,7 +31,7 @@ void WireShape::addNode(QPointF _point){
 
 WireSeg* WireShape::addSeg(QLineF line){
     WireSeg* hWireSeg=new WireSeg(this, QLineF(qMin(line.x1(),line.x2()),qMin(line.y1(),line.y2()),qMax(line.x1(),line.x2()),qMax(line.y1(),line.y2())));
-    hWireSeg->setPen(QPen(QColor(BLUE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+	hWireSeg->setPen(QPen(QColor(WHITE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     seg.append(hWireSeg);
     scene->addItem(hWireSeg);
     return hWireSeg;
