@@ -10,7 +10,7 @@
 
 class LEdiView : public QGraphicsView
 {
-    enum State {Default, DrawingWire, PlacingLE}; State state;
+    State state;
     LEdiScene* scene;
 	//QGraphicsItem *selectEditorItem;
 

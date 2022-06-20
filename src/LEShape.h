@@ -8,7 +8,6 @@
 class LEShape : public QGraphicsItem{
 public:
     enum {Type = UserType};
-	enum State {Default, Bolded, Moved};
 private:
 	State state;
     LEData* data;

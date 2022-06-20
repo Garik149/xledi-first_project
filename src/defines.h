@@ -10,6 +10,7 @@
 #define RED 230,90,80
 #define GREEN 50,210,20
 #define WHITE 255,255,255
+#define CYAN 20,160,160
 
 class LEData;
 class LEShape;
@@ -21,5 +22,6 @@ class WireSeg;
 class LEdiScene;
 class LEdiView;
 class Locale;
+enum State {Default, Bolded, Moved, DrawingWire, PlacingLE};
 
 #endif // DEFINES_H

@@ -9,6 +9,7 @@
 
 class WireShape{
 private:
+    State state;
     LEdiScene* scene;
     WireData* data;
     QList <QGraphicsEllipseItem*> nodes;
@@ -21,6 +22,7 @@ public:
     void erase();
     void addNode(QPointF);
     WireSeg* addSeg(QLineF line);
+    void setState(State _state);
 
     friend class LEdiScene;
     friend class WireSeg;
@@ -29,10 +31,7 @@ public:
 
 class WireSeg : public QGraphicsLineItem{
 public:
-	enum {Type = UserType + 2};
-	enum State {Default, Bolded, Moved};
-private:
-	State state;
+    enum {Type = UserType + 2};
 public:
 	WireShape* whole;
 
@@ -40,8 +39,7 @@ public:
 	WireSeg(WireShape* _whole, QLineF _line);
     ~WireSeg() {};
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) override;
-	int type() const override {return Type;}
-	void setState(State state);
+    int type() const override {return Type;}
     void shiftLeft();
 
     friend class LEdiScene;
@@ -51,7 +49,6 @@ public:
 /*class WireNode : public QGraphicsEllipseItem{
 public:
     enum {Type = UserType + 2};
-    enum State {Default, Bolded, Moved};
 private:
     State state;
     WireShape* whole;

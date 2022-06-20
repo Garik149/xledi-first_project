@@ -7,8 +7,7 @@
 
 class PortShape : public QGraphicsItem{
 public:
-	enum {Type = UserType+1};
-	enum State {Default, Bolded, Moved};
+    enum {Type = UserType+1};
 private:
 	State state;
     PortData* data;

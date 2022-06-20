@@ -41,12 +41,12 @@ void LEdiView::slotOnCustomContextMenu(const QPoint&){}
 void LEdiView::slotAct1(){
     hWire = new WireShape(new WireData(),scene);
     hWireSeg = hWire->addSeg(QLineF());
-    hWireSeg->setState(WireSeg::State::Moved);
+    hWire->setState(Moved);
     state = DrawingWire;
 }
 void LEdiView::slotAct2(){
     hLE = new LEShape(new LEData("al_ao21","U1"));
-	hLE->setState(LEShape::State::Moved);
+    hLE->setState(Moved);
     scene->addItem(hLE);
     state = PlacingLE;
 }
@@ -57,9 +57,10 @@ QPoint LEdiView::btg(QPointF _point){
 }
 
 void LEdiView::forgetHolded(){
-	if (hLE!=NULL) {hLE->setState(LEShape::State::Default); hLE = NULL;}
-	if (hPort!=NULL) {hPort->setState(PortShape::State::Default); hPort = NULL;}
-    if (hWireSeg!=NULL) {hWireSeg->setState(WireSeg::State::Default); hWireSeg = NULL;}
+    if (hLE!=NULL) {hLE->setState(Default); hLE = NULL;}
+    if (hPort!=NULL) {hPort->setState(Default); hPort = NULL;}
+    if (hWireSeg!=NULL) {hWireSeg->whole->setState(Default); hWireSeg = NULL;}
+    if (hWire!=NULL) {hWire->setState(Default); hWire = NULL;}
 }
 
 void LEdiView::mousePressEvent(QMouseEvent *_mouseEvent){
@@ -80,32 +81,32 @@ void LEdiView::mousePressEvent(QMouseEvent *_mouseEvent){
 
                 case 0:
 					hLE = (LEShape*)hItem;
-					hLE->setState(LEShape::State::Bolded);
+                    hLE->setState(Bolded);
                     break;
 
                 case 1:
 					hPort = (PortShape*)hItem;
-					hPort->setState(PortShape::State::Bolded);
+                    hPort->setState(Bolded);
                     break;
 
                 case 2:
                     hWireSeg = (WireSeg*)hItem;
-                    hWireSeg->setState(WireSeg::State::Bolded);
+                    hWireSeg->whole->setState(Bolded);
                     break;
                 }
             break;
 
         case DrawingWire:
-            hWireSeg->setState(WireSeg::State::Default);
+            hWire->setState(Default);
             hPos1=hPos2;
             hWireSeg = hWire->addSeg(QLineF());
-            hWireSeg->setState(WireSeg::State::Moved);
+            hWire->setState(Moved);
             break;
 
         case PlacingLE:
             forgetHolded();
             hLE = new LEShape(new LEData("al_ao21","U1"));
-			hLE->setState(LEShape::State::Moved);
+            hLE->setState(Moved);
             scene->addItem(hLE);
             break;
         }
