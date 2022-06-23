@@ -10,7 +10,8 @@
 #define RED 230,90,80
 #define GREEN 50,210,20
 #define WHITE 255,255,255
-#define CYAN 20,160,160
+#define CYAN 20,150,180
+#define LIGHT_BLUE 60,130,240
 
 class LEData;
 class LEShape;
@@ -19,6 +20,7 @@ class PortShape;
 struct WireData;
 class WireShape;
 class WireSeg;
+class WireNode;
 class LEdiScene;
 class LEdiView;
 class Locale;

@@ -119,10 +119,13 @@ QRectF LEdiScene::layoutLE(LEData* le){
         leToRank.clear();
     }
 
+
+
     int maxH=0;
 	int maxRank = 1;
     for (i=0; i<le->les.size(); i++){
-        int r=rank.find(le->les[i]).value();
+        int r;
+        r=rank.find(le->les[i]).value();
 		if (maxRank<r) maxRank=r;
 	}
 
@@ -178,7 +181,9 @@ QRectF LEdiScene::layoutLE(LEData* le){
 }
 
 
-
+int LEdiScene::orthDist(QPointF _point1, QPointF _point2){
+    return abs(_point1.x()-_point2.x())+abs(_point1.y()-_point2.y());
+}
 QLineF LEdiScene::makeHLine(QPointF _point){
     QGraphicsItem* item;
     WireSeg* wireSeg;
@@ -437,22 +442,24 @@ QPointF LEdiScene::findCrossLLvsLL(QList<QLineF> const& ll1, QList<QLineF> const
     return point;
 }
 QPointF LEdiScene::findCrossLLvsHoldedWire(QPair<QList<QLineF>,QList<QPointF>> const& lPair){
+    int dist;
+    int minDist=this->height()+this->width();
     QPointF point;
-	//int dist;
     QPointF closestPoint = nullPoint;
 
     QList<QLineF> const& ll = lPair.first;
+    QList<QPointF> const& pl = lPair.second;
 
-	//for (int j=0; j< ll.size(); j++){
-        for (int i=0; i< hWire->shape->seg.size(); i++){
-            point=findCrossLvsLL(hWire->shape->seg[i]->line(),ll);
-            if (point != nullPoint){
-				closestPoint=point;
-                point = nullPoint;
-				break;
+    for (int i=0; i< hWire->shape->seg.size(); i++)
+        for (int j=0; j< ll.size(); j++){
+            point=findCrossLvsL(hWire->shape->seg[i]->line(),ll[j]);
+            dist=orthDist(point,pl[j]);
+            if (point != nullPoint && dist<minDist){
+                minDist=dist;
+                closestPoint=point;
+                break;
             }
         }
-	//}
 
     return closestPoint;
 }
@@ -627,11 +634,10 @@ void LEdiScene::traceLE(LEData* _le){
 			wireShapeList.append(hWire->shape);
 		hWire=NULL;
 	}
+    wiresToTrace.clear();
 
-	if (wireShapeList.size() != _le->wires.size()){
-		qWarning("%d wire(s) not been traced!", wiresToTrace.size());
-		wiresToTrace.clear();
-	}
+    if (wireShapeList.size() != _le->wires.size())
+        qWarning("%d wire(s) not been traced!", _le->wires.size() - wireShapeList.size());
 
 	hLE=NULL;
 }

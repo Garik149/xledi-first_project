@@ -36,6 +36,7 @@ private:
 	QList<WireData*> wiresToTrace;
     QList<WireShape*> wireShapeList;
 
+    int orthDist(QPointF _point1, QPointF _point2);
     QLineF makeHLine(QPointF _point);
     QLineF makeVLine(QPointF _point);
     QLineF const& lineWithPoint(QPointF _point, QList<QLineF> const& ll);

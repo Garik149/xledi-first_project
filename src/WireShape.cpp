@@ -23,16 +23,13 @@ void WireShape::erase(){
 }
 
 void WireShape::addNode(QPointF _point){
-    QGraphicsEllipseItem* hEllipse= new QGraphicsEllipseItem(_point.x()-3,_point.y()-3,6,6);
-    hEllipse->setPen(QPen(QColor(BLUE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    hEllipse->setBrush(QBrush(QColor(BLUE,255)));
-    nodes.append(hEllipse);
-    scene->addItem(hEllipse);
+    WireNode* hWireNode= new WireNode(this, _point);
+    nodes.append(hWireNode);
+    scene->addItem(hWireNode);
 }
 
 WireSeg* WireShape::addSeg(QLineF line){
     WireSeg* hWireSeg=new WireSeg(this, QLineF(qMin(line.x1(),line.x2()),qMin(line.y1(),line.y2()),qMax(line.x1(),line.x2()),qMax(line.y1(),line.y2())));
-    hWireSeg->setPen(QPen(QColor(BLUE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     seg.append(hWireSeg);
     scene->addItem(hWireSeg);
     return hWireSeg;
@@ -51,16 +48,16 @@ WireSeg::WireSeg(WireShape* _shape, QLineF _line) : QGraphicsLineItem(_line){
     setPos(0,0);
 }
 
-void WireSeg::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) {
+void WireSeg::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) {
 
-    QPen hPen = pen();
+    QPen hPen(QColor(BLUE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     switch(whole->state){
-	default:
+    default:
         break;
 
 	case State::Bolded:
         hPen.setWidth(hPen.width()+1);
-        //hPen.setColor(QColor(CYAN));
+        hPen.setColor(QColor(LIGHT_BLUE));
         break;
 
 	case State::Moved:
@@ -69,7 +66,7 @@ void WireSeg::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*
 	}
 
     painter->setPen(hPen);
-	painter->drawLine(line());
+    painter->drawLine(line());
 
 	return;
 }
@@ -85,4 +82,37 @@ void WireSeg::shiftLeft(){
             seg->line().setP1(segLine.p2());
         }
     }*/
+}
+
+//WireNode
+WireNode::WireNode(WireShape* _shape, QPointF _point) : QGraphicsItem(){
+    whole=_shape;
+    setPos(_point);
+}
+
+QRectF WireNode::boundingRect() const{
+    return QRectF(-10,-10,20,20);
+}
+
+void WireNode::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) {
+
+    QPen hPen(QColor(BLUE,255), 6, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+    switch(whole->state){
+    default:
+        break;
+
+    case State::Bolded:
+        hPen.setWidth(hPen.width()+2);
+        hPen.setColor(QColor(LIGHT_BLUE));
+        break;
+
+    case State::Moved:
+        hPen.setColor(QColor(hPen.color().red(),hPen.color().green(),hPen.color().blue(),128));
+        break;
+    }
+
+    painter->setPen(hPen);
+    painter->drawPoint(0,0);
+
+    return;
 }
