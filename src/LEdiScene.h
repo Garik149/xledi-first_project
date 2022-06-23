@@ -14,7 +14,7 @@ private:
 public:
     LEdiScene(const QRect &sceneRect, QObject *parent = nullptr);
      ~LEdiScene(){};
-    void scaleUpdate(float scale);
+	void scaleUpdate(float scale);
 
     //placing
 private:
@@ -36,6 +36,7 @@ private:
 	QList<WireData*> wiresToTrace;
     QList<WireShape*> wireShapeList;
 
+	short int positionState(QPointF _point);
     int orthDist(QPointF _point1, QPointF _point2);
     QLineF makeHLine(QPointF _point);
     QLineF makeVLine(QPointF _point);

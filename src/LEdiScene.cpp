@@ -181,144 +181,98 @@ QRectF LEdiScene::layoutLE(LEData* le){
 }
 
 
+short int LEdiScene::positionState(QPointF _point){ // 0-occupied place, 1-mid of wireSeg, 2-empty place
+	WireSeg* wireSeg;
+	WireNode* wireNode;
+	QList<QGraphicsItem*> itemList(items(_point));
+	short int type=2;
+
+	for (int i=0; i<itemList.size(); i++)
+		switch(itemList[i]->type()-QGraphicsItem::UserType){
+		default:
+			break;
+		case 0: case 1: //LEShape, PortShape
+			return 0;
+			break;
+		case 2: //WireSeg
+			wireSeg=(WireSeg*)itemList[i];
+			if ((wireSeg->whole != hWireShapeToDelete)&&(wireSeg->whole != hWire->shape)){
+				if ((_point == wireSeg->line().p1())||(_point == wireSeg->line().p2()))
+					return 0;
+				else
+					type=1;
+			}
+			break;
+		case 3: //WireNode
+			wireNode = (WireNode*)itemList[i];
+			if ((wireNode->whole != hWireShapeToDelete)&&(wireNode->whole != hWire->shape))
+				return 0;
+			break;
+	}
+	return type;
+}
 int LEdiScene::orthDist(QPointF _point1, QPointF _point2){
     return abs(_point1.x()-_point2.x())+abs(_point1.y()-_point2.y());
 }
 QLineF LEdiScene::makeHLine(QPointF _point){
-    QGraphicsItem* item;
-    WireSeg* wireSeg;
-
-    QPointF point = _point;
-    bool end;
+	QPointF point=_point;
+	short int mode;
 	int x, xl, xr;
 
     //Left direction
 	xl=_point.x();
-	x=xl-GRID_SZ;
-    end=false;
-	while((!end) && (x>0)){
-        point.setX(x);
-		item = itemAt(point,QTransform());
-        if (item!=NULL)
-			switch(item->type()-QGraphicsItem::UserType){
-            default:
-                xl=x;
-                break;
-            case 0: case 1://LEShape, PortShape
-				end=true;
-				break;
-            case 2: //WireSeg
-                wireSeg=(WireSeg*)item;
-                if ((wireSeg->whole == hWireShapeToDelete)||(wireSeg->whole == hWire->shape))
-                    xl=x;
-                else
-                    if ((point == wireSeg->line().p1())||(point == wireSeg->line().p2()))
-                        end=true;
-                break;
-            }
-        else
-            xl=x;
+	x=xl;
+	while(x>GRID_SZ){
 		x-=GRID_SZ;
+        point.setX(x);
+		mode = positionState(point);
+
+		if (mode == 0) break;
+		if (mode == 2) xl=x;
 	}
 
     //Right direction
 	xr=_point.x();
-	x=xr+GRID_SZ;
-    end=false;
-    while((!end) && (x<width())){
-        point.setX(x);
-        item = itemAt(point,QTransform());
-        if (item!=NULL)
-            switch(item->type()-QGraphicsItem::UserType){
-            default:
-                xr=x;
-                break;
-            case 0: case 1://LEShape, PortShape
-                end=true;
-                break;
-            case 2: //WireSeg
-                wireSeg=(WireSeg*)item;
-                if ((wireSeg->whole == hWireShapeToDelete)||(wireSeg->whole == hWire->shape))
-                    xr=x;
-                else
-                    if ((point == wireSeg->line().p1())||(point == wireSeg->line().p2()))
-                        end=true;
-                break;
-            }
-        else
-            xr=x;
+	x=xr;
+	while(x<width()-GRID_SZ){
 		x+=GRID_SZ;
+        point.setX(x);
+		mode = positionState(point);
+
+		if (mode == 0) break;
+		if (mode == 2) xr=x;
     }
 
     if (xl==xr) return nullLine;
     else return QLineF(QPointF(xl,_point.y()),QPointF(xr,_point.y()));
 }
 QLineF LEdiScene::makeVLine(QPointF _point){
-
-    QGraphicsItem* item;
-    WireSeg* wireSeg;
-
     QPointF point=_point;
-    bool end;
+	short int mode;
 	int y, yt, yb;
 
     //Up direction
 	yt=_point.y();
-	y=yt-GRID_SZ;
-    end=false;
-    while((!end) && (y>0)){
-
-        point.setY(y);
-        item = itemAt(point,QTransform());
-        if (item!=NULL)
-            switch(item->type()-QGraphicsItem::UserType){
-            default:
-                yt=y;
-                break;
-            case 0: case 1://LEShape, PortShape
-                end=true;
-                break;
-            case 2: //WireSeg
-                wireSeg=(WireSeg*)item;
-                if ((wireSeg->whole == hWireShapeToDelete)||(wireSeg->whole == hWire->shape))
-                    yt=y;
-                else
-                    if ((point == wireSeg->line().p1())||(point == wireSeg->line().p2()))
-                        end=true;
-                break;
-            }
-        else
-            yt=y;
+	y=yt;
+	while(y>GRID_SZ){
 		y-=GRID_SZ;
+        point.setY(y);
+		mode = positionState(point);
+
+		if (mode == 0) break;
+		if (mode == 2) yt=y;
     }
 
     //Down direction
 	yb=_point.y();
-	y=yb+GRID_SZ;
-    end=false;
-    while((!end) && (y<height())){
-        point.setY(y);
-        item = itemAt(point,QTransform());
-        if (item!=NULL)
-            switch(item->type()-QGraphicsItem::UserType){
-            default:
-                yb=y;
-                break;
-            case 0: case 1://LEShape, PortShape
-                end=true;
-                break;
-            case 2: //WireSeg
-                wireSeg=(WireSeg*)item;
-                if ((wireSeg->whole == hWireShapeToDelete)||(wireSeg->whole == hWire->shape))
-                    yb=y;
-                else
-                    if ((point == wireSeg->line().p1())||(point == wireSeg->line().p2()))
-                        end=true;
-                break;
-            }
-        else
-            yb=y;
+	y=yb;
+	while(y<height()-GRID_SZ){
 		y+=GRID_SZ;
+        point.setY(y);
+		mode = positionState(point);
+
+		if (mode == 0) break;
+		if (mode == 2) yb=y;
     }
 
     if (yt==yb) return nullLine;
