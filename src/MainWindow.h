@@ -19,6 +19,7 @@ private slots:
     void slotOpenFile();
     void slotSaveFile();
     void slotQuit();
+	void slotChooseLibrary();
 
 private:
 	void initActions();
@@ -26,17 +27,14 @@ private:
 	void createMenu();
 	void createToolBar();
 	void createStatusBar();
+	void createLibraryWidget();
 
-    //void createToolBox();
-    //void newFileLE();
-    //void createStatusBar(QPointF mouseCoordinates);
+	//void createToolBox();
     //void buttonGroupClicked(QAbstractButton *button);
     //void pointerGroupCliced();
     //void insertItem();
     //void currentChangedTab(int indexTab);
-    //void tabCloseRequested(int indexTab);
-    //void saveDataLE();
-    //void loadDataLE();
+	//void tabCloseRequested(int indexTab);
 
     QAction* newFileAction;
     QAction* openFileAction;

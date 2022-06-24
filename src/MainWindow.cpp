@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     createMenu();
     createToolBar();
     createStatusBar();
+	createLibraryWidget();
 
     slotOpenFile();
 }
@@ -79,6 +80,23 @@ void MainWindow::createStatusBar(){
 	setStatusBar(statusBar);
 	statusBar->showMessage("Запуск");
 	statusBar->setStatusTip("Пока тут нечего смотреть...");
+}
+
+void MainWindow::createLibraryWidget(){
+	QDockWidget* dockWidget = new QDockWidget();
+	QTreeWidget* treeWidget = new QTreeWidget();
+	QStringList headers;
+	headers << "Library LE";
+	treeWidget->setHeaderLabels(headers);
+	treeWidget->setRootIsDecorated(0);
+	dockWidget->setWidget(treeWidget);
+	addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
+
+	QTreeWidgetItem* item = new QTreeWidgetItem(treeWidget);
+	item->setText(0,"jj");
+
+
+	//connect(treeWidget, &QTreeWidget::currentItemChanged, this, &LEdiView::slotAct2);
 }
 
 //Empty

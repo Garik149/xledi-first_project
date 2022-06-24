@@ -50,7 +50,7 @@ WireSeg::WireSeg(WireShape* _shape, QLineF _line) : QGraphicsLineItem(_line){
 
 void WireSeg::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) {
 
-    QPen hPen(QColor(BLUE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+	QPen hPen(QColor(BLUE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     switch(whole->state){
     default:
         break;
