@@ -23,8 +23,7 @@ private:
     QList<LEData*> passedLE;
     void rankingStep(LEData* _le, int r);
 public:
-    QRectF layoutLE(LEData* le);
-
+	QRectF layoutLE(LEData* le);
     //tracing
 private:
     QLineF const nullLine{-1,-1,-1,-1};

@@ -16,10 +16,10 @@ public:
 
 private slots:
     void slotNewFile();
-    void slotOpenFile();
+	void slotLoadLibrary();
+	void slotLoadScheme();
     void slotSaveFile();
     void slotQuit();
-	void slotChooseLibrary();
 
 private:
 	void initActions();
@@ -37,7 +37,8 @@ private:
 	//void tabCloseRequested(int indexTab);
 
     QAction* newFileAction;
-    QAction* openFileAction;
+	QAction* loadLibraryAction;
+	QAction* loadSchemeAction;
     QAction* saveFileAction;
     QAction* quitAction;
 

@@ -15,7 +15,6 @@ WireShape::~WireShape(){
 }
 
 void WireShape::erase(){
-	data->shape=NULL;
     for (int i=0; i<seg.size(); i++) delete(seg[i]);
     seg.clear();
     for (int i=0; i<nodes.size(); i++) delete(nodes[i]);
@@ -45,7 +44,7 @@ void WireShape::setState(State _state){
 //WireSeg
 WireSeg::WireSeg(WireShape* _shape, QLineF _line) : QGraphicsLineItem(_line){
 	whole=_shape;
-    setPos(0,0);
+	//setPos(0,0);
 }
 
 void WireSeg::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) {

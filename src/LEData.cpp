@@ -76,6 +76,16 @@ bool LEData::nameIs(QString _name){
     return false;
 }
 
+int LEData::compareNames(const void* le1, const void* le2){
+	LEData* _le1 = *(LEData**)le1;
+	LEData* _le2 = *(LEData**)le2;
+	return QString::compare(_le1->name, _le2->name);
+}
+void LEData::nameSort(QList<LEData*>& leList){ //qsort q-контейнеры не принимает
+	QVector<LEData*> _leList = leList.toVector();
+	qsort(&_leList,_leList.size(),sizeof(LEData*),compareNames);
+}
+
 bool LEData::copy(LEData* _le){
 	int i,j;
     WireData* wire;

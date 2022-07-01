@@ -26,11 +26,14 @@ class LEData{
      bool haveLE(QString _name);
     bool nameIs(QString _name);
     bool copy(LEData* _le);
+	static int compareNames(const void*, const void*);
 public:
     LEData();
      LEData(LEData* _le);
      LEData(QString _type, QString _name);
      ~LEData();
+
+	static void nameSort(QList<LEData*>&);
     static bool readLibrary(const QString& path);
 	bool initLEFromFile(const QString &path);
 	bool copyFromLibrary(const QString _type, const QString _name);

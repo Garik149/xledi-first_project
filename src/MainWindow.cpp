@@ -8,16 +8,9 @@
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     qApp->setAttribute(Qt::AA_DontShowIconsInMenus, true);
 	msg = new Locale();
+	//msg->setLocale("Eng");
+
 	initActions();
-
-	QString path;
-	//path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
-	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC_libs/XD_LE_PtcV1.80T25.v";
-	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v";
-    LEData::readLibrary(path);
-
-    //msg->setLocale("Eng");
-
     resize(1200,700);
     createScene();
     createMenu();
@@ -25,19 +18,23 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     createStatusBar();
 	createLibraryWidget();
 
-    slotOpenFile();
+	slotLoadLibrary();
+	slotLoadScheme();
 }
 
 void MainWindow::initActions(){
-    //newFileAction = new QAction(QIcon{":/images/New.png"}, msg->get1(), this);
-    //connect(newFileAction, &QAction::triggered, this, &MainWindow::slotNewFile);
+	newFileAction = new QAction(QIcon{":/images/New.png"}, msg->get1(), this);
+	connect(newFileAction, &QAction::triggered, this, &MainWindow::slotNewFile);
 
-    openFileAction = new QAction(QIcon{":/images/Open.png"}, msg->get2(), this);
-    connect(openFileAction, &QAction::triggered, this, &MainWindow::slotOpenFile);
+	loadLibraryAction = new QAction(QIcon{":/images/Open.png"}, "Load library", this);
+	connect(loadLibraryAction, &QAction::triggered, this, &MainWindow::slotLoadLibrary);
 
-    saveFileAction = new QAction(QIcon{":/images/Save.png"}, msg->get3(), this);
-    saveFileAction->setShortcut(tr("CTRL+S"));
-    connect(saveFileAction, &QAction::triggered, this, &MainWindow::slotSaveFile);
+	loadSchemeAction = new QAction(QIcon{":/images/Open.png"}, "Load scheme", this);
+	connect(loadSchemeAction, &QAction::triggered, this, &MainWindow::slotLoadScheme);
+
+	saveFileAction = new QAction(QIcon{":/images/Save.png"}, msg->get3(), this);
+	saveFileAction->setShortcut(tr("CTRL+S"));
+	connect(saveFileAction, &QAction::triggered, this, &MainWindow::slotSaveFile);
 
     quitAction = new QAction(QIcon{":/images/Quit.png"}, msg->get4(), this);
     quitAction->setShortcut(tr("CTRL+Q"));
@@ -58,8 +55,9 @@ void MainWindow::createMenu(){
 	menuBar()->addMenu(fileMenu);
 
     //fileMenu->addAction(newFileAction);
-    fileMenu->addAction(openFileAction);
-    fileMenu->addAction(saveFileAction);
+	fileMenu->addAction(loadLibraryAction);
+	fileMenu->addAction(loadSchemeAction);
+	//fileMenu->addAction(saveFileAction);
 	fileMenu->addSeparator();
     fileMenu->addAction(quitAction);
 }
@@ -67,9 +65,9 @@ void MainWindow::createMenu(){
 void MainWindow::createToolBar(){
 	toolBar = new QToolBar(this);
 
-    //toolBar->addAction(newFileAction);
-    toolBar->addAction(openFileAction);
-    toolBar->addAction(saveFileAction);
+	//toolBar->addAction(newFileAction);
+	toolBar->addAction(loadSchemeAction);
+	//toolBar->addAction(saveFileAction);
 	toolBar->setMovable(true);
 
 	addToolBar(Qt::TopToolBarArea, toolBar);
@@ -95,7 +93,6 @@ void MainWindow::createLibraryWidget(){
 	QTreeWidgetItem* item = new QTreeWidgetItem(treeWidget);
 	item->setText(0,"jj");
 
-
 	//connect(treeWidget, &QTreeWidget::currentItemChanged, this, &LEdiView::slotAct2);
 }
 
@@ -104,8 +101,17 @@ void MainWindow::slotNewFile(){
 	QMessageBox::information(this, "Информация", "Эта функция не разблокирована");
 }
 
+void MainWindow::slotLoadLibrary(){
+	QString path;
+	//path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
+	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC_libs/XD_LE_PtcV1.80T25.v";
+	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v";
+
+	LEData::readLibrary(path);
+}
+
 //
-void MainWindow::slotOpenFile(){
+void MainWindow::slotLoadScheme(){
 	QString path;
     //path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
 	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s27.syn_dc.v";

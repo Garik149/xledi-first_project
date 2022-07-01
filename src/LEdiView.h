@@ -47,7 +47,7 @@ public slots:
 	void slotOnCustomContextMenu(const QPoint&);
 	void slotAct1();
 	void slotAct2();
-	void slotPlaceLE();
+	//void slotPlaceLE();
     //void transferItem(ItemLEdi *item , QGraphicsLineItem *line);
     //void deleteSelectItem(){sceneLE->deleteSelectItem();}
 signals:
