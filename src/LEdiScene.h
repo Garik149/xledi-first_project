@@ -7,14 +7,22 @@
 #include "defines.h"
 
 class LEdiScene : public QGraphicsScene{
-private:
-    bool largeGrid;
-
-    void drawBackground(QPainter*, const QRectF&) override;
 public:
-    LEdiScene(const QRect &sceneRect, QObject *parent = nullptr);
-     ~LEdiScene(){};
+	const QColor bcgndColor;
+private:
+	bool largeGrid;
+	bool shownLabels;
+	int colorMap;
+
+
+public:
+	LEdiScene(const QRect &sceneRect, QObject *parent = nullptr);
+	 ~LEdiScene(){};
+	void reset();
 	void scaleUpdate(float scale);
+private:
+	void drawBackground(QPainter*, const QRectF&) override;
+
 
     //placing
 private:
@@ -24,6 +32,8 @@ private:
     void rankingStep(LEData* _le, int r);
 public:
 	QRectF layoutLE(LEData* le);
+
+
     //tracing
 private:
     QLineF const nullLine{-1,-1,-1,-1};
@@ -52,8 +62,9 @@ private:
 public:
     void traceLE(LEData* le);
 
+
     Q_OBJECT
-private slots:
+public slots:
     //void slotNameChanged(QString oldName, QString newName);
 signals:
 	//void tranferItem(ItemLEdi* item, QGraphicsLineItem *line);

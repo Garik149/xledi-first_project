@@ -1,5 +1,5 @@
-#include "WireShape.h"
 #include "WireData.h"
+#include "WireShape.h"
 
 //WireShape
 WireShape::WireShape(WireData* _wire, LEdiScene* _scene){
@@ -12,25 +12,24 @@ WireShape::WireShape(WireData* _wire, LEdiScene* _scene){
 
 WireShape::~WireShape(){
     erase();
+	data->shape=NULL;
 }
 
 void WireShape::erase(){
-    for (int i=0; i<seg.size(); i++) delete(seg[i]);
-    seg.clear();
-    for (int i=0; i<nodes.size(); i++) delete(nodes[i]);
-    nodes.clear();
+	for (int i=0; i<seg.size(); i++) delete(seg[i]);
+	seg.clear();
+	for (int i=0; i<nodes.size(); i++) delete(nodes[i]);
+	nodes.clear();
 }
 
 void WireShape::addNode(QPointF _point){
     WireNode* hWireNode= new WireNode(this, _point);
-    nodes.append(hWireNode);
     scene->addItem(hWireNode);
 }
 
 WireSeg* WireShape::addSeg(QLineF line){
     WireSeg* hWireSeg=new WireSeg(this, QLineF(qMin(line.x1(),line.x2()),qMin(line.y1(),line.y2()),qMax(line.x1(),line.x2()),qMax(line.y1(),line.y2())));
-    seg.append(hWireSeg);
-    scene->addItem(hWireSeg);
+	scene->addItem(hWireSeg);
     return hWireSeg;
 }
 
@@ -44,19 +43,23 @@ void WireShape::setState(State _state){
 //WireSeg
 WireSeg::WireSeg(WireShape* _shape, QLineF _line) : QGraphicsLineItem(_line){
 	whole=_shape;
-	//setPos(0,0);
+	whole->seg.append(this);
+}
+
+WireSeg::~WireSeg() {
+	//whole->seg.removeAll(this);
 }
 
 void WireSeg::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) {
 
-	QPen hPen(QColor(BLUE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+	QPen hPen(QColor(LIGHT_BLUE,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     switch(whole->state){
     default:
         break;
 
 	case State::Bolded:
         hPen.setWidth(hPen.width()+1);
-        hPen.setColor(QColor(LIGHT_BLUE));
+		hPen.setColor(QColor(BLUE));
         break;
 
 	case State::Moved:
@@ -86,7 +89,12 @@ void WireSeg::shiftLeft(){
 //WireNode
 WireNode::WireNode(WireShape* _shape, QPointF _point) : QGraphicsItem(){
     whole=_shape;
+	whole->nodes.append(this);
     setPos(_point);
+}
+
+WireNode::~WireNode(){
+	//whole->nodes.removeAll(this);
 }
 
 QRectF WireNode::boundingRect() const{
@@ -95,14 +103,14 @@ QRectF WireNode::boundingRect() const{
 
 void WireNode::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) {
 
-    QPen hPen(QColor(BLUE,255), 6, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+	QPen hPen(QColor(LIGHT_BLUE,255), 6, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     switch(whole->state){
     default:
         break;
 
     case State::Bolded:
         hPen.setWidth(hPen.width()+2);
-        hPen.setColor(QColor(LIGHT_BLUE));
+		hPen.setColor(QColor(BLUE));
         break;
 
     case State::Moved:

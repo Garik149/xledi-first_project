@@ -1,26 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <QMap>
+
 #include "LEdiScene.h"
 #include "LEdiView.h"
-#include "LEShape.h"
-#include "PortShape.h"
-#include "WireShape.h"
 #include "LEData.h"
+#include "LEShape.h"
 #include "PortData.h"
+#include "PortShape.h"
 #include "WireData.h"
+#include "WireShape.h"
 
 
 LEdiScene::LEdiScene(const QRect &sceneRect, QObject *parent) : QGraphicsScene(sceneRect,parent){
-    largeGrid=false;
-    iter=0;
-    hLE=NULL;
-    hWire=NULL;
-    hWireShapeToDelete=NULL;
+	reset();
+}
+
+void LEdiScene::reset(){
+	largeGrid=false;
+	iter=0;
+	hLE=NULL;
+	hWire=NULL;
+	hWireShapeToDelete=NULL;
+	wiresToTrace.clear();
+	wireShapeList.clear();
+	rank.clear();
+	restrictedPorts.clear();
+	passedLE.clear();
+
+	QList<QGraphicsItem*> itemList=items();
+	for (int i=itemList.size()-1; i>=0; i--)
+		removeItem(itemList[i]);
 }
 
 void LEdiScene::drawBackground(QPainter* painter, const QRectF&)
 {
-    painter->setBrush(Qt::black);
-    painter->setPen(QPen(Qt::gray, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+	painter->setBrush(Qt::white);
+	painter->setPen(QPen(Qt::darkGray, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     painter->drawRect(sceneRect());
 
     if (!largeGrid)
@@ -28,7 +45,7 @@ void LEdiScene::drawBackground(QPainter* painter, const QRectF&)
             for (int j = GRID_SZ; j < sceneRect().bottom(); j += GRID_SZ)
                 painter->drawPoint(i, j);
 
-    painter->setPen(QPen(Qt::gray, 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+	painter->setPen(QPen(Qt::darkGray, 5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
     for (int i = GRID_SZ*10; i < sceneRect().right(); i += GRID_SZ*10)
         for (int j = GRID_SZ*10; j < sceneRect().bottom(); j += GRID_SZ*10)
             painter->drawPoint(i, j);
@@ -103,6 +120,7 @@ void LEdiScene::rankingStep(LEData* _le, int _r){
 }
 QRectF LEdiScene::layoutLE(LEData* le){
 	int i, j;
+	int dl;
 
     for (i=0; i<le->les.size(); i++)
         rank.insert(le->les[i],1);
@@ -127,37 +145,45 @@ QRectF LEdiScene::layoutLE(LEData* le){
 		maxRank=qMax(maxRank,r);
 	}
 
-	int l1,l2;
-
+	dl=10;
 	for (i=0; i<le->inPorts.size(); i++){
 		PortShape* sh;
 		sh = new PortShape(le->inPorts[i]);
         addItem(sh);
-        sh->setPos(QPoint(GRID_SZ*10,GRID_SZ*(10+4*i)));
+		sh->setPos(QPoint(GRID_SZ*dl,GRID_SZ*(10+4*i)));
 	}
-
-	const int L=5+2*le->les.size()/maxRank;
+	dl+=4+le->inPorts.size();
 
 	for (i=1; i<=maxRank; i++){
 		QList<LEData*> leList;
+		QSet<WireData*> inWires, outWires;
         leList=rank.keys(i);
-		//LEData::nameSort(leList);
+		LEData::nameSort(leList);
 		int height=0;
+		for (j=0; j<leList.size(); j++){
+			for (int k=0; k<leList[j]->inPorts.size(); k++)
+				inWires.insert(leList[j]->inPorts[k]->outsideWire);
+			for (int k=0; k<leList[j]->outPorts.size(); k++)
+				outWires.insert(leList[j]->inPorts[k]->outsideWire);
+		}
+		dl+=inWires.size(); inWires.clear();
 		for (j=0; j<leList.size(); j++){
 			LEShape* sh;
 			sh = new LEShape(leList[j]);
             addItem(sh);
-			sh->setPos(QPoint(GRID_SZ*(10+L*i),GRID_SZ*(10+height)));
+			sh->setPos(QPoint(GRID_SZ*dl,GRID_SZ*(10+height)));
 			height+=sh->body->height()/GRID_SZ+2;
         }
 		maxH = qMax(maxH,height);
+		dl+=3+outWires.size(); outWires.clear();
     }
 
+	dl+=le->outPorts.size();
 	for (i=0; i<le->outPorts.size(); i++){
 		PortShape* sh;
 		sh = new PortShape(le->outPorts[i]);
         addItem(sh);
-		sh->setPos(QPoint(GRID_SZ*(10+L*(maxRank+1)),GRID_SZ*(10+4*i)));
+		sh->setPos(QPoint(GRID_SZ*dl,GRID_SZ*(10+4*i)));
 	}
 
 	QList<WireData*> wireList=le->wires;
@@ -176,7 +202,7 @@ QRectF LEdiScene::layoutLE(LEData* le){
 	restrictedPorts.clear();
     rank.clear();
 	passedLE.clear();
-	return QRectF(0,0,GRID_SZ*(20+(L+1)*maxRank),GRID_SZ*(maxH+10));
+	return QRectF(0, 0, GRID_SZ*20+le->outPorts.back()->shape->x(), GRID_SZ*(maxH+10));
 }
 
 
@@ -460,17 +486,16 @@ QPointF LEdiScene::oneSideTraceStep(QPair<QList<QLineF>,QList<QPointF>> const& _
     iter++;
     QPointF point1(nullPoint);
     QPointF point2(nullPoint);
-    QPair<QList<QLineF>,QList<QPointF>> lPair;
+	QPair<QList<QLineF>,QList<QPointF>> lPair;
 
     if (iter%2 == 0)
         makeHNormalsToVLines(lPair, _lPair, _llPrev);
     else
-        makeVNormalsToHLines(lPair, _lPair, _llPrev);
+		makeVNormalsToHLines(lPair, _lPair, _llPrev);
 
     QList<QLineF> const &ll = lPair.first, &_ll = _lPair.first;
 
     if (!ll.isEmpty()){
-
         point1 = findCrossLLvsHoldedWire(lPair);
         if (point1 != nullPoint){
 			hWire->shape->addNode(point1);
@@ -577,11 +602,25 @@ void LEdiScene::traceLE(LEData* _le){
 		if (hWire->shape != NULL)
 			wireShapeList.append(hWire->shape);
 		hWire=NULL;
+
+		switch (qRound(wireShapeList.size()*10.0/_le->wires.size())){
+			case 1: qDebug("+---------"); break;
+			case 2: qDebug("++--------"); break;
+			case 3: qDebug("+++-------"); break;
+			case 4: qDebug("++++------"); break;
+			case 5: qDebug("+++++-----"); break;
+			case 6: qDebug("++++++----"); break;
+			case 7: qDebug("+++++++---"); break;
+			case 8: qDebug("++++++++--"); break;
+			case 9: qDebug("+++++++++-"); break;
+		}
 	}
     wiresToTrace.clear();
 
-    if (wireShapeList.size() != _le->wires.size())
-        qWarning("%d wire(s) not been traced!", _le->wires.size() - wireShapeList.size());
+	if (wireShapeList.size() != _le->wires.size())
+		qDebug("Only %d of %d wires was traced.", wireShapeList.size(), _le->wires.size());
+	else
+		qDebug("All %d wires was traced.", _le->wires.size());
 
 	hLE=NULL;
 }

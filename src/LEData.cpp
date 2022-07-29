@@ -1,39 +1,43 @@
 #include <QFileDialog>
 #include <QFile>
-#include "defines.h"
+#include "LEData.h"
+//#include "LEShape.h"
 #include "PortData.h"
 #include "WireData.h"
-#include "LEData.h"
 
 QList<LEData> LEData::library;
 
 LEData::LEData(){
-	isBasic=false;
 	shape=NULL;
+	isBasic=false;
 }
 
 LEData::LEData(LEData* _le){
-    copy(_le);
 	shape=NULL;
+	copy(_le);
 }
 
 LEData::LEData(QString _type, QString _name){
-	copyFromLibrary(_type, _name);
 	shape=NULL;
+	copyFromLibrary(_type, _name);
 }
 
 LEData::~LEData(){
-	int i;
-	for (i=0;i<ports.size();i++) delete(ports[i]);
-	for (i=0;i<wires.size();i++) delete(wires[i]);
-    for (i=0;i<les.size();i++) delete(les[i]);
+	clear();
 }
 
 void LEData::clear(){
-    name.clear();
-    ports.clear();
-    wires.clear();
+	int i;
+	for (i=0;i<ports.size();i++) delete(ports[i]);
+	ports.clear();
+	inPorts.clear();
+	outPorts.clear();
+	for (i=0;i<wires.size();i++) delete(wires[i]);
+	wires.clear();
+	for (i=0;i<les.size();i++) delete(les[i]);
     les.clear();
+
+	if (shape != NULL) delete(shape);
 }
 
 WireData* LEData::wireNamed(QString _name){
@@ -76,14 +80,15 @@ bool LEData::nameIs(QString _name){
     return false;
 }
 
-int LEData::compareNames(const void* le1, const void* le2){
-	LEData* _le1 = *(LEData**)le1;
-	LEData* _le2 = *(LEData**)le2;
-	return QString::compare(_le1->name, _le2->name);
+bool LEData::compareNames(const LEData* le1, const LEData* le2){
+	if (QString::compare(le1->name, le2->name) < 0)
+		return true;
+	else
+		return false;
+
 }
-void LEData::nameSort(QList<LEData*>& leList){ //qsort q-контейнеры не принимает
-	QVector<LEData*> _leList = leList.toVector();
-	qsort(&_leList,_leList.size(),sizeof(LEData*),compareNames);
+void LEData::nameSort(QList<LEData*>& leList){
+	std::sort(leList.begin(), leList.end(), compareNames);
 }
 
 bool LEData::copy(LEData* _le){

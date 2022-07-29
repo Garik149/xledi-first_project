@@ -15,13 +15,15 @@ private:
 	QList<QPointF*> ports;
 	bool shownLabels;
 
+
 public:
-     LEShape(LEData* _le);
-     ~LEShape();
+	LEShape(LEData* _le);
+	~LEShape();
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) override;
     int type() const override {return Type;}
     void setState(State state);
+
 
 	friend class LEdiScene;
 };

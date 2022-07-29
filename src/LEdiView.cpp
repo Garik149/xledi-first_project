@@ -171,5 +171,8 @@ void LEdiView::keyPressEvent(QKeyEvent *_keyEvent){
             scene->scaleUpdate(hScale);
         }
         break;
+
+	case Qt::Key_T:
+		break;
     }
 }

@@ -5,8 +5,33 @@
 #include "LEdiView.h"
 #include "LEData.h"
 
+
+class WorkerThread : public QThread
+{
+	Q_OBJECT
+public:
+	WorkerThread(QObject* obj):QThread(obj){};
+	void run() override {
+		QString result;
+		emit resultReady(result);
+	}
+signals:
+	void resultReady(const QString &s);
+};
+
+void MainWindow::startWorkInAThread()
+{
+	/*WorkerThread *workerThread = new WorkerThread(this);
+	connect(workerThread, &WorkerThread::resultReady, this, &MainWindow::handleResults);
+	connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
+	workerThread->start();*/
+}
+
+//int iter;
+
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     qApp->setAttribute(Qt::AA_DontShowIconsInMenus, true);
+	mainLE = NULL;
 	msg = new Locale();
 	//msg->setLocale("Eng");
 
@@ -16,25 +41,31 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     createMenu();
     createToolBar();
     createStatusBar();
-	createLibraryWidget();
+	//createLibraryWidget();
 
 	slotLoadLibrary();
-	slotLoadScheme();
+	/*for (iter=0; iter<3; iter++)
+		slotSynthScheme();*/
+
+	//close();
 }
 
 void MainWindow::initActions(){
-	newFileAction = new QAction(QIcon{":/images/New.png"}, msg->get1(), this);
-	connect(newFileAction, &QAction::triggered, this, &MainWindow::slotNewFile);
+	newSchemeAction = new QAction(QIcon{":/images/New.png"}, msg->get1(), this);
+	connect(newSchemeAction, &QAction::triggered, this, &MainWindow::slotNewScheme);
 
 	loadLibraryAction = new QAction(QIcon{":/images/Open.png"}, "Load library", this);
 	connect(loadLibraryAction, &QAction::triggered, this, &MainWindow::slotLoadLibrary);
 
+	synthSchemeAction = new QAction(QIcon{":/images/Open.png"}, "Synthesize scheme", this);
+	connect(synthSchemeAction, &QAction::triggered, this, &MainWindow::slotSynthScheme);
+
+	saveSchemeAction = new QAction(QIcon{":/images/Save.png"}, msg->get3(), this);
+	saveSchemeAction->setShortcut(tr("CTRL+S"));
+	connect(saveSchemeAction, &QAction::triggered, this, &MainWindow::slotSaveScheme);
+
 	loadSchemeAction = new QAction(QIcon{":/images/Open.png"}, "Load scheme", this);
 	connect(loadSchemeAction, &QAction::triggered, this, &MainWindow::slotLoadScheme);
-
-	saveFileAction = new QAction(QIcon{":/images/Save.png"}, msg->get3(), this);
-	saveFileAction->setShortcut(tr("CTRL+S"));
-	connect(saveFileAction, &QAction::triggered, this, &MainWindow::slotSaveFile);
 
     quitAction = new QAction(QIcon{":/images/Quit.png"}, msg->get4(), this);
     quitAction->setShortcut(tr("CTRL+Q"));
@@ -42,10 +73,14 @@ void MainWindow::initActions(){
 }
 
 void MainWindow::createScene(){
-    scene = new LEdiScene(QRect(0,0,80*GRID_SZ,60*GRID_SZ));
+	scene = new LEdiScene(QRect(0,0,80*GRID_SZ,60*GRID_SZ));
 
 	view = new LEdiView(scene, NULL);
 	view->show();
+
+	//QThread myThread(view);
+	//connect(myThread, &QThread::finished, myThread, &QObject::deleteLater);
+	//myThread.start();
 
 	setCentralWidget(view);
 }
@@ -54,10 +89,11 @@ void MainWindow::createMenu(){
     fileMenu = new QMenu(msg->get0());
 	menuBar()->addMenu(fileMenu);
 
-    //fileMenu->addAction(newFileAction);
+	//fileMenu->addAction(newSchemeAction);
 	fileMenu->addAction(loadLibraryAction);
-	fileMenu->addAction(loadSchemeAction);
-	//fileMenu->addAction(saveFileAction);
+	fileMenu->addAction(synthSchemeAction);
+	//fileMenu->addAction(loadSchemeAction);
+	//fileMenu->addAction(saveSchemeAction);
 	fileMenu->addSeparator();
     fileMenu->addAction(quitAction);
 }
@@ -97,7 +133,7 @@ void MainWindow::createLibraryWidget(){
 }
 
 //Empty
-void MainWindow::slotNewFile(){
+void MainWindow::slotNewScheme(){
 	QMessageBox::information(this, "Информация", "Эта функция не разблокирована");
 }
 
@@ -111,26 +147,38 @@ void MainWindow::slotLoadLibrary(){
 }
 
 //
-void MainWindow::slotLoadScheme(){
+void MainWindow::slotSynthScheme(){
 	QString path;
-    //path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
-	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s27.syn_dc.v";
-    //path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c432.syn_dc.v";
+	/*switch(iter){
+		case 0: path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s510.syn_dc.v"; break;
+		case 1: path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s838.syn_dc.v"; break;
+		case 2: path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c1908.syn_dc.v"; break;
+	}*/
+	path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
+	//path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s27.syn_dc.v";
 	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/s27.syn_dc.v";
-    //path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/c432.syn_dc.v";
 
-    mainLE = new LEData();
-	if (mainLE->initLEFromFile(path) == RESULT_ERROR)
+	LEData* newLE = new LEData();
+	if (newLE->initLEFromFile(path) == RESULT_ERROR)
 		qWarning("Module read failure");
-    else{
-        scene->clear();
-        scene->setSceneRect(scene->layoutLE(mainLE));
+	else{
+
+		scene->reset();
+		if (mainLE!=NULL) delete(mainLE);
+		mainLE=newLE;
+		//startWorkInAThread();
+		scene->setSceneRect(scene->layoutLE(mainLE));
 		scene->traceLE(mainLE);
-    }
+	}
 }
 
 //Empty
-void MainWindow::slotSaveFile(){
+void MainWindow::slotSaveScheme(){
+	QMessageBox::information(this, "Информация", "Эта функция не разблокирована");
+}
+
+//Empty
+void MainWindow::slotLoadScheme(){
 	QMessageBox::information(this, "Информация", "Эта функция не разблокирована");
 }
 

@@ -13,9 +13,10 @@ struct WireData
     //QList<WireData*> assigns;
 	WireShape* shape;
 
-     WireData();
-     WireData(QString _name);
-     ~WireData();
+
+	WireData();
+	WireData(QString _name);
+	~WireData();
 };
 
 #endif // WIREDATA_H

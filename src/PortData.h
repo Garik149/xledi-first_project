@@ -13,10 +13,11 @@ struct PortData
 	bool isOutput:1;
 	PortShape* shape;
 
-     PortData();
-     PortData(LEData* _le ,QString _name);
-     PortData(LEData* _le ,QString _name, bool _isOutput);
-     ~PortData();
+
+	PortData();
+	PortData(LEData* _le ,QString _name);
+	PortData(LEData* _le ,QString _name, bool _isOutput);
+	~PortData();
 };
 
 #endif // PORTDATA_H

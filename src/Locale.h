@@ -3,9 +3,10 @@
 
 #include <QString>
 
-class Locale
-{
+class Locale{
+private:
     int locale;
+
 
 public:
     Locale();

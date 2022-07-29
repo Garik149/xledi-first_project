@@ -8,8 +8,8 @@
 #include <QAction>
 #include "defines.h"
 
-class LEdiView : public QGraphicsView
-{
+class LEdiView : public QGraphicsView{
+private:
     State state;
     LEdiScene* scene;
 	//QGraphicsItem *selectEditorItem;
@@ -27,20 +27,23 @@ class LEdiView : public QGraphicsView
 	QAction* act2;
     //CodeEditor *editor;
 
+
+public:
+	LEdiView();
+	explicit LEdiView(LEdiScene *scene, QWidget *parent = nullptr);
+	~LEdiView(){};
+protected:
+	void mousePressEvent(QMouseEvent *mouseEvent) override;
+	//virtual void mouseDoubleClickEvent(QMouseEvent *mouseEvent) override;
+	void mouseMoveEvent(QMouseEvent *mouseEvent) override;
+	//void mouseReleaseEvent(QMouseEvent *mouseEvent);
+	void keyPressEvent(QKeyEvent *keyEvent) override;
+	//virtual void wheelEvent(QWheelEvent *event) override;
+private:
     QPoint btg(QPointF point); //BindedToGrid
     void forgetHolded();
     //void setItemType(ItemLEdi::TypeItem type) { sceneLE->createItem(type);};
-protected:
-    void mousePressEvent(QMouseEvent *mouseEvent) override;
-    //virtual void mouseDoubleClickEvent(QMouseEvent *mouseEvent) override;
-    void mouseMoveEvent(QMouseEvent *mouseEvent) override;
-    //void mouseReleaseEvent(QMouseEvent *mouseEvent);
-    void keyPressEvent(QKeyEvent *keyEvent) override;
-    //virtual void wheelEvent(QWheelEvent *event) override;
-public:
-     LEdiView();
-     explicit LEdiView(LEdiScene *scene, QWidget *parent = nullptr);
-     ~LEdiView(){};
+
 
     Q_OBJECT
 public slots:

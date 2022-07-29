@@ -1,6 +1,5 @@
-#include "LEShape.h"
 #include "LEData.h"
-//#include "wire.h"
+#include "LEShape.h"
 #include "PortData.h"
 
 LEShape::LEShape(LEData* _le) : QGraphicsItem(){
@@ -31,6 +30,7 @@ LEShape::~LEShape(){
 	delete(body);
 	for (int i=0; i<ports.size(); i++)
 		delete(ports[i]);
+	data->shape=NULL;
 }
 
 
@@ -41,7 +41,7 @@ QRectF LEShape::boundingRect() const{
 void LEShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) {
 
 	if (shownLabels){
-        painter->setPen(QPen(QColor(RED,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+		painter->setPen(QPen(QColor(DARK_RED,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 		painter->setFont(QFont("Calibri", 11, QFont::DemiBold));
         painter->drawText(QRectF(-0.9*GRID_SZ, -0.9*GRID_SZ, 3.8*GRID_SZ, 0.9*GRID_SZ),0,data->name);
         painter->drawText(QRectF(-0.9*GRID_SZ, body->height(), 3.8*GRID_SZ, 0.9*GRID_SZ),0,data->type);
@@ -51,7 +51,7 @@ void LEShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*
             painter->drawText(QRectF(ports[i]->x()+0.1*GRID_SZ, ports[i]->y()+0.1*GRID_SZ, 0.8*GRID_SZ, 0.8*GRID_SZ),0,data->ports[i]->name);
 	}
 
-    QPen pen(QColor(GREEN,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+	QPen pen(QColor(DARK_GREEN,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
     switch(state){
     default:
         break;

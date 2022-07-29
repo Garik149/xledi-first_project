@@ -6,20 +6,29 @@
 #include <QGraphicsView>
 #include "defines.h"
 
-class MainWindow : public QMainWindow
-{
-	Q_OBJECT
+class MainWindow : public QMainWindow{
+private:
+	QAction* newSchemeAction;
+	QAction* loadLibraryAction;
+	QAction* synthSchemeAction;
+	QAction* saveSchemeAction;
+	QAction* loadSchemeAction;
+	QAction* quitAction;
+
+	QMenu* fileMenu;
+	QToolBar* toolBar;
+	QStatusBar* statusBar;
+	QTextEdit* textEditor;
+	LEdiScene* scene;
+	LEdiView* view;
+
+	Locale* msg;
+	LEData* mainLE;
+
 
 public:
 	MainWindow(QWidget *parent = nullptr);
-     ~MainWindow() {};
-
-private slots:
-    void slotNewFile();
-	void slotLoadLibrary();
-	void slotLoadScheme();
-    void slotSaveFile();
-    void slotQuit();
+	~MainWindow() {};
 
 private:
 	void initActions();
@@ -28,39 +37,19 @@ private:
 	void createToolBar();
 	void createStatusBar();
 	void createLibraryWidget();
+	void startWorkInAThread();
 
-	//void createToolBox();
-    //void buttonGroupClicked(QAbstractButton *button);
-    //void pointerGroupCliced();
-    //void insertItem();
-    //void currentChangedTab(int indexTab);
-	//void tabCloseRequested(int indexTab);
 
-    QAction* newFileAction;
-	QAction* loadLibraryAction;
-	QAction* loadSchemeAction;
-    QAction* saveFileAction;
-    QAction* quitAction;
+Q_OBJECT
+private slots:
+	void handleResults(const QString &s) {};
 
-    //QPixmap createImage(ItemLEdi::TypeItem type);
-    //QWidget *createCellWidget(const QString &text, ItemLEdi::TypeItem type);
-    //QToolBox *toolBox;
-    //QAction *deleteAction;
-    //QToolBar *pointerToolBar;
-    //QTabWidget *tabWidget;
-    //QButtonGroup *buttonGroup;
-    //QButtonGroup *pointerTypeGroup;
-
-    //QList <ViewLEdi*> tabList{};
-
-	QMenu* fileMenu;
-	QToolBar* toolBar;
-	QStatusBar* statusBar;
-    QTextEdit* textEditor;
-    LEdiScene* scene;
-    LEdiView* view;
-
-    Locale* msg;
-    LEData* mainLE;
+	//void slotChangeColorMap();
+	void slotNewScheme();
+	void slotLoadLibrary();
+	void slotSynthScheme();
+	void slotSaveScheme();
+	void slotLoadScheme();
+	void slotQuit();
 };
 #endif // MAINWINDOW_H

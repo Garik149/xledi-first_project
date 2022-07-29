@@ -1,5 +1,5 @@
-#include "PortShape.h"
 #include "PortData.h"
+#include "PortShape.h"
 
 PortShape::PortShape(PortData* _port) : QGraphicsItem(){
     data = _port;
@@ -25,8 +25,8 @@ PortShape::PortShape(PortData* _port) : QGraphicsItem(){
 }
 
 PortShape::~PortShape(){
-    for (int i=0; i<4; i++)
-        delete(body[i]);
+	for (int i=0; i<4; i++) delete(body[i]);
+	data->shape=NULL;
 }
 
 
@@ -37,12 +37,12 @@ QRectF PortShape::boundingRect() const{
 void PortShape::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) {
 
     if (shownLabels){
-        painter->setPen(QPen(QColor(RED,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+		painter->setPen(QPen(QColor(DARK_RED,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         painter->setFont(QFont("Calibri", 11, QFont::DemiBold));
         painter->drawText(QRectF(0, -1*GRID_SZ, 2*GRID_SZ, 1*GRID_SZ),0,data->name);
     }
 
-	QPen pen(QColor(GREEN,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
+	QPen pen(QColor(DARK_GREEN,255), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 	switch(state){
 	default:
 		break;

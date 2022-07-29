@@ -15,13 +15,15 @@ private:
 	QPointF* ending;
     bool shownLabels;
 
+
 public:
     PortShape(PortData* _port);
-     ~PortShape();
+	~PortShape();
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget*) override;
     int type() const override {return Type;}
     void setState(State _state);
+
 
 	friend class LEdiScene;
 };
