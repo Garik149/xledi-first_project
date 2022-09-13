@@ -27,8 +27,9 @@ public:
 
 
     friend class LEdiScene;
+	friend class LEdiView;
     friend class WireSeg;
-    friend class WireNode;
+	friend class WireNode;
 };
 
 

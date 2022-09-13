@@ -34,6 +34,54 @@ void LEdiScene::reset(){
 		removeItem(itemList[i]);
 }
 
+void LEdiScene::scaleUpdate(float scale){
+	LEShape* le;
+	PortShape* port;
+	QList<QGraphicsItem*> item = items();
+
+	for (int i=0; i<item.size(); i++)
+	if (scale < 0.6){
+		largeGrid = true;
+		switch(item[i]->type()-QGraphicsItem::UserType){
+		default:
+			break;
+
+		case 0:
+			le = (LEShape*)item[i];
+			le->shownLabels=false;
+			break;
+
+		case 1:
+			port = (PortShape*)item[i];
+			port->shownLabels=false;
+			break;
+		}
+	}
+	else{
+		largeGrid = false;
+		switch(item[i]->type()-QGraphicsItem::UserType){
+		default:
+			break;
+
+		case 0:
+			le = (LEShape*)item[i];
+			le->shownLabels=true;
+			break;
+
+		case 1:
+			port = (PortShape*)item[i];
+			port->shownLabels=true;
+			break;
+		}
+	}
+}
+
+void LEdiScene::synth(LEData* le){
+	mainLE=le;
+	setSceneRect(layoutMainLE());
+	traceMainLE();
+}
+
 void LEdiScene::drawBackground(QPainter* painter, const QRectF&)
 {
 	painter->setBrush(Qt::white);
@@ -49,48 +97,6 @@ void LEdiScene::drawBackground(QPainter* painter, const QRectF&)
     for (int i = GRID_SZ*10; i < sceneRect().right(); i += GRID_SZ*10)
         for (int j = GRID_SZ*10; j < sceneRect().bottom(); j += GRID_SZ*10)
             painter->drawPoint(i, j);
-}
-
-void LEdiScene::scaleUpdate(float scale){
-    LEShape* le;
-    PortShape* port;
-    QList<QGraphicsItem*> item = items();
-
-    for (int i=0; i<item.size(); i++)
-    if (scale < 0.6){
-        largeGrid = true;
-        switch(item[i]->type()-QGraphicsItem::UserType){
-        default:
-            break;
-
-        case 0:
-            le = (LEShape*)item[i];
-            le->shownLabels=false;
-            break;
-
-        case 1:
-            port = (PortShape*)item[i];
-            port->shownLabels=false;
-            break;
-        }
-    }
-    else{
-        largeGrid = false;
-        switch(item[i]->type()-QGraphicsItem::UserType){
-        default:
-            break;
-
-        case 0:
-            le = (LEShape*)item[i];
-            le->shownLabels=true;
-            break;
-
-        case 1:
-            port = (PortShape*)item[i];
-            port->shownLabels=true;
-            break;
-        }
-    }
 }
 
 
@@ -118,41 +124,48 @@ void LEdiScene::rankingStep(LEData* _le, int _r){
 
     passedLE.removeAll(_le);
 }
-QRectF LEdiScene::layoutLE(LEData* le){
+QRectF LEdiScene::layoutMainLE(){
 	int i, j;
 	int dl;
 
-    for (i=0; i<le->les.size(); i++)
-        rank.insert(le->les[i],1);
+	for (i=0; i<mainLE->les.size(); i++)
+		rank.insert(mainLE->les[i],1);
 
-    for (i=0; i < le->inPorts.size(); i++){
+	for (i=0; i < mainLE->inPorts.size(); i++){
         QList<LEData*> leToRank;
         WireData* wire;
-        wire=le->inPorts[i]->insideWire;
+		wire=mainLE->inPorts[i]->insideWire;
         for (int j=0; j < wire->loads.size(); j++)
             if (wire == wire->loads[j]->outsideWire)
-                leToRank.append(wire->loads[j]->le);
+				leToRank.append(wire->loads[j]->le);
         for (int j=0; j < leToRank.size(); j++)
             rankingStep(leToRank[j],0);
         leToRank.clear();
     }
 
-	int maxH = 10+4*qMax(le->outPorts.size(),le->inPorts.size());
+	int maxH = 10+4*qMax(mainLE->outPorts.size(),mainLE->inPorts.size());
 	int maxRank = 1;
-    for (i=0; i<le->les.size(); i++){
+	for (i=0; i<mainLE->les.size(); i++){
         int r;
-        r=rank.find(le->les[i]).value();
+		r=rank.find(mainLE->les[i]).value();
 		maxRank=qMax(maxRank,r);
 	}
 
 	dl=10;
-	for (i=0; i<le->inPorts.size(); i++){
+	for (i=0; i<mainLE->inPorts.size(); i++){
 		PortShape* sh;
-		sh = new PortShape(le->inPorts[i]);
+		sh = new PortShape(mainLE->inPorts[i]);
         addItem(sh);
 		sh->setPos(QPoint(GRID_SZ*dl,GRID_SZ*(10+4*i)));
 	}
-	dl+=4+le->inPorts.size();
+	{
+		int dh=0;
+		QList<LEData*> leList;
+		leList=rank.keys(1);
+		for (i=0; i<leList.size(); i++)
+			dh+=leList[i]->inPorts.size()+3;
+		dl+=4+int((dh-3)/4);
+	}
 
 	for (i=1; i<=maxRank; i++){
 		QList<LEData*> leList;
@@ -178,15 +191,15 @@ QRectF LEdiScene::layoutLE(LEData* le){
 		dl+=3+outWires.size(); outWires.clear();
     }
 
-	dl+=le->outPorts.size();
-	for (i=0; i<le->outPorts.size(); i++){
+	dl+=mainLE->outPorts.size();
+	for (i=0; i<mainLE->outPorts.size(); i++){
 		PortShape* sh;
-		sh = new PortShape(le->outPorts[i]);
+		sh = new PortShape(mainLE->outPorts[i]);
         addItem(sh);
 		sh->setPos(QPoint(GRID_SZ*dl,GRID_SZ*(10+4*i)));
 	}
 
-	QList<WireData*> wireList=le->wires;
+	QList<WireData*> wireList=mainLE->wires;
 	while(!wireList.isEmpty()){
 		int k;
 		k=1;
@@ -202,7 +215,7 @@ QRectF LEdiScene::layoutLE(LEData* le){
 	restrictedPorts.clear();
     rank.clear();
 	passedLE.clear();
-	return QRectF(0, 0, GRID_SZ*20+le->outPorts.back()->shape->x(), GRID_SZ*(maxH+10));
+	return QRectF(0, 0, GRID_SZ*20+mainLE->outPorts.back()->shape->x(), GRID_SZ*(maxH+10));
 }
 
 
@@ -576,8 +589,8 @@ bool LEdiScene::traceHoldedWire(){
 
     return true;
 }
-void LEdiScene::traceLE(LEData* _le){
-    hLE=_le;
+void LEdiScene::traceMainLE(){
+	hLE=mainLE;
 	if (wiresToTrace.isEmpty()) return;
 
 	int k=1;
@@ -603,7 +616,7 @@ void LEdiScene::traceLE(LEData* _le){
 			wireShapeList.append(hWire->shape);
 		hWire=NULL;
 
-		switch (qRound(wireShapeList.size()*10.0/_le->wires.size())){
+		switch (qRound(wireShapeList.size()*10.0/mainLE->wires.size())){
 			case 1: qDebug("+---------"); break;
 			case 2: qDebug("++--------"); break;
 			case 3: qDebug("+++-------"); break;
@@ -617,10 +630,10 @@ void LEdiScene::traceLE(LEData* _le){
 	}
     wiresToTrace.clear();
 
-	if (wireShapeList.size() != _le->wires.size())
-		qDebug("Only %d of %d wires was traced.", wireShapeList.size(), _le->wires.size());
+	if (wireShapeList.size() != mainLE->wires.size())
+		qDebug("Only %d of %d wires was traced.", wireShapeList.size(), mainLE->wires.size());
 	else
-		qDebug("All %d wires was traced.", _le->wires.size());
+		qDebug("All %d wires was traced.", mainLE->wires.size());
 
 	hLE=NULL;
 }

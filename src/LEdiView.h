@@ -3,6 +3,7 @@
 
 #include <QGraphicsView>
 #include <QGraphicsItem>
+#include <QTreeWidget>
 #include <QMouseEvent>
 #include <QMenu>
 #include <QAction>
@@ -14,17 +15,17 @@ private:
     LEdiScene* scene;
 	//QGraphicsItem *selectEditorItem;
 
+	//LEData* mainLE;
     QPoint hPos1, hPos2; // - holded position
 	QGraphicsItem* hItem;
     WireSeg* hWireSeg;
 	LEShape* hLE;
 	PortShape* hPort;
-	WireShape* hWire;
     float hScale;
 
-	QMenu* contextMenu;
-	QAction* act1;
-	QAction* act2;
+	/*QMenu* contextMenu;
+	QAction* drawWire;
+	QAction* addLE;*/
     //CodeEditor *editor;
 
 
@@ -32,6 +33,8 @@ public:
 	LEdiView();
 	explicit LEdiView(LEdiScene *scene, QWidget *parent = nullptr);
 	~LEdiView(){};
+	void addLibraryTreeLE(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+	void reset();
 protected:
 	void mousePressEvent(QMouseEvent *mouseEvent) override;
 	//virtual void mouseDoubleClickEvent(QMouseEvent *mouseEvent) override;
@@ -47,15 +50,9 @@ private:
 
     Q_OBJECT
 public slots:
-	void slotOnCustomContextMenu(const QPoint&);
-	void slotAct1();
-	void slotAct2();
-	//void slotPlaceLE();
-    //void transferItem(ItemLEdi *item , QGraphicsLineItem *line);
-    //void deleteSelectItem(){sceneLE->deleteSelectItem();}
+	//void slotOnCustomContextMenu(const QPoint&);
+	void drawWire();
 signals:
-    //void mouseMove(QPointF mouseCoordinates);
-    //void insertItem();
 };
 
 #endif // LEDIVIEW_H

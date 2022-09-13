@@ -28,16 +28,16 @@ LEData::~LEData(){
 
 void LEData::clear(){
 	int i;
-	for (i=0;i<ports.size();i++) delete(ports[i]);
+	for (i=0;i<ports.size();i++) DELETE(ports[i]);
 	ports.clear();
 	inPorts.clear();
 	outPorts.clear();
-	for (i=0;i<wires.size();i++) delete(wires[i]);
+	for (i=0;i<wires.size();i++) DELETE(wires[i]);
 	wires.clear();
-	for (i=0;i<les.size();i++) delete(les[i]);
+	for (i=0;i<les.size();i++) DELETE(les[i]);
     les.clear();
 
-	if (shape != NULL) delete(shape);
+	if (shape != NULL) DELETE(shape);
 }
 
 WireData* LEData::wireNamed(QString _name){

@@ -17,9 +17,7 @@ WireShape::~WireShape(){
 
 void WireShape::erase(){
 	for (int i=0; i<seg.size(); i++) delete(seg[i]);
-	seg.clear();
 	for (int i=0; i<nodes.size(); i++) delete(nodes[i]);
-	nodes.clear();
 }
 
 void WireShape::addNode(QPointF _point){
@@ -36,7 +34,7 @@ WireSeg* WireShape::addSeg(QLineF line){
 void WireShape::setState(State _state){
     state=_state;
     for (int i=0; i<seg.size(); i++)
-        seg[i]->update();
+		seg[i]->update();
 }
 
 
@@ -47,7 +45,7 @@ WireSeg::WireSeg(WireShape* _shape, QLineF _line) : QGraphicsLineItem(_line){
 }
 
 WireSeg::~WireSeg() {
-	//whole->seg.removeAll(this);
+	whole->seg.removeAll(this);
 }
 
 void WireSeg::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) {
@@ -86,6 +84,7 @@ void WireSeg::shiftLeft(){
     }*/
 }
 
+
 //WireNode
 WireNode::WireNode(WireShape* _shape, QPointF _point) : QGraphicsItem(){
     whole=_shape;
@@ -94,7 +93,7 @@ WireNode::WireNode(WireShape* _shape, QPointF _point) : QGraphicsItem(){
 }
 
 WireNode::~WireNode(){
-	//whole->nodes.removeAll(this);
+	whole->nodes.removeAll(this);
 }
 
 QRectF WireNode::boundingRect() const{

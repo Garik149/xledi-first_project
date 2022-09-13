@@ -26,6 +26,7 @@ public:
 
 
 	friend class LEdiScene;
+	friend class LEdiView;
 };
 
 #endif // LESHAPE_H

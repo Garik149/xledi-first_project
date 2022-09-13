@@ -10,6 +10,7 @@ class LEdiScene : public QGraphicsScene{
 public:
 	const QColor bcgndColor;
 private:
+	LEData* mainLE;
 	bool largeGrid;
 	bool shownLabels;
 	int colorMap;
@@ -20,6 +21,7 @@ public:
 	 ~LEdiScene(){};
 	void reset();
 	void scaleUpdate(float scale);
+	void synth(LEData* le);
 private:
 	void drawBackground(QPainter*, const QRectF&) override;
 
@@ -29,9 +31,8 @@ private:
     QHash<LEData*, int> rank;
     QList<PortData*> restrictedPorts;
     QList<LEData*> passedLE;
-    void rankingStep(LEData* _le, int r);
-public:
-	QRectF layoutLE(LEData* le);
+	void rankingStep(LEData* _le, int r);
+	QRectF layoutMainLE();
 
 
     //tracing
@@ -39,7 +40,7 @@ private:
     QLineF const nullLine{-1,-1,-1,-1};
     QPointF const nullPoint{-1,-1};
     int iter;
-    LEData* hLE;
+	LEData* hLE;
     WireData* hWire;
     WireShape* hWireShapeToDelete;
 	QList<WireData*> wiresToTrace;
@@ -59,8 +60,7 @@ private:
     QPair<QPointF, QPointF> bothSideTraceStep(QPair<QList<QLineF>,QList<QPointF>> const& _bLPair, QPair<QList<QLineF>,QList<QPointF>> const& _eLPair, QList<QLineF> const& _bLLPrev, QList<QLineF> const& _eLLPrev);
     QPointF oneSideTraceStep(QPair<QList<QLineF>,QList<QPointF>> const& _lPair, QList<QLineF> const& _llPrev);
     bool traceHoldedWire();
-public:
-    void traceLE(LEData* le);
+	void traceMainLE();
 
 
     Q_OBJECT

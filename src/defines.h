@@ -17,6 +17,8 @@
 #define WHITE 255,255,255
 #define CYAN 20,150,180
 
+#define DELETE(a) {delete(a); a = NULL;}
+
 class LEData;
 class LEShape;
 struct PortData;

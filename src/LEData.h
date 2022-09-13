@@ -45,6 +45,7 @@ private:
 
     friend class LEShape;
 	friend class LEdiScene;
+	friend class MainWindow;
 };
 
 #endif // LEDATA_H

@@ -6,7 +6,7 @@
 #include "LEData.h"
 
 
-class WorkerThread : public QThread
+/*class WorkerThread : public QThread
 {
 	Q_OBJECT
 public:
@@ -21,11 +21,11 @@ signals:
 
 void MainWindow::startWorkInAThread()
 {
-	/*WorkerThread *workerThread = new WorkerThread(this);
-	connect(workerThread, &WorkerThread::resultReady, this, &MainWindow::handleResults);
-	connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
-	workerThread->start();*/
-}
+	//WorkerThread *workerThread = new WorkerThread(this);
+	//connect(workerThread, &WorkerThread::resultReady, this, &MainWindow::handleResults);
+	//connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
+	//workerThread->start();
+}*/
 
 //int iter;
 
@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent){
     createMenu();
     createToolBar();
     createStatusBar();
-	//createLibraryWidget();
+	createLibraryWidget();
 
 	slotLoadLibrary();
 	/*for (iter=0; iter<3; iter++)
@@ -118,18 +118,14 @@ void MainWindow::createStatusBar(){
 
 void MainWindow::createLibraryWidget(){
 	QDockWidget* dockWidget = new QDockWidget();
-	QTreeWidget* treeWidget = new QTreeWidget();
+	libraryTree = new QTreeWidget();
 	QStringList headers;
 	headers << "Library LE";
-	treeWidget->setHeaderLabels(headers);
-	treeWidget->setRootIsDecorated(0);
-	dockWidget->setWidget(treeWidget);
+	libraryTree->setHeaderLabels(headers);
+	libraryTree->setRootIsDecorated(0);
+	dockWidget->setWidget(libraryTree);
 	addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
-
-	QTreeWidgetItem* item = new QTreeWidgetItem(treeWidget);
-	item->setText(0,"jj");
-
-	//connect(treeWidget, &QTreeWidget::currentItemChanged, this, &LEdiView::slotAct2);
+	connect(libraryTree, &QTreeWidget::currentItemChanged, view, &LEdiView::addLibraryTreeLE);
 }
 
 //Empty
@@ -144,6 +140,13 @@ void MainWindow::slotLoadLibrary(){
 	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v";
 
 	LEData::readLibrary(path);
+
+	libraryTree->clear();
+	QTreeWidgetItem* item;
+	for (int i=0;i<LEData::library.size();i++){
+		item = new QTreeWidgetItem(libraryTree);
+		item->setText(0,LEData::library[i].type);
+	}
 }
 
 //
@@ -164,11 +167,11 @@ void MainWindow::slotSynthScheme(){
 	else{
 
 		scene->reset();
+		view->reset();
 		if (mainLE!=NULL) delete(mainLE);
 		mainLE=newLE;
 		//startWorkInAThread();
-		scene->setSceneRect(scene->layoutLE(mainLE));
-		scene->traceLE(mainLE);
+		scene->synth(mainLE);
 	}
 }
 

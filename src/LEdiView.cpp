@@ -8,59 +8,79 @@
 
 LEdiView::LEdiView(LEdiScene *_scene, QWidget *_parent) : QGraphicsView(_scene, _parent){
     scene = _scene;
-	{
+	/*{
         setContextMenuPolicy(Qt::CustomContextMenu);
 
-        contextMenu = new QMenu(this);
+		contextMenu = new QMenu(this);
 
-        act1 = new QAction("Draw wire", this);
-        act2 = new QAction("Place logic element", this);
+		act1 = new QAction("Draw wire", this);
+		act2 = new QAction("Place logic element", this);
 
         contextMenu->addAction(act1);
-        contextMenu->addAction(act2);
+		contextMenu->addAction(act2);
 
 		connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(slotOnCustomContextMenu(const QPoint&)));
 
 		connect(act1, SIGNAL(triggered()), SLOT(slotAct1()));
 		connect(act2, SIGNAL(triggered()), SLOT(slotAct2()));
-    }
+	}*/
 
-    hPos1 = QPoint(0,0); hPos2 = QPoint(0,0);
-    hWire = NULL;
-	hLE = NULL;
-	hPort = NULL;
-    hWireSeg = NULL;
-	hScale = 1;
-    state = Default;
-    setMouseTracking(true);
-    //setDragMode(QGraphicsView::RubberBandDrag);
-    //connect(sceneLE, &LEdiScene::tranferItem, this, &ViewLEdi::transferItem);
+	reset();
 }
 
-void LEdiView::slotOnCustomContextMenu(const QPoint&){}
-void LEdiView::slotAct1(){
-    hWire = new WireShape(new WireData(),scene);
+void LEdiView::reset(){
+
+	hPos1 = QPoint(0,0); hPos2 = QPoint(0,0);
+	//hWire = NULL;
+	//mainLE = NULL;
+	hLE = NULL;
+	hPort = NULL;
+	hWireSeg = NULL;
+	hScale = 1;
+	state = Default;
+	setMouseTracking(true);
+}
+
+//void LEdiView::slotOnCustomContextMenu(const QPoint&){}
+
+void LEdiView::drawWire(){
+	forgetHolded();
+	WireShape* hWire = new WireShape(new WireData("neWire"),scene);
     hWireSeg = hWire->addSeg(QLineF());
     hWire->setState(Moved);
     state = DrawingWire;
 }
-void LEdiView::slotAct2(){
-    hLE = new LEShape(new LEData("al_ao21","U1"));
-    hLE->setState(Moved);
-    scene->addItem(hLE);
-    state = PlacingLE;
-}
 
+void LEdiView::addLibraryTreeLE(QTreeWidgetItem* current, QTreeWidgetItem*){
+	forgetHolded();
+	hLE = new LEShape(new LEData(current->text(0),"newLE"));
+	hLE->setState(Moved);
+	scene->addItem(hLE);
+	state = PlacingLE;
+}
 
 QPoint LEdiView::btg(QPointF _point){
     return {qRound(_point.x()/GRID_SZ)*GRID_SZ,qRound(_point.y()/GRID_SZ)*GRID_SZ};
 }
 
 void LEdiView::forgetHolded(){
-    if (hLE!=NULL) {hLE->setState(Default); hLE = NULL;}
-    if (hPort!=NULL) {hPort->setState(Default); hPort = NULL;}
-    if (hWireSeg!=NULL) {hWireSeg->whole->setState(Default); hWireSeg = NULL;}
-    if (hWire!=NULL) {hWire->setState(Default); hWire = NULL;}
+	if (hLE!=NULL){
+		if (hLE->state == Moved) DELETE(hLE)
+		else {hLE->setState(Default); hLE = NULL;}
+	}
+	if (hPort!=NULL){
+		//if (hPort->state == Moved) DELETE(hPort)
+		{hPort->setState(Default); hPort = NULL;}
+	}
+	if (hWireSeg!=NULL){
+		if (hWireSeg->whole->state == Moved){
+			hWireSeg->whole->setState(Default);
+			delete(hWireSeg);
+		}
+		else
+			hWireSeg->whole->setState(Default);
+		hWireSeg = NULL;
+	}
 }
 
 void LEdiView::mousePressEvent(QMouseEvent *_mouseEvent){
@@ -96,16 +116,15 @@ void LEdiView::mousePressEvent(QMouseEvent *_mouseEvent){
                 }
             break;
 
-        case DrawingWire:
-            hWire->setState(Default);
-            hPos1=hPos2;
-            hWireSeg = hWire->addSeg(QLineF());
-            hWire->setState(Moved);
+		case DrawingWire:
+			hPos1=hPos2;
+			hWireSeg = hWireSeg->whole->addSeg(QLineF());
+			//hWire->setState(Moved);
             break;
 
         case PlacingLE:
-            forgetHolded();
-            hLE = new LEShape(new LEData("al_ao21","U1"));
+			hLE->setState(Default);
+			hLE = new LEShape(hLE->data);
             hLE->setState(Moved);
             scene->addItem(hLE);
             break;
@@ -116,16 +135,16 @@ void LEdiView::mousePressEvent(QMouseEvent *_mouseEvent){
         switch (state){
         default:
             forgetHolded();
-            contextMenu->exec(QCursor::pos());
+			drawWire();
             break;
 
-        case DrawingWire:
-            delete(hWireSeg); hWireSeg=NULL;
+		case DrawingWire:
+			forgetHolded();
             state = Default;
             break;
 
-        case PlacingLE:
-			delete(hLE); hLE=NULL;
+		case PlacingLE:
+			forgetHolded();
             state = Default;
             break;
         }

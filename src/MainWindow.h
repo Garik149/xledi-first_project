@@ -21,6 +21,7 @@ private:
 	QTextEdit* textEditor;
 	LEdiScene* scene;
 	LEdiView* view;
+	QTreeWidget* libraryTree;
 
 	Locale* msg;
 	LEData* mainLE;
@@ -37,12 +38,12 @@ private:
 	void createToolBar();
 	void createStatusBar();
 	void createLibraryWidget();
-	void startWorkInAThread();
+	//void startWorkInAThread();
 
 
 Q_OBJECT
 private slots:
-	void handleResults(const QString &s) {};
+	//void handleResults(const QString &s) {};
 
 	//void slotChangeColorMap();
 	void slotNewScheme();
