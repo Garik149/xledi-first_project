@@ -191,7 +191,21 @@ void LEdiView::keyPressEvent(QKeyEvent *_keyEvent){
         }
         break;
 
-	case Qt::Key_T:
+    case Qt::Key_Left:
+        if (hWireSeg != NULL)
+            hWireSeg->shiftHrz(-GRID_SZ);
 		break;
+    case Qt::Key_Up:
+        if (hWireSeg != NULL)
+            hWireSeg->shiftVrt(-GRID_SZ);
+        break;
+    case Qt::Key_Right:
+        if (hWireSeg != NULL)
+            hWireSeg->shiftHrz(GRID_SZ);
+        break;
+    case Qt::Key_Down:
+        if (hWireSeg != NULL)
+            hWireSeg->shiftVrt(GRID_SZ);
+        break;
     }
 }

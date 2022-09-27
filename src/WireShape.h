@@ -45,7 +45,8 @@ public:
 	~WireSeg();
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*) override;
     int type() const override {return Type;}
-    void shiftLeft();
+    void shiftHrz(int shift);
+    void shiftVrt(int shift);
 
 
     friend class LEdiScene;

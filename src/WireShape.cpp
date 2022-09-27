@@ -71,17 +71,30 @@ void WireSeg::paint(QPainter* painter, const QStyleOptionGraphicsItem*, QWidget*
 	return;
 }
 
-void WireSeg::shiftLeft(){
-    /*QLineF segLine = line();
+void WireSeg::shiftHrz(int shift){
+    QLineF _line = line();
     for (int i=0; i<whole->seg.size(); i++){
         WireSeg* seg = whole->seg[i];
-        if (segLine.p1() == seg->line().p1()){
-            seg->line().setP1(segLine.p1());
+        if ((seg->line().p1() == _line.p1())||(seg->line().p1() == _line.p2())){
+            seg->setLine(seg->line().x1()+shift,seg->line().y1(),seg->line().x2(),seg->line().y2());
         }
-        if (segLine.p2() == seg->line().p2()){
-            seg->line().setP1(segLine.p2());
+        if ((seg->line().p2() == _line.p1())||(seg->line().p2() == _line.p2())){
+            seg->setLine(seg->line().x1(),seg->line().y1(),seg->line().x2()+shift,seg->line().y2());
         }
-    }*/
+    }
+}
+
+void WireSeg::shiftVrt(int shift){
+    QLineF _line = line();
+    for (int i=0; i<whole->seg.size(); i++){
+        WireSeg* seg = whole->seg[i];
+        if ((seg->line().p1() == _line.p1())||(seg->line().p1() == _line.p2())){
+            seg->setLine(seg->line().x1(),seg->line().y1()+shift,seg->line().x2(),seg->line().y2());
+        }
+        if ((seg->line().p2() == _line.p1())||(seg->line().p2() == _line.p2())){
+            seg->setLine(seg->line().x1(),seg->line().y1(),seg->line().x2(),seg->line().y2()+shift);
+        }
+    }
 }
 
 

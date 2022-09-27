@@ -136,8 +136,8 @@ void MainWindow::slotNewScheme(){
 void MainWindow::slotLoadLibrary(){
 	QString path;
 	//path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
-	path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC_libs/XD_LE_PtcV1.80T25.v";
-	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v";
+    //path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC_libs/XD_LE_PtcV1.80T25.v";
+    path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/library/XD_LE_PtcV1.80T25.v";
 
 	LEData::readLibrary(path);
 
@@ -157,11 +157,12 @@ void MainWindow::slotSynthScheme(){
 		case 1: path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s838.syn_dc.v"; break;
 		case 2: path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/c1908.syn_dc.v"; break;
 	}*/
-	path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
+    path = QFileDialog::getOpenFileName(this, "Select", "", "Verilog (*.v)");
 	//path = "D:/Gorislav/Projects/X-LEdi/InputExamples/Syn_DC/s27.syn_dc.v";
 	//path = "C:/Users/goris/_Stuff/Study/Practical_work/X-LEdi/examples/input_files/s27.syn_dc.v";
 
-	LEData* newLE = new LEData();
+    //path = "s27.syn_dc.v";
+    LEData* newLE = new LEData();
 	if (newLE->initLEFromFile(path) == RESULT_ERROR)
 		qWarning("Module read failure");
 	else{
