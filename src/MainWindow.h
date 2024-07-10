@@ -2,22 +2,28 @@
 #define MAINWINDOW_H
 
 #include <QtWidgets>
+//#include <QTabWidget>
 #include <QGraphicsView>
 #include "defines.h"
 
 class MainWindow : public QMainWindow{
 private:
+	QAction* newSchemeAction;
+	QAction* loadLibraryAction;
+	QAction* synthSchemeAction;
 	QAction* saveSchemeAction;
 	QAction* loadSchemeAction;
 	QAction* quitAction;
 
-    QAction* addRAction;
-    QAction* addNPNAction;
-    QAction* addCSAction;
-
+	QMenu* fileMenu;
+	QToolBar* toolBar;
+	QStatusBar* statusBar;
+	QTextEdit* textEditor;
 	LEdiScene* scene;
-    LEdiView* view;
+	LEdiView* view;
+	QTreeWidget* libraryTree;
 
+	Locale* msg;
 	LEData* mainLE;
 
 
@@ -28,17 +34,23 @@ public:
 private:
 	void initActions();
 	void createScene();
-    void createMenu();
+	void createMenu();
+	void createToolBar();
+	void createStatusBar();
+	void createLibraryWidget();
+	//void startWorkInAThread();
 
 
 Q_OBJECT
 private slots:
-    void slotLoadScheme();
-    void slotSaveScheme();
-	void slotQuit();
+	//void handleResults(const QString &s) {};
 
-    void slotAddR();
-    void slotAddNPN();
-    void slotAddCS();
+	//void slotChangeColorMap();
+	void slotNewScheme();
+	void slotLoadLibrary();
+	void slotSynthScheme();
+	void slotSaveScheme();
+	void slotLoadScheme();
+	void slotQuit();
 };
 #endif // MAINWINDOW_H
